@@ -1,0 +1,107 @@
+\documentclass[12pt,DIV=14, version=first, BCOR=10mm,a4paper,twoside,parskip=half-,headsepline,headinclude]{scrartcl}
+% Grundgröße 12pt, zweiseitig
+% Standardpakete
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+% deutsche Silbentrennung
+\usepackage[ngerman]{babel}
+% schöne Tabellen
+\usepackage{booktabs}
+% etwas Mathematik
+\usepackage{amsmath,amssymb}
+% Grafiken einbinden
+\usepackage{graphicx}
+% Kopf- und Fußzeilen
+\usepackage[headsepline,footsepline,automark]{scrlayer-scrpage}
+\pagestyle{scrheadings}
+% Links anklickbar
+\usepackage{url,hyperref,color} 
+\definecolor{MidnightBlue}{cmyk}{0.98,0.13,0,0.43}
+\hypersetup{colorlinks,breaklinks=true, pdffitwindow=true,pdfpagelayout=SinglePage,
+            linkcolor=blue,pdfauthor={}, pdfdisplaydoctitle=true,
+            pdfsubject={},   % to be defined later
+            bookmarksnumbered,citecolor=MidnightBlue, 
+            urlcolor=MidnightBlue}
+\raggedbottom
+\renewcommand{\topfraction}{1}
+\renewcommand{\bottomfraction}{1}
+
+
+% zum Ausprobieren
+\usepackage{blindtext}
+
+
+% jetzt gehts los
+\begin{document}% hier gehts los
+  \thispagestyle{empty} % Titelseite
+\includegraphics[width=0.2\textwidth]{Wortmarke_WI_schwarz}
+
+   {  ~ \sffamily
+  \vfill
+  {\Huge\bfseries Ethereum Transaktionen}
+  \bigskip
+
+  {\Large 
+  Jannes Neemann und Ture Claussen \\[2ex]
+ Seminar-Arbeit im Studiengang "`Angewandte Informatik"
+ \\[5ex]
+   \today } 
+}
+ \vfill
+  
+  ~ \hfill
+  \includegraphics[height=0.3\paperheight]{H_WI_Pantone1665} 
+
+\vspace*{-3cm}
+
+  \newpage \thispagestyle{empty}
+ \begin{tabular}{ll}
+{\bfseries\sffamily Autor 1:} &  Jannes Neemann \\ 
+            & Matrikelnummer \\
+            & email-Adresse \\
+            & Verfasste Seiten/Abschnitte: ...
+            \\[5ex]
+{\bfseries\sffamily Autorin 2:} & Ture Claußen \\ 
+            & 1531067 \\
+            & ture.claussen@stud.hs-hannover.de \\
+           & Verfasste Seiten/Abschnitte: ... \\[5ex]
+ {\bfseries\sffamily Prüfer:} &M.Sc.Jussi Salzwedel \\
+          & Abteilung Informatik, Fakultät IV \\
+         & Hochschule Hannover \\
+        & jussi.salzwedel@hs-hannover.de
+\end{tabular}
+
+\vfill
+
+\begin{center} \sffamily\bfseries Selbständigkeitserklärung \end{center}
+% fett und zentriert in der minipage
+
+Mit der Abgabe der Ausarbeitung erklären wir, dass wir die eingereichte Seminar-Arbeit
+selbständig und ohne fremde Hilfe verfasst, andere als die von uns angegebenen Quellen
+und Hilfsmittel nicht benutzt und die den benutzten Werken wörtlich oder
+inhaltlich entnommenen Stellen als solche kenntlich gemacht haben. 
+\vspace*{7ex}
+
+Hannover, den \today \hfill 
+
+\pagebreak
+
+  \pdfbookmark[0]{Inhalt}{contents}
+  \tableofcontents  % Inhaltsverzeichnis
+
+\pagebreak
+
+%\input{abkuerz.tex}      % Einbinden von Tex-Files
+%\input{einfuehrung.tex}
+
+
+% durch eigenen Text ersetzen
+\Blinddocument
+
+% Literatur
+\bibliographystyle{alpha}
+%\bibliography{mybib}
+
+\end{document}
+
