@@ -1,9 +1,9 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2020.3.28)  28 MAR 2020 12:44
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2020.3.28)  28 MAR 2020 13:02
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**fs_seminar_template.tex
-(./fs_seminar_template.tex
+**paper.tex
+(./paper.tex
 LaTeX2e <2020-02-02> patch level 5
 L3 programming layer <2020-02-25>
 (/usr/share/texlive/texmf-dist/tex/latex/koma-script/scrartcl.cls
@@ -508,8 +508,8 @@ File: l3backend-pdfmode.def 2020-02-23 L3 backend support: PDF mode
 \l__kernel_color_stack_int=\count289
 \l__pdf_internal_box=\box49
 )
-(./fs_seminar_template.aux)
-\openout1 = `fs_seminar_template.aux'.
+No file paper.aux.
+\openout1 = `paper.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 36.
 LaTeX Font Info:    ... okay on input line 36.
@@ -529,7 +529,7 @@ LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 36.
 LaTeX Font Info:    ... okay on input line 36.
 LaTeX Font Info:    Trying to load font information for T1+lmr on input line 36
 .
- (/usr/share/texmf/tex/latex/lm/t1lmr.fd
+(/usr/share/texmf/tex/latex/lm/t1lmr.fd
 File: t1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 Package scrbase Info: activating ngerman \contentsname on input line 36.
@@ -575,10 +575,8 @@ Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 LaTeX Info: Redefining \ref on input line 36.
 LaTeX Info: Redefining \pageref on input line 36.
 LaTeX Info: Redefining \nameref on input line 36.
-
-(./fs_seminar_template.out) (./fs_seminar_template.out)
 \@outlinefile=\write3
-\openout3 = `fs_seminar_template.out'.
+\openout3 = `paper.out'.
 
 Class scrartcl Info: loading recommended package `bookmark'.
 (scrartcl)           Using `bookmark' together with `hyperref' is recommended,
@@ -661,45 +659,51 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 59.
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) [2]
-(./fs_seminar_template.toc)
 \tf@toc=\write4
-\openout4 = `fs_seminar_template.toc'.
+\openout4 = `paper.toc'.
 
- [3] [4] [5] [6] [7]
+ [3] [4] [5]
+[6] [7]
 LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 1
 00.
-
-(/usr/share/texmf/tex/latex/lm/ts1lmr.fd
+ (/usr/share/texmf/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
-) [8] [9] [10] [11] [12] [13] [14]
-[15] [16] [17] [18]
+) [8] [9] [10] [11] [12]
+[13] [14] [15] [16] [17] [18]
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 106.
  [19]
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 106.
- (./fs_seminar_template.aux)
+ (./paper.aux)
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 106.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 106.
-Package rerunfilecheck Info: File `fs_seminar_template.out' has not changed.
-(rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
+
+
+Package rerunfilecheck Warning: File `paper.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `paper.out':
+(rerunfilecheck)             Before: <no file>
+(rerunfilecheck)             After:  D41D8CD98F00B204E9800998ECF8427E;0.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 106.
  ) 
 Here is how much of TeX's memory you used:
- 12133 strings out of 482895
- 232023 string characters out of 5959405
- 634164 words of memory out of 5000000
- 27140 multiletter control sequences out of 15000+600000
+ 12119 strings out of 482895
+ 231499 string characters out of 5959405
+ 631748 words of memory out of 5000000
+ 27134 multiletter control sequences out of 15000+600000
  574496 words of font info for 53 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
- 67i,19n,82p,10141b,850s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 67i,19n,82p,10127b,850s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}{/usr/share/texmf/fonts/enc/dv
 ips/lm/lm-ts1.enc}</usr/share/texmf/fonts/type1/public/lm/lmbx12.pfb></usr/shar
 e/texmf/fonts/type1/public/lm/lmr12.pfb></usr/share/texmf/fonts/type1/public/lm
 /lmro12.pfb></usr/share/texmf/fonts/type1/public/lm/lmss17.pfb></usr/share/texm
 f/fonts/type1/public/lm/lmssbx10.pfb>
-Output written on fs_seminar_template.pdf (19 pages, 173721 bytes).
+Output written on paper.pdf (19 pages, 172232 bytes).
 PDF statistics:
- 204 PDF objects out of 1000 (max. 8388607)
- 172 compressed objects within 2 object streams
+ 194 PDF objects out of 1000 (max. 8388607)
+ 162 compressed objects within 2 object streams
  46 named destinations out of 1000 (max. 500000)
  99 words of extra memory for PDF output out of 10000 (max. 10000000)
 
