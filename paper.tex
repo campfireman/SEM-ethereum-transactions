@@ -1,4 +1,4 @@
-\documentclass[12pt,DIV=14, version=first, BCOR=10mm,a4paper,twoside,parskip=half-,headsepline,headinclude]{scrartcl}
+\documentclass[runningheads]{llncs}
 % Grundgröße 12pt, zweiseitig
 % Standardpakete
 \usepackage[utf8]{inputenc}
@@ -14,8 +14,8 @@
 \usepackage{graphicx}
 \graphicspath{{images/}}
 % Kopf- und Fußzeilen
-\usepackage[headsepline,footsepline,automark]{scrlayer-scrpage}
-\pagestyle{scrheadings}
+%\usepackage[headsepline,footsepline,automark]{scrlayer-scrpage}
+%\pagestyle{scrheadings}
 % Links anklickbar
 \usepackage{url,hyperref,color} 
 \definecolor{MidnightBlue}{cmyk}{0.98,0.13,0,0.43}
@@ -45,7 +45,7 @@
 
   {\Large 
   Jannes Neemann und Ture Claussen \\[2ex]
- Seminar-Arbeit im Studiengang "`Angewandte Informatik"
+  Seminar-Arbeit im Studiengang "`Angewandte Informatik"
  \\[5ex]
    \today } 
 }
@@ -94,16 +94,20 @@ Hannover, den \today \hfill
 
 \pagebreak
 
-%\input{abkuerz.tex}      % Einbinden von Tex-Files
-%\input{einfuehrung.tex}
+\begin{abstract}
+The abstract should briefly summarize the contents of the paper in
+150--250 words.
 
-
-% durch eigenen Text ersetzen
-\Blinddocument
+\end{abstract}
+%
+%
+%
+\section{überblick}
+\cite{andreas_m._antonopoulos_gavin_wood_ethereumbook/ethereumbook_2020}
 
 % Literatur
-\bibliographystyle{alpha}
-%\bibliography{mybib}
+\bibliographystyle{splncs04}
+\bibliography{paper}
 
 \end{document}
 
