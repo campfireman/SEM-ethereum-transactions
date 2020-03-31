@@ -1,4 +1,4 @@
-\documentclass[runningheads]{llncs}
+\documentclass{llncs}
 % Grundgröße 12pt, zweiseitig
 % Standardpakete
 \usepackage[utf8]{inputenc}
@@ -13,9 +13,7 @@
 % Grafiken einbinden
 \usepackage{graphicx}
 \graphicspath{{images/}}
-% Kopf- und Fußzeilen
-%\usepackage[headsepline,footsepline,automark]{scrlayer-scrpage}
-%\pagestyle{scrheadings}
+
 % Links anklickbar
 \usepackage{url,hyperref,color} 
 \definecolor{MidnightBlue}{cmyk}{0.98,0.13,0,0.43}
@@ -28,52 +26,50 @@
 \renewcommand{\topfraction}{1}
 \renewcommand{\bottomfraction}{1}
 
-
-% zum Ausprobieren
-\usepackage{blindtext}
+% tiefe des Inhaltsverzeichnisses
+\setcounter{tocdepth}{2}
 
 
 % jetzt gehts los
 \begin{document}% hier gehts los
-  \thispagestyle{empty} % Titelseite
+\thispagestyle{empty} % Titelseite
 \includegraphics[width=0.2\textwidth]{Wortmarke_WI_schwarz}
 
-   {  ~ \sffamily
+{  ~ \sffamily
   \vfill
   {\Huge\bfseries Ethereum Transaktionen}
   \bigskip
 
-  {\Large 
-  Jannes Neemann und Ture Claussen \\[2ex]
-  Seminar-Arbeit im Studiengang "`Angewandte Informatik"
- \\[5ex]
-   \today } 
+  {\Large
+    Jannes Neemann und Ture Claussen \\[2ex]
+    Seminar-Arbeit im Studiengang "`Angewandte Informatik"
+    \\[5ex]
+    \today }
 }
- \vfill
-  
-  ~ \hfill
-  \includegraphics[height=0.3\paperheight]{H_WI_Pantone1665} 
+\vfill
+
+~ \hfill
+\includegraphics[height=0.3\paperheight]{H_WI_Pantone1665}
 
 \vspace*{-3cm}
 
-  \newpage \thispagestyle{empty}
- \begin{tabular}{ll}
-{\bfseries\sffamily Autor 1:} &  Jannes Neemann \\ 
-            & 1530893 \\
-            & jannes.neemnann@stud.hs-hannover.de \\
-            & Verfasste Seiten/Abschnitte: ...
-            \\[5ex]
-{\bfseries\sffamily Autor 2:} & Ture Claußen \\ 
-            & 1531067 \\
-            & ture.claussen@stud.hs-hannover.de \\
-           & Verfasste Seiten/Abschnitte: ... \\[5ex]
- {\bfseries\sffamily Prüfer:} &M.Sc.Jussi Salzwedel \\
+\newpage \thispagestyle{empty}
+\begin{tabular}{ll}
+  {\bfseries\sffamily Autor 1:} & Jannes Neemann                      \\
+                                & 1530893                             \\
+                                & jannes.neemnann@stud.hs-hannover.de \\
+                                & Verfasste Seiten/Abschnitte: ...
+  \\[5ex]
+  {\bfseries\sffamily Autor 2:} & Ture Claußen                        \\
+                                & 1531067                             \\
+                                & ture.claussen@stud.hs-hannover.de   \\
+                                & Verfasste Seiten/Abschnitte: ...    \\[5ex]
+  {\bfseries\sffamily Prüfer:}  & M.Sc.Jussi Salzwedel                \\
 
-          & Abteilung Informatik, Fakultät IV \\
-         & Hochschule Hannover \\
-        & jussi.salzwedel@hs-hannover.de
+                                & Abteilung Informatik, Fakultät IV   \\
+                                & Hochschule Hannover                 \\
+                                & jussi.salzwedel@hs-hannover.de
 \end{tabular}
-
 \vfill
 
 \begin{center} \sffamily\bfseries Selbständigkeitserklärung \end{center}
@@ -82,28 +78,61 @@
 Mit der Abgabe der Ausarbeitung erklären wir, dass wir die eingereichte Seminar-Arbeit
 selbständig und ohne fremde Hilfe verfasst, andere als die von uns angegebenen Quellen
 und Hilfsmittel nicht benutzt und die den benutzten Werken wörtlich oder
-inhaltlich entnommenen Stellen als solche kenntlich gemacht haben. 
+inhaltlich entnommenen Stellen als solche kenntlich gemacht haben.
 \vspace*{7ex}
 
-Hannover, den \today \hfill 
+Hannover, den \today \hfill
 
 \pagebreak
 
-  \pdfbookmark[0]{Inhalt}{contents}
-  \tableofcontents  % Inhaltsverzeichnis
+\pdfbookmark[0]{Inhalt}{contents}
+\tableofcontents  % Inhaltsverzeichnis
 
 \pagebreak
 
 \begin{abstract}
-The abstract should briefly summarize the contents of the paper in
-150--250 words.
+  The abstract should briefly summarize the contents of the paper in
+  150--250 words.
 
 \end{abstract}
 %
 %
 %
 \section{überblick}
-\cite{andreas_m._antonopoulos_gavin_wood_ethereumbook/ethereumbook_2020}
+
+\subsection{Struktur von Transaktionen}
+
+\subsection{Typen von Transaktionen}
+
+\section{Nonce}
+
+\section{Gas}
+
+Gas ist ein zentraler konzeptioneller Lösungsansatz im Rahmen von Ethereum. Da Ethereum turing-vollständig ist \cite[S. 1]{wood_ethereum/yellowpaper_2019}, ergibt sich unter anderem das sogenannte "Halteproblem". Dieses besagt, dass im Voraus nicht vorhergesagt werden kann, ob das Programm einer Turing-Maschine jemals zu einem Ende kommt. \cite[S.70]{davis_computability_2013} Um die Funktionalität des Netzwerks zu gewährleisten, wird die Laufzeit einer jeden Zustandsveränderung der Blockchain, sprich Transaktion, durch Gas begrenzt.
+
+Gas ist eine eigenständige Währung innerhalb von Ethereum, dessen Einheit einen Rechenschritt in der EVM bemisst \cite[S. 9:3]{m.spain_oasics-tokeneconomics_2019}, wobei für jeden Opcode die Kosten in Gas spezifiziert werden. \cite[S. 25 ff.]{wood_ethereum/yellowpaper_2019} Gas ist also eine Gebühr für Rechnenaufwand. Vor jeder Transaktion muss der externe Akteur festlegen, welchen Rechenaufwand er zu zahlen bereit ist.
+
+Das Datenfeld \textit{gasPrice} definiert bei Transaktionen welcher Preis pro Einheit Gas gezahlt werden soll. Dem entsprechend bezeichnet das Feld einen skalaren Wert in Wei. Gas kann bewusst nur mit Ether erworben werden, da die Gas-Preise möglichst unabhändig von den Preisschwankungen (von Ether) sein sollen. \cite[S. 7]{wood_ethereum/yellowpaper_2019}
+
+Das \textit{gasLimit} wiederrum gibt an, wie viel Gas für diese Transaktion maximal aufgewendet werden darf. Somit gilt es im Voraus abzuschätzen wie hoch der Rechenaufwand sein wird. Gerade wegen des Halteproblems kann dies aber nur grob vorgenommen werden. Eine Größe sind zunächst die intrinsischen Kosten einer Transaktion. Das ist der Overhead der allein durch die Transaktion und deren Inhalt betsteht. 
+
+\subsection{Preis und Latenz}
+
+\subsection{Anreiz und Spieletheorie}
+
+\section{Value und Data}
+
+\section{Signature}
+
+\subsection{Asymmetrische Kryptographie}
+
+\subsection{ECDSA}
+
+\section{Propagation}
+
+\section{Mining}
+
+\section{Receipt}
 
 % Literatur
 \bibliographystyle{splncs04}
