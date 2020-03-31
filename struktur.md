@@ -72,9 +72,11 @@ TODO: feingliederung
     2. Serialisierung
 3. Komponenten im Detail
     1. Nonces
-    2. Gas
+    2. Transaktionsgas
     3. Value und Data
 4. Transaktionsabwicklung
     1. Statemachine
-    2. Mining
+    2. Propagation und Aufzeichnung in der Blockchain
+    3. Multisignatur-Transaktionen
+
 5. Digitale Signaturen
