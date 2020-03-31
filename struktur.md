@@ -7,6 +7,8 @@
 - aufbau wie in buch anhand von transaktionsstruktur?
 - sprache: englisch oder deutsch?
 
+
+
 ## gliederung
 
 ### einleitung
@@ -63,3 +65,18 @@ jannes
 ### security
 
 TODO: feingliederung
+
+1. Einleitung
+2. Struktur und technische Umsetzung einer Transaktion
+    1. Komponenten einer Transaktion
+    2. Serialisierung
+3. Komponenten im Detail
+    1. Nonces
+    2. Transaktionsgas
+    3. Value und Data
+4. Transaktionsabwicklung
+    1. Statemachine
+    2. Propagation und Aufzeichnung in der Blockchain
+    3. Multisignatur-Transaktionen
+
+5. Digitale Signaturen
