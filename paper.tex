@@ -3,98 +3,51 @@
 % Standardpakete
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{lmodern}
 % deutsche Silbentrennung
 \usepackage[ngerman]{babel}
-% schöne Tabellen
-\usepackage{booktabs}
-% etwas Mathematik
-\usepackage{amsmath,amssymb}
+
+\usepackage{cite}
+
 % Grafiken einbinden
 \usepackage{graphicx}
 \graphicspath{{images/}}
 
-\usepackage{listings}
-
-% Links anklickbar
-\usepackage{url,hyperref,color} 
-\definecolor{MidnightBlue}{cmyk}{0.98,0.13,0,0.43}
-\hypersetup{colorlinks,breaklinks=true, pdffitwindow=true,pdfpagelayout=SinglePage,
-            linkcolor=blue,pdfauthor={}, pdfdisplaydoctitle=true,
-            pdfsubject={},   % to be defined later
-            bookmarksnumbered,citecolor=MidnightBlue, 
-            urlcolor=MidnightBlue}
-\raggedbottom
-\renewcommand{\topfraction}{1}
-\renewcommand{\bottomfraction}{1}
+\usepackage{hyperref}
 
 % tiefe des Inhaltsverzeichnisses
 \setcounter{tocdepth}{3}
 
+\title{Transaktionen}
+\author{Ture Claußen, 1531067, \email{ture.claussen@stud.hs-hannover.de} \and Jannes Neemann, 1530893, \email{jannes.neemann@stud.hs-hannover.de}}
+\authorrunning{T. Claußen \and J. Neemann}
+\institute{Fakultät IV, Abteilung Informatik, Hochschule Hannover, Ricklinger Stadtweg 120, 30459 Hannover}
+
 
 % jetzt gehts los
-\begin{document}% hier gehts los
-\thispagestyle{empty} % Titelseite
-\includegraphics[width=0.2\textwidth]{Wortmarke_WI_schwarz}
+\begin{document}% hier gehts los{\def\addcontentsline#1#2#3{}\maketitle}
+{\def\addcontentsline#1#2#3{}\maketitle} % Wird gebraucht, damit der Title nicht im Inhaltsverzeichnis steht
 
-{  ~ \sffamily
-  \vfill
-  {\Huge\bfseries Ethereum Transaktionen}
-  \bigskip
 
-  {\Large
-    Jannes Neemann und Ture Claussen \\[2ex]
-    Seminar-Arbeit im Studiengang "`Angewandte Informatik"
-    \\[5ex]
-    \today }
-}
-\vfill
 
-~ \hfill
-\includegraphics[height=0.3\paperheight]{H_WI_Pantone1665}
 
-\vspace*{-3cm}
+% \begin{center} \sffamily\bfseries Selbständigkeitserklärung \end{center}
+% % fett und zentriert in der minipage
 
-\newpage \thispagestyle{empty}
-\begin{tabular}{ll}
-  {\bfseries\sffamily Autor 1:} & Jannes Neemann                      \\
-                                & 1530893                             \\
-                                & jannes.neemnann@stud.hs-hannover.de \\
-                                & Verfasste Seiten/Abschnitte: ...
-  \\[5ex]
-  {\bfseries\sffamily Autor 2:} & Ture Claußen                        \\
-                                & 1531067                             \\
-                                & ture.claussen@stud.hs-hannover.de   \\
-                                & Verfasste Seiten/Abschnitte: ...    \\[5ex]
-  {\bfseries\sffamily Prüfer:}  & M.Sc.Jussi Salzwedel                \\
+% Mit der Abgabe der Ausarbeitung erklären wir, dass wir die eingereichte Seminar-Arbeit
+% selbständig und ohne fremde Hilfe verfasst, andere als die von uns angegebenen Quellen
+% und Hilfsmittel nicht benutzt und die den benutzten Werken wörtlich oder
+% inhaltlich entnommenen Stellen als solche kenntlich gemacht haben.
+% \vspace*{7ex}
 
-                                & Abteilung Informatik, Fakultät IV   \\
-                                & Hochschule Hannover                 \\
-                                & jussi.salzwedel@hs-hannover.de
-\end{tabular}
-\vfill
+% Hannover, den \today \hfill
 
-\begin{center} \sffamily\bfseries Selbständigkeitserklärung \end{center}
-% fett und zentriert in der minipage
 
-Mit der Abgabe der Ausarbeitung erklären wir, dass wir die eingereichte Seminar-Arbeit
-selbständig und ohne fremde Hilfe verfasst, andere als die von uns angegebenen Quellen
-und Hilfsmittel nicht benutzt und die den benutzten Werken wörtlich oder
-inhaltlich entnommenen Stellen als solche kenntlich gemacht haben.
-\vspace*{7ex}
-
-Hannover, den \today \hfill
-
-\pagebreak
-
-\pdfbookmark[0]{Inhalt}{contents}
-\tableofcontents  % Inhaltsverzeichnis
-
-\pagebreak
 
 \begin{abstract}
   \keywords{}
 \end{abstract}
+
+\tableofcontents  % Inhaltsverzeichnis
 %
 %
 %
@@ -162,8 +115,8 @@ Das \textit{gasLimit} wiederrum gibt an, wie viel Gas für diese Transaktion max
 \section{Ausblick}
 
 % Literatur
-\bibliographystyle{splncs04}
-\bibliography{paper}
+\bibliographystyle{splncs04.bst}
+\bibliography{paper.bib}
 
 \end{document}
 
