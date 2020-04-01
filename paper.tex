@@ -1,4 +1,4 @@
-\documentclass{llncs}
+\documentclass[runningheads]{llncs}
 % Grundgröße 12pt, zweiseitig
 % Standardpakete
 \usepackage[utf8]{inputenc}
@@ -13,6 +13,8 @@
 % Grafiken einbinden
 \usepackage{graphicx}
 \graphicspath{{images/}}
+
+\usepackage{listings}
 
 % Links anklickbar
 \usepackage{url,hyperref,color} 
@@ -103,7 +105,22 @@ Hannover, den \today \hfill
 % 
 
 \section{Struktur und technische Umsetzung einer Transaktion}
+Die Komponenten welche eine Transaktion in Ethereum ausmachen sind vergleichbar mit denen eines Briefes. Sie besitzen einen Empfänger sowie eine Frankierung, welche die Transportkosten zum Empfänger bezahlen. Außerdem besitzt eine Transaktion Ether oder Nutzdaten zu verschicken, wie es bei einem Brief ebenfalls möglich ist. Ether wären dabei ein Geldschein und Nutzdaten ein Text oder eine Karte. Im folgenden sollen die einzelnen Felder die eine Transaktion ausmachen vorgestellt werden.
+
 \subsection{Komponenten von Transaktionen}
+Allgemein enthält eine Transaktion, wie sie im offiziell \cite[S. 4]{wood_ethereum/yellowpaper_2019} definiert ist, folgende Felder:
+\begin{description}
+  \item[nonce:] Ein Skalar welcher gleich der Anzahl der vom EOA versendeten Transaktionen ist. Der Nutzen wird in \ref{nonce} erläutert.
+  \item[gasPrice:] Ein Skalar der angibt, wie viel Wei man pro Einheit \textit{Gas} bezahlt, die bei der Gesamtheit aller Berechnungen die während der Ausführung der Transaktion anfallen (S. \ref{gas})
+  \item[gasLimit:] Ein Skalar der die maximal Anzahl an \textit{Gas} angibt, die während der Ausführung der Transaktion verbraucht werden darf. Dieser Betrag muss im Voraus bezahlt werden.
+  \item[to:] Die 160-Bit Adresse des Empfängers.
+  \item[value:] Skalar der die Menge Wei angibt, die der Empfänger erhält.
+  \item[v,r,s:] Komponenten der ECDSA-Signatur (S. \ref{ecdsa}), um den Sender der Transaktion zu bestimmen 
+  \item[init:] Contract Creation % Muss noch ergänzt werden.
+  \item[data:] Ein Byte-Array unbegrenzter Länge, welches die Nutzdaten des Kontrakts enthält  
+\end{description}
+
+
 \subsection{Typen von Transaktionen}
 % ueberlick zahl der transaktionen, hauptanwendungsgebiet: Tokens
 \subsection{Serialisierung}
@@ -111,9 +128,9 @@ Hannover, den \today \hfill
 \section{Aufbau einer Transaktion}
 
 \subsection{Nonce}
-
+\label{nonce}
 \subsection{Gas}
-
+\label{gas}
 Gas ist ein zentraler konzeptioneller Lösungsansatz im Rahmen von Ethereum. Da Ethereum turing-vollständig ist \cite[S. 1]{wood_ethereum/yellowpaper_2019}, ergibt sich unter anderem das sogenannte "Halteproblem". Dieses besagt, dass im Voraus nicht vorhergesagt werden kann, ob das Programm einer Turing-Maschine jemals zu einem Ende kommt. \cite[S.70]{davis_computability_2013} Um die Funktionalität des Netzwerks zu gewährleisten, wird die Laufzeit einer jeden Zustandsveränderung der Blockchain, sprich Transaktion, durch Gas begrenzt.
 
 Gas ist eine eigenständige Währung innerhalb von Ethereum, dessen Einheit einen Rechenschritt in der EVM bemisst \cite[S. 9:3]{m.spain_oasics-tokeneconomics_2019}, wobei für jeden Opcode die Kosten in Gas spezifiziert werden. \cite[S. 25 ff.]{wood_ethereum/yellowpaper_2019} Gas ist also eine Gebühr für Rechnenaufwand. Vor jeder Transaktion muss der externe Akteur festlegen, welchen Rechenaufwand er zu zahlen bereit ist.
@@ -131,6 +148,7 @@ Das \textit{gasLimit} wiederrum gibt an, wie viel Gas für diese Transaktion max
 \subsection{Signatur}
 
 \subsubsection{ECDSA}
+\label{ecdsa}
 
 \subsubsection{Multisignaturen}
 
