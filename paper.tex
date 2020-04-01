@@ -27,7 +27,7 @@
 \renewcommand{\bottomfraction}{1}
 
 % tiefe des Inhaltsverzeichnisses
-\setcounter{tocdepth}{2}
+\setcounter{tocdepth}{3}
 
 
 % jetzt gehts los
@@ -91,22 +91,28 @@ Hannover, den \today \hfill
 \pagebreak
 
 \begin{abstract}
-  The abstract should briefly summarize the contents of the paper in
-  150--250 words.
-
+  \keywords{}
 \end{abstract}
 %
 %
 %
-\section{überblick}
+\section{Einführung}
+% was sind transaktionen im allgemeinen
+% was sind transaktionen bei ethereum: Statemaschine
+% vergelich zu bitcon
+% 
 
-\subsection{Struktur von Transaktionen}
-
+\section{Struktur und technische Umsetzung einer Transaktion}
+\subsection{Komponenten von Transaktionen}
 \subsection{Typen von Transaktionen}
+% ueberlick zahl der transaktionen, hauptanwendungsgebiet: Tokens
+\subsection{Serialisierung}
 
-\section{Nonce}
+\section{Aufbau einer Transaktion}
 
-\section{Gas}
+\subsection{Nonce}
+
+\subsection{Gas}
 
 Gas ist ein zentraler konzeptioneller Lösungsansatz im Rahmen von Ethereum. Da Ethereum turing-vollständig ist \cite[S. 1]{wood_ethereum/yellowpaper_2019}, ergibt sich unter anderem das sogenannte "Halteproblem". Dieses besagt, dass im Voraus nicht vorhergesagt werden kann, ob das Programm einer Turing-Maschine jemals zu einem Ende kommt. \cite[S.70]{davis_computability_2013} Um die Funktionalität des Netzwerks zu gewährleisten, wird die Laufzeit einer jeden Zustandsveränderung der Blockchain, sprich Transaktion, durch Gas begrenzt.
 
@@ -114,25 +120,28 @@ Gas ist eine eigenständige Währung innerhalb von Ethereum, dessen Einheit eine
 
 Das Datenfeld \textit{gasPrice} definiert bei Transaktionen welcher Preis pro Einheit Gas gezahlt werden soll. Dem entsprechend bezeichnet das Feld einen skalaren Wert in Wei. Gas kann bewusst nur mit Ether erworben werden, da die Gas-Preise möglichst unabhändig von den Preisschwankungen (von Ether) sein sollen. \cite[S. 7]{wood_ethereum/yellowpaper_2019}
 
-Das \textit{gasLimit} wiederrum gibt an, wie viel Gas für diese Transaktion maximal aufgewendet werden darf. Somit gilt es im Voraus abzuschätzen wie hoch der Rechenaufwand sein wird. Gerade wegen des Halteproblems kann dies aber nur grob vorgenommen werden. Eine Größe sind zunächst die intrinsischen Kosten einer Transaktion. Das ist der Overhead der allein durch die Transaktion und deren Inhalt betsteht. 
+Das \textit{gasLimit} wiederrum gibt an, wie viel Gas für diese Transaktion maximal aufgewendet werden darf. Somit gilt es im Voraus abzuschätzen wie hoch der Rechenaufwand sein wird. Gerade wegen des Halteproblems kann dies aber nur grob vorgenommen werden. Eine Größe sind zunächst die intrinsischen Kosten einer Transaktion. Das ist der Overhead der allein durch die Transaktion und deren Inhalt betsteht. Diese intrinsischen Kosten lassen sich schon vor Ausführung mit folgendem Algorithmus validieren. 
 
-\subsection{Preis und Latenz}
+\subsubsection{Preis und Latenz}
 
-\subsection{Anreiz und Spieletheorie}
+\subsubsection{Anreiz und Spieletheorie}
 
-\section{Value und Data}
+\subsection{Value und Data}
 
-\section{Signature}
+\subsection{Signatur}
 
-\subsection{Asymmetrische Kryptographie}
+\subsubsection{ECDSA}
 
-\subsection{ECDSA}
+\subsubsection{Multisignaturen}
 
-\section{Propagation}
+\section{Transaktionsabwicklung}
 
-\section{Mining}
+\subsection{Propagation}
 
-\section{Receipt}
+\subsection{Speicherung}
+% receipt
+
+\section{Ausblick}
 
 % Literatur
 \bibliographystyle{splncs04}
