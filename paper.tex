@@ -1,99 +1,53 @@
-\documentclass{llncs}
+\documentclass[runningheads]{llncs}
 % Grundgröße 12pt, zweiseitig
 % Standardpakete
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{lmodern}
 % deutsche Silbentrennung
 \usepackage[ngerman]{babel}
-% schöne Tabellen
-\usepackage{booktabs}
-% etwas Mathematik
-\usepackage{amssymb}
-\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{cite}
+
 % Grafiken einbinden
 \usepackage{graphicx}
 \graphicspath{{images/}}
 
-% Links anklickbar
-\usepackage{url,hyperref,color} 
-\definecolor{MidnightBlue}{cmyk}{0.98,0.13,0,0.43}
-\hypersetup{colorlinks,breaklinks=true, pdffitwindow=true,pdfpagelayout=SinglePage,
-            linkcolor=blue,pdfauthor={}, pdfdisplaydoctitle=true,
-            pdfsubject={},   % to be defined later
-            bookmarksnumbered,citecolor=MidnightBlue, 
-            urlcolor=MidnightBlue}
-\raggedbottom
-\renewcommand{\topfraction}{1}
-\renewcommand{\bottomfraction}{1}
+\usepackage{hyperref}
 
 % tiefe des Inhaltsverzeichnisses
-\setcounter{tocdepth}{3}
+\setcounter{tocdepth}{2}
+
+\title{Transaktionen}
+\author{Ture Claußen, 1531067, \email{ture.claussen@stud.hs-hannover.de} \and Jannes Neemann, 1530893, \email{jannes.neemann@stud.hs-hannover.de}}
+\authorrunning{T. Claußen \and J. Neemann}
+\institute{Fakultät IV, Abteilung Informatik, Hochschule Hannover, Ricklinger Stadtweg 120, 30459 Hannover}
 
 
 % jetzt gehts los
-\begin{document}% hier gehts los
-\thispagestyle{empty} % Titelseite
-\includegraphics[width=0.2\textwidth]{Wortmarke_WI_schwarz}
+\begin{document}% hier gehts los{\def\addcontentsline#1#2#3{}\maketitle}
+{\def\addcontentsline#1#2#3{}\maketitle} % Wird gebraucht, damit der Title nicht im Inhaltsverzeichnis steht
 
-{  ~ \sffamily
-  \vfill
-  {\Huge\bfseries Ethereum Transaktionen}
-  \bigskip
 
-  {\Large
-    Jannes Neemann und Ture Claussen \\[2ex]
-    Seminar-Arbeit im Studiengang "`Angewandte Informatik"
-    \\[5ex]
-    \today }
-}
-\vfill
 
-~ \hfill
-\includegraphics[height=0.3\paperheight]{H_WI_Pantone1665}
 
-\vspace*{-3cm}
+% \begin{center} \sffamily\bfseries Selbständigkeitserklärung \end{center}
+% % fett und zentriert in der minipage
 
-\newpage \thispagestyle{empty}
-\begin{tabular}{ll}
-  {\bfseries\sffamily Autor 1:} & Jannes Neemann                      \\
-                                & 1530893                             \\
-                                & jannes.neemnann@stud.hs-hannover.de \\
-                                & Verfasste Seiten/Abschnitte: ...
-  \\[5ex]
-  {\bfseries\sffamily Autor 2:} & Ture Claussen                        \\
-                                & 1531067                             \\
-                                & ture.claussen@stud.hs-hannover.de   \\
-                                & Verfasste Seiten/Abschnitte: ...    \\[5ex]
-  {\bfseries\sffamily Prüfer:}  & M.Sc.Jussi Salzwedel                \\
+% Mit der Abgabe der Ausarbeitung erklären wir, dass wir die eingereichte Seminar-Arbeit
+% selbständig und ohne fremde Hilfe verfasst, andere als die von uns angegebenen Quellen
+% und Hilfsmittel nicht benutzt und die den benutzten Werken wörtlich oder
+% inhaltlich entnommenen Stellen als solche kenntlich gemacht haben.
+% \vspace*{7ex}
 
-                                & Abteilung Informatik, Fakultät IV   \\
-                                & Hochschule Hannover                 \\
-                                & jussi.salzwedel@hs-hannover.de
-\end{tabular}
-\vfill
+% Hannover, den \today \hfill
 
-\begin{center} \sffamily\bfseries Selbständigkeitserklärung \end{center}
-% fett und zentriert in der minipage
 
-Mit der Abgabe der Ausarbeitung erklären wir, dass wir die eingereichte Seminar-Arbeit
-selbständig und ohne fremde Hilfe verfasst, andere als die von uns angegebenen Quellen
-und Hilfsmittel nicht benutzt und die den benutzten Werken wörtlich oder
-inhaltlich entnommenen Stellen als solche kenntlich gemacht haben.
-\vspace*{7ex}
-
-Hannover, den \today \hfill
-
-\pagebreak
-
-\pdfbookmark[0]{Inhalt}{contents}
-\tableofcontents  % Inhaltsverzeichnis
-
-\pagebreak
 
 \begin{abstract}
   \keywords{}
 \end{abstract}
+
+\tableofcontents  % Inhaltsverzeichnis
 %
 %
 %
@@ -104,8 +58,22 @@ Hannover, den \today \hfill
 % 
 
 \section{Struktur und technische Umsetzung einer Transaktion}
+Die Komponenten welche eine Transaktion in Ethereum ausmachen sind vergleichbar mit denen eines Briefes. Sie besitzen einen Empfänger sowie eine Frankierung, welche die Transportkosten zum Empfänger bezahlen. Außerdem besitzt eine Transaktion Ether oder Nutzdaten zu verschicken, wie es bei einem Brief ebenfalls möglich ist. Ether wären dabei ein Geldschein und Nutzdaten ein Text oder eine Karte. Im folgenden sollen die einzelnen Felder die eine Transaktion ausmachen vorgestellt werden.
+
 \subsection{Komponenten von Transaktionen}
-definiert bei Transaktionen welcher Preis pro Einheit Gas gezahlt werden soll. Dem entsprechend bezeichnet das Feld einen skalaren Wert in Wei
+Allgemein enthält eine Transaktion, wie sie im offiziell \cite[S. 4]{wood_ethereum/yellowpaper_2019} definiert ist, folgende Felder:
+\begin{description}
+  \item[nonce:] Ein Skalar welcher gleich der Anzahl der vom EOA versendeten Transaktionen ist. Der Nutzen wird in \ref{nonce} erläutert.
+  \item[gasPrice:] Ein Skalar der angibt, wie viel Wei man pro Einheit \textit{Gas} bezahlt, die bei der Gesamtheit aller Berechnungen die während der Ausführung der Transaktion anfallen (S. \ref{gas})
+  \item[gasLimit:] Ein Skalar der die maximal Anzahl an \textit{Gas} angibt, die während der Ausführung der Transaktion verbraucht werden darf. Dieser Betrag muss im Voraus bezahlt werden.
+  \item[to:] Die 160-Bit Adresse des Empfängers.
+  \item[value:] Skalar der die Menge Wei angibt, die der Empfänger erhält.
+  \item[v,r,s:] Komponenten der ECDSA-Signatur (S. \ref{ecdsa}), um den Sender der Transaktion zu bestimmen
+  \item[init:] Contract Creation % Muss noch ergänzt werden.
+  \item[data:] Ein Byte-Array unbegrenzter Länge, welches die Nutzdaten des Kontrakts enthält
+\end{description}
+
+
 \subsection{Typen von Transaktionen}
 % ueberlick zahl der transaktionen, hauptanwendungsgebiet: Tokens
 \subsection{Serialisierung}
@@ -113,20 +81,34 @@ definiert bei Transaktionen welcher Preis pro Einheit Gas gezahlt werden soll. D
 \section{Aufbau einer Transaktion}
 
 \subsection{Nonce}
-
+\label{nonce}
 \subsection{Gas}
-
+\label{gas}
 Gas ist ein zentraler konzeptioneller Lösungsansatz im Rahmen von Ethereum. Da Ethereum turing-vollständig ist \cite[S. 1]{wood_ethereum/yellowpaper_2019}, ergibt sich unter anderem das sogenannte "Halteproblem". Dieses besagt, dass im Voraus nicht vorhergesagt werden kann, ob das Programm einer Turing-Maschine jemals zu einem Ende kommt. \cite[S.70]{davis_computability_2013} Um die Funktionalität des Netzwerks zu gewährleisten, wird die Laufzeit einer jeden Zustandsveränderung der Blockchain, sprich Transaktion, durch Gas begrenzt.
 
-Gas ist eine eigenständige Währung innerhalb von Ethereum, dessen Einheit einen Rechenschritt in der EVM bemisst \cite[S. 9:3]{m.spain_oasics-tokeneconomics_2019}, wobei für jeden Opcode die Kosten in Gas spezifiziert werden. \cite[S. 25 ff.]{wood_ethereum/yellowpaper_2019} Gas ist also eine Gebühr für Rechnenaufwand. Vor jeder Transaktion muss der externe Akteur festlegen, welchen Rechenaufwand er zu zahlen bereit ist.
+Gas ist eine eigenständige Währung innerhalb von Ethereum, dessen Einheit einen Rechenschritt in der EVM bemisst \cite[S. 9:3]{m.spain_oasics-tokeneconomics_2019}, wobei für jeden Opcode die Kosten in Gas spezifiziert werden. \cite[S. 25 ff.]{wood_ethereum/yellowpaper_2019} Gas ist also eine Gebühr für Rechnenaufwand. Zusätzlich werden auch Kosten für die Nutzung von persistentem Speicher miteinbezogen. Es gilt sogar das Inverse: Wird durch eine Transaktion persistenter Speicher freigegeben, werden Rabatte gewährt.
 
-Das Datenfeld . Gas kann bewusst nur mit Ether erworben werden, da die Gas-Preise möglichst unabhändig von den Preisschwankungen (von Ether) sein sollen. 
+Die maximale Gebühr einer Transaktion wird durch die Kombination der Datenfelder \textit{gasPrice} und \textit{gasLimit} angegeben. Die resultierende Gebühr $ \text{\textit{gasPrice}} \times \text{\textit{gasLimit}} $ wird bei Erstellung der Transaktion in voller Höhe vom Konto abgezogen. Nach Bestätigung der Transaktion wird nicht genutztes Gas zu dem angegebenen Preis in Ethereum zurückerstattet.
 
-Die Kombination aus \textit{gasPrice} und \textit{gasLimit} gibt an, wie viel Gas für diese Transaktion maximal aufgewendet werden darf. Somit gilt es im Voraus abzuschätzen wie hoch der Rechenaufwand sein wird. Gerade wegen des Halteproblems kann dies aber nur grob vorgenommen werden. Eine Größe sind zunächst die intrinsischen Kosten einer Transaktion. Das ist der Overhead der allein durch die Transaktion und deren Inhalt betsteht. Diese intrinsischen Kosten lassen sich schon vor Ausführung mit folgendem Algorithmus validieren. 
-\cite[S. 7]{wood_ethereum/yellowpaper_2019}
-$$ \sum_{i=1}^{100} x_i $$
+Somit gilt es im Voraus abzuschätzen wie hoch der Rechenaufwand sein wird. Je mehr Ressourcen des Weltcomputers in Anspruch genommen werden, desto höher die Gebühr. Gerade wegen des Halteproblems kann dies aber nur grob vorgenommen werden, eine robuste Programmierung von \textit{Smart Contracts} ist essentiell. Ein erster Anhaltepunkt dafür sind zunächst die intrinsischen Kosten einer Transaktion. Das ist der Overhead der allein durch die Transaktion und deren Inhalt betsteht. Diese intrinsischen Kosten $ g_0 $ lassen sich mit auf Basis folgender Grundlage berechnen.
+$$ g_0 \equiv \sum_{i \in T_i, T_d}
+  \begin{cases}
+    G_{datazero} \text{ if } i=0 \\
+    G_{txdatanonzero} \text{ otherwise}
+  \end{cases}
+  +
+  \begin{cases}
+    G_{txcreate} \text{ if } T_t = \emptyset \\
+    0 \text{ otherwise}
+  \end{cases}
+  +
+  G_{transaction}
+$$
+Also steigen die Kosten einer Transaktion mit der Größe des Feldes \textit{data} an und $ G_{transaction} $ bestimmt den Basiswert an Gas für eine Transaktion, welcher sich im Jahr 2020 auf 21000 beläuft. Generell sollte das \textit{gasLimit} tendenziell zu hoch angelegt sein, da Transaktionen mit unzureichendem Gas einfach abgebrochen werden \textit{(out-of-gas Exception)}. In diesem Fall wird keine der begonnenen Veränderungen am Zustand gespeichert.
+
 \subsubsection{Preis und Latenz}
-
+Gas kann bewusst nur mit Ether erworben werden, da die Gas-Preise möglichst unabhändig von den Preisschwankungen (von Ether) sein sollen. Der \textit{gasPrice} kann frei gesetzt werden, auch ein Wert von 0 ist gültig. Ein Richtwert für den Wert lässt sich durch Werkzeuge wie \href{https://www.ethgasstation.info/}{ETH Gas Station} ermitteln, welche vergangene Transaktionen im \textit{Ledger} betrachten und daraus Richtwerte ermitteln. Dort wird auch ein Umstand kenntlich, denn die Höhe des Gas-Preises scheint maßgeblich über die Latenz zu entscheiden. 
+\cite[S. 7]{wood_ethereum/yellowpaper_2019}
 \subsubsection{Anreiz und Spieletheorie}
 
 \subsection{Value und Data}
@@ -134,6 +116,7 @@ $$ \sum_{i=1}^{100} x_i $$
 \subsection{Signatur}
 
 \subsubsection{ECDSA}
+\label{ecdsa}
 
 \subsubsection{Multisignaturen}
 
@@ -147,8 +130,8 @@ $$ \sum_{i=1}^{100} x_i $$
 \section{Ausblick}
 
 % Literatur
-\bibliographystyle{splncs04}
-\bibliography{paper}
+\bibliographystyle{splncs04.bst}
+\bibliography{paper.bib}
 
 \end{document}
 
