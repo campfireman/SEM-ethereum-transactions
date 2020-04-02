@@ -1,4 +1,12 @@
+## custon
 lib
+node_modules
+octave-workspace
+data
+
+#
+# latex
+#
 
 ## Core latex/pdflatex auxiliary files:
 .vscode
