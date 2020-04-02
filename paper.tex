@@ -9,7 +9,8 @@
 % schöne Tabellen
 \usepackage{booktabs}
 % etwas Mathematik
-\usepackage{amsmath,amssymb}
+\usepackage{amssymb}
+\usepackage{mathtools}
 % Grafiken einbinden
 \usepackage{graphicx}
 \graphicspath{{images/}}
@@ -60,7 +61,7 @@
                                 & jannes.neemnann@stud.hs-hannover.de \\
                                 & Verfasste Seiten/Abschnitte: ...
   \\[5ex]
-  {\bfseries\sffamily Autor 2:} & Ture Claußen                        \\
+  {\bfseries\sffamily Autor 2:} & Ture Claussen                        \\
                                 & 1531067                             \\
                                 & ture.claussen@stud.hs-hannover.de   \\
                                 & Verfasste Seiten/Abschnitte: ...    \\[5ex]
@@ -104,6 +105,7 @@ Hannover, den \today \hfill
 
 \section{Struktur und technische Umsetzung einer Transaktion}
 \subsection{Komponenten von Transaktionen}
+definiert bei Transaktionen welcher Preis pro Einheit Gas gezahlt werden soll. Dem entsprechend bezeichnet das Feld einen skalaren Wert in Wei
 \subsection{Typen von Transaktionen}
 % ueberlick zahl der transaktionen, hauptanwendungsgebiet: Tokens
 \subsection{Serialisierung}
@@ -118,10 +120,11 @@ Gas ist ein zentraler konzeptioneller Lösungsansatz im Rahmen von Ethereum. Da 
 
 Gas ist eine eigenständige Währung innerhalb von Ethereum, dessen Einheit einen Rechenschritt in der EVM bemisst \cite[S. 9:3]{m.spain_oasics-tokeneconomics_2019}, wobei für jeden Opcode die Kosten in Gas spezifiziert werden. \cite[S. 25 ff.]{wood_ethereum/yellowpaper_2019} Gas ist also eine Gebühr für Rechnenaufwand. Vor jeder Transaktion muss der externe Akteur festlegen, welchen Rechenaufwand er zu zahlen bereit ist.
 
-Das Datenfeld \textit{gasPrice} definiert bei Transaktionen welcher Preis pro Einheit Gas gezahlt werden soll. Dem entsprechend bezeichnet das Feld einen skalaren Wert in Wei. Gas kann bewusst nur mit Ether erworben werden, da die Gas-Preise möglichst unabhändig von den Preisschwankungen (von Ether) sein sollen. \cite[S. 7]{wood_ethereum/yellowpaper_2019}
+Das Datenfeld . Gas kann bewusst nur mit Ether erworben werden, da die Gas-Preise möglichst unabhändig von den Preisschwankungen (von Ether) sein sollen. 
 
-Das \textit{gasLimit} wiederrum gibt an, wie viel Gas für diese Transaktion maximal aufgewendet werden darf. Somit gilt es im Voraus abzuschätzen wie hoch der Rechenaufwand sein wird. Gerade wegen des Halteproblems kann dies aber nur grob vorgenommen werden. Eine Größe sind zunächst die intrinsischen Kosten einer Transaktion. Das ist der Overhead der allein durch die Transaktion und deren Inhalt betsteht. Diese intrinsischen Kosten lassen sich schon vor Ausführung mit folgendem Algorithmus validieren. 
-
+Die Kombination aus \textit{gasPrice} und \textit{gasLimit} gibt an, wie viel Gas für diese Transaktion maximal aufgewendet werden darf. Somit gilt es im Voraus abzuschätzen wie hoch der Rechenaufwand sein wird. Gerade wegen des Halteproblems kann dies aber nur grob vorgenommen werden. Eine Größe sind zunächst die intrinsischen Kosten einer Transaktion. Das ist der Overhead der allein durch die Transaktion und deren Inhalt betsteht. Diese intrinsischen Kosten lassen sich schon vor Ausführung mit folgendem Algorithmus validieren. 
+\cite[S. 7]{wood_ethereum/yellowpaper_2019}
+$$ \sum_{i=1}^{100} x_i $$
 \subsubsection{Preis und Latenz}
 
 \subsubsection{Anreiz und Spieletheorie}
