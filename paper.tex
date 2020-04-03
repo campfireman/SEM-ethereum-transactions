@@ -58,10 +58,10 @@
 % 
 
 \section{Struktur und technische Umsetzung einer Transaktion}
-Die Komponenten welche eine Transaktion in Ethereum ausmachen sind vergleichbar mit denen eines Briefes. Sie besitzen einen Empfänger sowie eine Frankierung, welche die Transportkosten zum Empfänger bezahlen. Außerdem besitzt eine Transaktion Ether oder Nutzdaten zu verschicken, wie es bei einem Brief ebenfalls möglich ist. Ether wären dabei ein Geldschein und Nutzdaten ein Text oder eine Karte. Im folgenden sollen die einzelnen Felder die eine Transaktion ausmachen vorgestellt werden.
+Die Komponenten welche eine Transaktion in Ethereum ausmachen sind vergleichbar mit denen eines Briefes. Sie besitzen einen Empfänger sowie eine Frankierung, welche die Transportkosten zum Empfänger bezahlen. Außerdem besitzt eine Transaktion Ether oder Nutzdaten zu verschicken, wie es bei einem Brief ebenfalls möglich ist. Ether wären dabei ein Geldschein und Nutzdaten ein Text oder eine Karte. Im folgenden wird die allgemeine Struktur und technische Umsetzung vorgestellt.
 
 \subsection{Komponenten von Transaktionen}
-Allgemein enthält eine Transaktion, wie sie im offiziell \cite[S. 4]{wood_ethereum/yellowpaper_2019} definiert ist, folgende Felder:
+Allgemein enthält eine Transaktion, nach ihrer offiziellen Definition \cite[S. 4]{wood_ethereum/yellowpaper_2019} folgende Datenfelder:
 \begin{description}
   \item[nonce:] Ein Skalar welcher gleich der Anzahl der vom EOA versendeten Transaktionen ist. Der Nutzen wird in \ref{nonce} erläutert.
   \item[gasPrice:] Ein Skalar der angibt, wie viel Wei man pro Einheit \textit{Gas} bezahlt, die bei der Gesamtheit aller Berechnungen die während der Ausführung der Transaktion anfallen (S. \ref{gas})
