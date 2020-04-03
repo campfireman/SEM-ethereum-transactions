@@ -1,0 +1,12 @@
+version: "3"
+services:
+  geth:
+    image: ethereum/client-go
+    ports:
+      - "30303:30303"
+      - "8545:8545"
+    volumes:
+      - data:/root/.ethereum
+    command: "--syncmode 'light' --rpc --rpcaddr '0.0.0.0'"
+volumes:
+  data:
