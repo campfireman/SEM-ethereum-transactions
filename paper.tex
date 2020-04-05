@@ -112,8 +112,24 @@ $$
 Also steigen die Kosten einer Transaktion mit der Größe des Feldes \textit{data} an und $ G_{transaction} $ bestimmt den Basiswert an Gas für eine Transaktion, welcher sich im Jahr 2020 auf 21000 beläuft. Generell sollte das \textit{gasLimit} tendenziell zu hoch angelegt sein, da Transaktionen mit unzureichendem Gas einfach abgebrochen werden \textit{(out-of-gas Exception)}. In diesem Fall wird keine der begonnenen Veränderungen am Zustand gespeichert.
 
 \subsubsection{Preis und Latenz}
-Gas kann bewusst nur mit Ether erworben werden, da die Gas-Preise möglichst unabhändig von den Preisschwankungen (von Ether) sein sollen. Der \textit{gasPrice} kann frei gesetzt werden, auch ein Wert von 0 ist gültig. Ein Richtwert für den Wert lässt sich durch Werkzeuge wie \href{https://www.ethgasstation.info/}{ETH Gas Station} ermitteln, welche vergangene Transaktionen im \textit{Ledger} betrachten und daraus Richtwerte ermitteln. Dort wird auch ein Umstand kenntlich, denn die Höhe des Gas-Preises scheint maßgeblich über die Latenz zu entscheiden. 
-\cite[S. 7]{wood_ethereum/yellowpaper_2019}
+Gas kann bewusst nur mit Ether erworben werden, da die Gas-Preise möglichst unabhändig von den Preisschwankungen (von Ether) sein sollen. Der \textit{gasPrice} kann frei gesetzt werden, auch ein Wert von 0 ist gültig. Ein Richtwert für den Wert lässt sich durch Werkzeuge wie \href{https://www.ethgasstation.info/}{ETH Gas Station} ermitteln, welche vergangene Transaktionen im \textit{Ledger} betrachten und daraus Richtwerte ermitteln.
+
+Dort wird auch ein Umstand kenntlich, denn die Höhe des Gas-Preises scheint maßgeblich über die Latenz zu entscheiden, also die Zeit bzw. Zahl der Blöcke zwischen Veroeffentlichung einer Transaktion und ihrer Inkludierung in einem Block. Übersteigt der \textit{gasPrice} das Mittel der anderen Transaktionen im \textit{mempool} so steigt die Wahrscheinlichkeit in nächsten Block bearbeitet zu werden. Diese Korrelation schwindet allerdings, sobald die Durchsatzfähigkeit des Netzwerkes erreicht ist. Unter Betrachtung aller Transaktionen im Zeitraum vom 01.03.2020 00:00:17 UTC (Block 9581792) bis 31.03.2020 23:59:57 UTC (Block 9782601) mit dem Python Werkzeug \textit{ethereum-etl} \cite{noauthor_blockchain-etl/ethereum-etl_2020} ergibt sich aktuell folgender Durchsatz $ T_{max} $ pro Block: \cite{neemann_appendix_nodate}
+$$ 
+T_{max} = \frac{\textit{blockGasLimit}}{\textit{transactionMedianGas}} = \frac{9817880}{80000} = 122.72
+$$ 
+Bei kurzzeitig stark erhöhter Anzahl an Transaktionen wie beispielsweise bei einem \textit{ICO}, werden teilweise um ein vielfaches höhere Transaktionskosten gezahlt, um möglichst schnellen Zugriff auf die Wertanlagen zu erhalten. \cite[S. 9:6 f.]{m.spain_oasics-tokeneconomics_2019} Da das \textit{gasLimit} $ H_1 $ eines Blocks nur durch die Miner nach erfolgreichem Schürfen eines Blockes das alte Limit um maximal $ P(H)_{H1} $ um $ \frac{P(H)_{H1}}{1024} $ erhöht oder verringert werden. Dies soll eine Zentralisierung der Rechenleistung auf weniger Miner verhindern. Gleichzeitig limitiert dies die Fähigkeit viele Transaktionen in einem kurzen Zeitintervall zu verarbeiten.
+\begin{figure}
+ \includegraphics[width=\textwidth, keepaspectratio]{transactions_gasprice_timeseries.png} 
+ \caption{gasPrice nach Tag im Monat März \cite{neemann_appendix_nodate}}
+ \label{transactions_gasprice_timeseries}
+\end{figure}
+Es zeigt sich außerdem, dass sich 
+\begin{figure}
+ \includegraphics[width=\textwidth, keepaspectratio]{blocks_transactions_per_block.png} 
+ \caption{Verteilung der Zahl an Transaktionen pro Block \cite{neemann_appendix_nodate}}
+ \label{blocks_transactions_per_block}
+\end{figure}
 \subsubsection{Anreiz und Spieletheorie}
 
 \subsection{Value und Data}
