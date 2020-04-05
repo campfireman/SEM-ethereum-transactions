@@ -13,7 +13,6 @@
 \graphicspath{{images/}}
 
 \usepackage{hyperref}
-
 % tiefe des Inhaltsverzeichnisses
 \setcounter{tocdepth}{2}
 
@@ -63,10 +62,10 @@ Ethereum ist ein "transaktionsbasierter Automat" (\textit{transaction-based stat
 Im Kontrast zu Kryptowährungen wie Bitcoin ist der Umfang des Automaten bzw. des Protokolls bei Ethereum deutlich geweitet, denn Zweck ist nicht nur die Schöpfung, Speicherung und der Austausch eines digitalen Zahlungsmittels \cite{nakamoto_bitcoin_nodate}, sondern eine allgemeine dezentrale Rechenmaschine, ein "Weltcomputer". Daher bestehen bei Ethereum auch an Transaktionen andere technische und konzeptionelle Anforderungen, die im Folgenden erläutert werden. \cite[S. 1-4]{wood_ethereum/yellowpaper_2019}
 
 \section{Struktur und technische Umsetzung einer Transaktion}
-Die Komponenten welche eine Transaktion in Ethereum ausmachen sind vergleichbar mit denen eines Briefes. Sie besitzen einen Empfänger sowie eine Frankierung, welche die Transportkosten zum Empfänger bezahlen. Außerdem besitzt eine Transaktion Ether oder Nutzdaten zu verschicken, wie es bei einem Brief ebenfalls möglich ist. Ether wären dabei ein Geldschein und Nutzdaten ein Text oder eine Karte. Im folgenden wird die allgemeine Struktur und technische Umsetzung vorgestellt.
+Die Komponenten welche eine Transaktion in Ethereum ausmachen sind vergleichbar mit denen eines Briefes. Sie besitzen einen Empfänger sowie eine Frankierung, welche die Transportkosten zum Empfänger bezahlen. In einen Brief kann man z.B. Geld oder einen Text verschicken. Auch Transaktionen in Ethereum können Geld in Form von Ether und einen Text in Form von Nutzdaten verschicken. Im Weiteren wir die allgemeine Struktur und technische Umsetzung einer Transaktion vorgestellt.
 
-\subsection{Komponenten von Transaktionen}
-Allgemein enthält eine Transaktion, nach ihrer offiziellen Definition \cite[S. 4]{wood_ethereum/yellowpaper_2019} folgende Datenfelder:
+\subsection{Komponenten einer Transaktion}
+Transkationen enthalten laut ihrer offiziellen Definition \cite[S. 4]{wood_ethereum/yellowpaper_2019} folgende Datenfelder:
 \begin{description}
   \item[nonce:] Ein Skalar welcher gleich der Anzahl der vom EOA versendeten Transaktionen ist. Der Nutzen wird in \ref{nonce} erläutert.
   \item[gasPrice:] Ein Skalar der angibt, wie viel Wei man pro Einheit \textit{Gas} bezahlt, die bei der Gesamtheit aller Berechnungen die während der Ausführung der Transaktion anfallen (S. \ref{gas})
@@ -74,15 +73,26 @@ Allgemein enthält eine Transaktion, nach ihrer offiziellen Definition \cite[S. 
   \item[to:] Die 160-Bit Adresse des Empfängers.
   \item[value:] Skalar der die Menge Wei angibt, die der Empfänger erhält.
   \item[v,r,s:] Komponenten der ECDSA-Signatur (S. \ref{ecdsa}), um den Sender der Transaktion zu bestimmen
-  \item[init:] Contract Creation % Muss noch ergänzt werden.
+  \item[init:] Ein Byte-Array unbegrenzter Länge, welches nur bei einer Kontrakterzeugung verwendet wird und den kompilierten Sourcecode des Kontrakts enthält
   \item[data:] Ein Byte-Array unbegrenzter Länge, welches die Nutzdaten des Kontrakts enthält
 \end{description}
 
 
 \subsection{Typen von Transaktionen}
-% ueberlick zahl der transaktionen, hauptanwendungsgebiet: Tokens
-\subsection{Serialisierung}
+Es gibt genau zwei Typen von Transaktion. Transaktionen die eine Nachricht von einem Account\footnote{Mit Account ist hier ein EOA oder ein Kontrakt gemeint} zu einem anderen überträgt ("`message calls"' \cite[S. 4]{wood_ethereum/yellowpaper_2019}) oder Transaktionen die einen neuen Kontrakt erzeugen ("`contract creation"' \cite[S. 4]{wood_ethereum/yellowpaper_2019})). Mit Nachricht ist dabei der Inhalt von den Feldern \textit{value} und \textit{data} gemeint. 
 
+Bei massage call Transaktionen enthält das \textit{to} Feld die öffentliche Adresse eines EOA oder eines Kontrakts. Zusätzlich besteht die Option \textit{value} und \textit{data} zusetzen. Speziell ist das \textit{data} Feld von Bedeutung, wenn das Transaktionsziel ein Kontrakt ist, denn in diesem Feld wird der konkrete
+Funktionsaufruf in Bytecode gespeichert und wird von dem Kontrakt ausgeführt.
+
+Die Besonderheit bei contract creation Transaktionen ist, dass die Empfängeradresse die Nulladresse (\textit{0x0}) ist. Diese Adresse ist keinem Account zugewiesen und dient ausschließlich als "`kontrakterzeugungs Adresse"' \cite{antonopoulos_mastering_2019}.
+
+Ein spezieller Typ von Transkation ist eine interne Transaktion. Diese treten nur ausgehend von einem Kontrakt aus auf. Sie werden auch nicht in der Blockchain aufgefasst. Somit kann eine Transkation die an einen Kontrakt gerichtet ist, eine Funktion aufrufen, welche dem Sender einen Etherbetrag zurücksendet. Diese eigentlich Transaktion wird als interne Transaktion gewertet und nur der Funktionsaufruf wird in der Blockchain dokumentiert.
+% Statistik noch hinzufügen
+% Ethereumverbrennung
+
+\subsection{Serialisierung}
+Da Ethereum ein Weltcomputer ist und Daten somit über die ganze Welt verschickt werden, müssen diese kompakt, effizient und einheitlich verschickt werden. Dabei wird das Kodierungsverfahren \textit{Recursive Length Prefix (RLP)} verwendet. Alle serialisierten Daten in Ethereum sind Listen von Bytes \cite[S. 3]{wood_ethereum/yellowpaper_2019}. Auch die Daten einer Transaktion werden mit Hilfe von RLP in eine Liste von Bytes serialisiert und wieder deserialisiert.
+% Erklärung RLP
 \section{Aufbau einer Transaktion}
 
 \subsection{Nonce}
