@@ -79,7 +79,7 @@ Transkationen enthalten laut ihrer offiziellen Definition \cite[S. 4]{wood_ether
 
 
 \subsection{Typen von Transaktionen}
-Es gibt genau zwei Typen von Transaktion. Transaktionen die eine Nachricht von einem Account\footnote{Mit Account ist hier ein EOA oder ein Kontrakt gemeint} zu einem anderen überträgt ("`message calls"' \cite[S. 4]{wood_ethereum/yellowpaper_2019}) oder Transaktionen die einen neuen Kontrakt erzeugen ("`contract creation"' \cite[S. 4]{wood_ethereum/yellowpaper_2019})). Mit Nachricht ist dabei der Inhalt von den Feldern \textit{value} und \textit{data} gemeint. 
+Es gibt genau zwei Typen von Transaktion. Transaktionen die eine Nachricht von einem Account\footnote{Mit Account ist hier ein EOA oder ein Kontrakt gemeint} zu einem anderen überträgt ("`message calls"' \cite[S. 4]{wood_ethereum/yellowpaper_2019}) oder Transaktionen die einen neuen Kontrakt erzeugen ("`contract creation"' \cite[S. 4]{wood_ethereum/yellowpaper_2019})). Mit Nachricht ist dabei der Inhalt von den Feldern \textit{value} und \textit{data} gemeint.
 
 Bei massage call Transaktionen enthält das \textit{to} Feld die öffentliche Adresse eines EOA oder eines Kontrakts. Zusätzlich besteht die Option \textit{value} und \textit{data} zusetzen. Speziell ist das \textit{data} Feld von Bedeutung, wenn das Transaktionsziel ein Kontrakt ist, denn in diesem Feld wird der konkrete
 Funktionsaufruf in Bytecode gespeichert und wird von dem Kontrakt ausgeführt.
@@ -125,20 +125,20 @@ Also steigen die Kosten einer Transaktion mit der Größe des Feldes \textit{dat
 Gas kann bewusst nur mit Ether erworben werden, da die Gas-Preise möglichst unabhändig von den Preisschwankungen (von Ether) sein sollen. Der \textit{gasPrice} kann frei gesetzt werden, auch ein Wert von 0 ist gültig. Ein Richtwert für den Wert lässt sich durch Werkzeuge wie \href{https://www.ethgasstation.info/}{ETH Gas Station} ermitteln, welche vergangene Transaktionen im \textit{Ledger} betrachten und daraus Richtwerte ermitteln.
 
 Dort wird auch ein Umstand kenntlich, denn die Höhe des Gas-Preises scheint maßgeblich über die Latenz zu entscheiden, also die Zeit bzw. Zahl der Blöcke zwischen Veroeffentlichung einer Transaktion und ihrer Inkludierung in einem Block. Übersteigt der \textit{gasPrice} das Mittel der anderen Transaktionen im \textit{mempool} so steigt die Wahrscheinlichkeit in nächsten Block bearbeitet zu werden. Diese Korrelation schwindet allerdings, sobald die Durchsatzfähigkeit des Netzwerkes erreicht ist. Unter Betrachtung aller Transaktionen im Zeitraum vom 01.03.2020 00:00:17 UTC (Block 9581792) bis 31.03.2020 23:59:57 UTC (Block 9782601) mit dem Python Werkzeug \textit{ethereum-etl} \cite{noauthor_blockchain-etl/ethereum-etl_2020} ergibt sich aktuell folgender Durchsatz $ T_{max} $ pro Block: \cite{neemann_appendix_nodate}
-$$ 
-T_{max} = \frac{\textit{blockGasLimit}}{\textit{transactionMedianGas}} = \frac{9817880}{80000} = 122.72
-$$ 
+$$
+  T_{max} = \frac{\textit{blockGasLimit}}{\textit{transactionMedianGas}} = \frac{9817880}{80000} = 122.72
+$$
 Bei kurzzeitig stark erhöhter Anzahl an Transaktionen wie beispielsweise bei einem \textit{ICO}, werden teilweise um ein vielfaches höhere Transaktionskosten gezahlt, um möglichst schnellen Zugriff auf die Wertanlagen zu erhalten. \cite[S. 9:6 f.]{m.spain_oasics-tokeneconomics_2019} Da das \textit{gasLimit} $ H_1 $ eines Blocks nur durch die Miner nach erfolgreichem Schürfen eines Blockes das alte Limit um maximal $ P(H)_{H1} $ um $ \frac{P(H)_{H1}}{1024} $ erhöht oder verringert werden. Dies soll eine Zentralisierung der Rechenleistung auf weniger Miner verhindern. Gleichzeitig limitiert dies die Fähigkeit viele Transaktionen in einem kurzen Zeitintervall zu verarbeiten.
 \begin{figure}
- \includegraphics[width=\textwidth, keepaspectratio]{transactions_gasprice_timeseries.png} 
- \caption{gasPrice nach Tag im Monat März \cite{neemann_appendix_nodate}}
- \label{transactions_gasprice_timeseries}
+  \includegraphics[width=\textwidth, keepaspectratio]{transactions_gasprice_timeseries.png}
+  \caption{gasPrice nach Tag im Monat März \cite{neemann_appendix_nodate}}
+  \label{transactions_gasprice_timeseries}
 \end{figure}
-Es zeigt sich außerdem, dass sich 
+Es zeigt sich außerdem, dass sich
 \begin{figure}
- \includegraphics[width=\textwidth, keepaspectratio]{blocks_transactions_per_block.png} 
- \caption{Verteilung der Zahl an Transaktionen pro Block \cite{neemann_appendix_nodate}}
- \label{blocks_transactions_per_block}
+  \includegraphics[width=\textwidth, keepaspectratio]{blocks_transactions_per_block.png}
+  \caption{Verteilung der Zahl an Transaktionen pro Block \cite{neemann_appendix_nodate}}
+  \label{blocks_transactions_per_block}
 \end{figure}
 \subsubsection{Anreiz und Spieletheorie}
 
