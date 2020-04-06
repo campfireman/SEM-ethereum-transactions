@@ -29,7 +29,7 @@ class Dataset():
         with open(path, encoding='utf-8') as file:
             header = file.readline().rstrip().split(',')
             expected_size = len(header)
-            for c in columns:
+            for c, dtype in columns:
                 c = c.lower()
                 pos = [i for i, x in enumerate(header) if c == x.lower()]
                 # check if several headers matched
@@ -40,7 +40,10 @@ class Dataset():
                     raise ValueError(
                         'column name {} not found!'.format(c))
                 indexes[c] = pos[0]
-                result[c] = np.zeros(self.rows)
+                if type(dtype) is int:
+                    result[c] = np.chararray(self.rows, itemsize=dtype)
+                else:
+                    result[c] = np.zeros(self.rows, dtype=dtype)
 
             if self.verbose:
                 print('starting extraction...')

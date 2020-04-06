@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "31261894d2053dbc55f79477f2f54960d87d3f5c0d7c8db44758a52287c2ee36"
+            "sha256": "bd460d99d7f9f3af0b5b8512d921d63de7d2947bf30287422d73c9e8d64c7273"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -25,10 +25,10 @@
         },
         "certifi": {
             "hashes": [
-                "sha256:017c25db2a153ce562900032d5bc68e9f191e44e9a0f762f373977de9df1fbb3",
-                "sha256:25b64c7da4cd7479594d035c08c2d809eb4aab3a26e5a990ea98cc450c320f1f"
+                "sha256:1d987a998c75633c40847cc966fcf5904906c920a7f17ef374f5aa4282abd304",
+                "sha256:51fcb31174be6e6664c5f69e3e1691a2d72a1a12e90f872cbdb1567eb47b6519"
             ],
-            "version": "==2019.11.28"
+            "version": "==2020.4.5.1"
         },
         "chardet": {
             "hashes": [
@@ -64,6 +64,13 @@
             ],
             "markers": "implementation_name == 'cpython'",
             "version": "==0.10.1"
+        },
+        "decorator": {
+            "hashes": [
+                "sha256:41fa54c2a0cc4ba648be4fd43cff00aedf5b9465c9bf18d64325bc225f08f760",
+                "sha256:e3a62f0520172440ca0dcc823749319382e377f37f140a0b99ef45fecb84bfe7"
+            ],
+            "version": "==4.4.2"
         },
         "eth-abi": {
             "hashes": [
@@ -205,6 +212,14 @@
             ],
             "index": "pypi",
             "version": "==3.2.1"
+        },
+        "networkx": {
+            "hashes": [
+                "sha256:cdfbf698749a5014bf2ed9db4a07a5295df1d3a53bf80bf3cbd61edf9df05fa1",
+                "sha256:f8f4ff0b6f96e4f9b16af6b84622597b5334bf9cae8cf9b2e42e7985d5c95c64"
+            ],
+            "index": "pypi",
+            "version": "==2.4"
         },
         "numpy": {
             "hashes": [
