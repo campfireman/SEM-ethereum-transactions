@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "653e6925b03feabe0d76b76e98c9ed1f459e0e06d79d3b754ec4b4b0dc2c8ec7"
+            "sha256": "31261894d2053dbc55f79477f2f54960d87d3f5c0d7c8db44758a52287c2ee36"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -67,10 +67,10 @@
         },
         "eth-abi": {
             "hashes": [
-                "sha256:d893f8c8732e53c39338ef0a813732c1b1869db9d3e1fd096c1968ae8afbab9c",
-                "sha256:fd8ff5a21d710fa6751190992fd3483ba21d57e53cb1092f091dfeea29f66ba4"
+                "sha256:04e64f739c6f6cb6aded3e7c8924cc49ffbb088ac53ad1786765747853f167b1",
+                "sha256:2a898568fd85b8f162b89890695f7e08d7a53dec70ecdb6bea20c544241d8621"
             ],
-            "version": "==1.2.0"
+            "version": "==1.3.0"
         },
         "eth-account": {
             "hashes": [
@@ -112,17 +112,17 @@
         },
         "eth-typing": {
             "hashes": [
-                "sha256:321a40a22ecdb7f5f184f9b1a315f50498ef4bac7ef6068e7ceda931dffd74d2",
-                "sha256:9e4712e6fa74a58b1c1aa181e2269a21b8241c7c261eec887cbdecb40f438e9d"
+                "sha256:2f3e1f891226148898b219bd94674a9af06c2d75d8cdd8c6722227b472cbd4d4",
+                "sha256:cf9e5e9fb62cfeb1027823328569315166851c65c5774604d801b6b926ff65bc"
             ],
-            "version": "==2.0.0"
+            "version": "==2.2.1"
         },
         "eth-utils": {
             "hashes": [
-                "sha256:29f2a7bb85ea30e89867d887ced9ee55fc0c7b3823c10db9872423b052b11340",
-                "sha256:624052ace73253766c39e2197a97ebc4fd5e590f03cced0fb5eccd1751a89670"
+                "sha256:8358318685e7a7666b148b07df3c4d409435b424dce18501e79920aa52bcaba7",
+                "sha256:f398c649859cda5ef7c4ee2753468038d93be7d864de7631c06c3e73a7060649"
             ],
-            "version": "==1.3.0"
+            "version": "==1.8.4"
         },
         "ethereum-dasm": {
             "hashes": [
@@ -133,10 +133,10 @@
         },
         "ethereum-etl": {
             "hashes": [
-                "sha256:1a52dbdbc4964d261d55e652dc7707948ab65163512e28f5295b829c00417f5b"
+                "sha256:2ec8911c63700362d610a43c02a84dcf2401e28df4f6cc2b059d9ec5a70d8d7f"
             ],
             "index": "pypi",
-            "version": "==1.4.0"
+            "version": "==1.4.1"
         },
         "evmdasm": {
             "hashes": [
@@ -230,6 +230,7 @@
                 "sha256:deb529c40c3f1e38d53d5ae6cd077c21f1d49e13afc7936f7f868455e16b64a0",
                 "sha256:e7894793e6e8540dbeac77c87b489e331947813511108ae097f1715c018b8f3d"
             ],
+            "index": "pypi",
             "version": "==1.18.2"
         },
         "pandas": {
@@ -256,9 +257,9 @@
         },
         "parsimonious": {
             "hashes": [
-                "sha256:ae0869d72a6e57703f24313a5f5748e73ebff836e6fe8b3ddf34ea0dc00d086b"
+                "sha256:3add338892d580e0cb3b1a39e4a1b427ff9f687858fdd61097053742391a9f6b"
             ],
-            "version": "==0.8.0"
+            "version": "==0.8.1"
         },
         "pycryptodome": {
             "hashes": [
