@@ -7,6 +7,7 @@
 \usepackage[ngerman]{babel}
 \usepackage{amsmath}
 \usepackage{cite}
+\usepackage{float}
 
 % Grafiken einbinden
 \usepackage{graphicx}
@@ -86,14 +87,12 @@ Funktionsaufruf in Bytecode gespeichert und wird von dem Kontrakt ausgeführt.
 
 Die Besonderheit bei contract creation Transaktionen ist, dass die Empfängeradresse die Nulladresse (\textit{0x0}) ist. Diese Adresse ist keinem Account zugewiesen und dient ausschließlich als "`kontrakterzeugungs Adresse"' \cite{antonopoulos_mastering_2019}.
 
-Ein spezieller Typ von Transkation ist eine interne Transaktion. Diese treten nur ausgehend von einem Kontrakt aus auf. Sie werden auch nicht in der Blockchain aufgefasst. Beispielsweise kann eine Transkation die an einen Kontrakt gerichtet ist, eine Funktion aufrufen, welche dem Sender einen Etherbetrag zurücksendet. Diese eigentlich Transaktion wird als interne Transaktion gewertet und nur der Funktionsaufruf wird in der Blockchain dokumentiert.
+Ein spezieller Typ von Transkation ist eine interne Transaktion. Diese treten nur ausgehend von einem Kontrakt aus auf. Sie werden auch nicht in der Blockchain aufgefasst. Somit kann eine Transkation die an einen Kontrakt gerichtet ist, eine Funktion aufrufen, welche dem Sender einen Etherbetrag zurücksendet. Diese eigentlich Transaktion wird als interne Transaktion gewertet und nur der Funktionsaufruf wird in der Blockchain dokumentiert.
 % Statistik noch hinzufügen
 % Ethereumverbrennung
 
 \subsection{Serialisierung}
-Da Ethereum ein Weltcomputer ist und Daten somit über die ganze Welt verschickt werden, müssen diese kompakt, effizient und einheitlich verschickt werden. Dabei wird das Kodierungsverfahren \textit{Recursive Length Prefix (RLP)} verwendet.Es ist ein relativ simples und deterministisches Kodierungsverfahren, dessen einzige Aufgabe es ist Struktur zu kodieren. Mit Struktur sind (verschachtelte) Arrays von binären Daten gemeint. Die Methode nimmt dabei genau einen Parameter entgegen ein sogenanntes "`Item"'. % Github RLP Quell
-Ein Item ist ist dabei ein String oder eine Liste von Items. Wichtig bei der Kodierung ist die Länge des Inhalts, denn je nach Länge gibt es bestimmte Regeln. In jeder Regel wird spezifiziert, welche zusätzlichen Bytes gesetzt werden. So wird zum Beispiel ein Byte, welches den Wert zwischen \textit{0x00} und \textit{0x7f} hat nicht verändert und das Byte ist das RLP Encoding des Bytes. Ist das Item eine Zeochenlägen mit einer Länge von 0-55 Byte besteht das RLP kodierte Resultat aus dem Byte \textit{0x80} plus die Länge des Strings gefolgt von den Zeichen des Strings. Zum Beispiel würde \textit{Ether} kodiert zu \textit{[0x85, 'E', 't', 'h', 'e', 'r']} werden bzw.  \textit{[0x85, 0x45, 0x74, 0x68, 0x65, 0x72]}, wenn man die Zeichen in ihren ASCII Hex-Code übersetzt.
-
+Da Ethereum ein Weltcomputer ist und Daten somit über die ganze Welt verschickt werden, müssen diese kompakt, effizient und einheitlich verschickt werden. Dabei wird das Kodierungsverfahren \textit{Recursive Length Prefix (RLP)} verwendet. Alle serialisierten Daten in Ethereum sind Listen von Bytes \cite[S. 3]{wood_ethereum/yellowpaper_2019}. Auch die Daten einer Transaktion werden mit Hilfe von RLP in eine Liste von Bytes serialisiert und wieder deserialisiert.
 % Erklärung RLP
 \section{Aufbau einer Transaktion}
 
@@ -134,21 +133,23 @@ Unter Betrachtung aller Transaktionen im Zeitraum vom 01.03.2020 00:00:17 UTC (B
 $$
   T_{max} = \frac{\textit{blockGasLimit}}{\textit{transactionMedianGas}} = \frac{9817880}{80000} = 122.72
 $$
-Bei kurzzeitig stark erhöhter Anzahl an Transaktionen wie beispielsweise bei einem \textit{ICO}, werden teilweise um ein vielfaches höhere Transaktionskosten gezahlt, um möglichst schnellen Zugriff auf die Wertanlagen zu erhalten. \cite[S. 9:6 f.]{m.spain_oasics-tokeneconomics_2019} Im Betrachteten Zeitraum war dies zum Beispiel am 13.03.2020 der Fall (s. \ref{transactions_gasprice_timeseries}), zu diessem Zeitpunkt wurde teilweise 800 GWei pro Einheit Gas gezahlt. Es ist zu vermuten, dass die Ursache für diesen Anstieg ein \textit{DOS-Angriff} auf die Börse Bitmex Ursache für diesen extremen Anstieg der Netzwerkaktivität ist.
+Bei kurzzeitig stark erhöhter Anzahl an Transaktionen wie beispielsweise bei einem \textit{ICO}, werden teilweise um ein vielfaches höhere Transaktionskosten gezahlt, um möglichst schnellen Zugriff auf die Wertanlagen zu erhalten. \cite[S. 9:6 f.]{m.spain_oasics-tokeneconomics_2019} Im Betrachteten Zeitraum war dies zum Beispiel am 13.03.2020 der Fall (s. \ref{transactions_gasprice_timeseries}), zu diessem Zeitpunkt wurde teilweise 800 GWei pro Einheit Gas gezahlt. Es ist zu vermuten, dass die Ursache für diesen Anstieg ein \textit{DOS-Angriff} auf die Börse Bitmex Ursache für diesen extremen Anstieg der Netzwerkaktivität ist. \cite{bitmex_ddos_nodate}
 \begin{figure}
   \includegraphics[width=\textwidth, keepaspectratio]{transactions_gasprice_timeseries.png}
   \caption{gasPrice nach Tag im Monat März \cite{neemann_appendix_nodate}}
   \label{transactions_gasprice_timeseries}
-\end{figure}[h!]
+\end{figure}[h]
 
-Bei Betrachtung der Verteilung der Transaktionen pro Block \ref{blocks_transactions_per_block} zeigt sich ein weiteres Problem. 
+Bei Betrachtung der Verteilung der Anazahl Transaktionen pro Block \ref{blocks_transactions_per_block} zeigt sich ein weiteres Problem. Zunächst verteilt sich das Gros der Transaktionen ungefähr um den zuvor berechneten maximalen Durchsatz. Jedoch gibt es einen beträchtlichen Anteil an Transaktionen, der Fast keine Transaktionen enthält. Es können mehrere Vermutungen angestellt werden, wo der Grund dafür liegt. Alle Miner stehen unter einem wirtschaftlichen Druck, es werden beträchtliche Ressourcen investiert, eine Auszahlung der aufgewendeten Rechenleistung gibt es nur, wenn ein Block erfolgreich geschürft wird. \cite{research_empty_nodate}
 
 \begin{figure}[h]
   \includegraphics[width=\textwidth, keepaspectratio]{blocks_transactions_per_block.png}
   \caption{Verteilung der Zahl an Transaktionen pro Block \cite{neemann_appendix_nodate}}
   \label{blocks_transactions_per_block}
 \end{figure}
+
 \subsubsection{Anreiz und Spieletheorie}
+Beide Probleme lassen sich auf das Anreizsystem von Ethereum zurückführen. Generell stellt sich für die Teilnehmer des Netzwerkes die Frage  
 
 \subsection{Value und Data}
 
