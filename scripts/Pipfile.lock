@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "bd460d99d7f9f3af0b5b8512d921d63de7d2947bf30287422d73c9e8d64c7273"
+            "sha256": "cf80d1be59dce724d43c75c053a89e43fb811fcebfc75d58a5ac349a585adda4"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -313,10 +313,10 @@
         },
         "pyparsing": {
             "hashes": [
-                "sha256:4c830582a84fb022400b85429791bc551f1f4871c33f23e44f353119e92f969f",
-                "sha256:c342dccb5250c08d45fd6f8b4a559613ca603b57498511740e65cd11a2e7dcec"
+                "sha256:c203ec8783bf771a155b207279b9bccb8dea02d8f0c9e5f8ead507bc3246ecc1",
+                "sha256:ef9d7589ef3c200abe66653d3f1ab1033c3c419ae9b9bdb1240a85b024efc88b"
             ],
-            "version": "==2.4.6"
+            "version": "==2.4.7"
         },
         "python-dateutil": {
             "hashes": [
@@ -374,11 +374,8 @@
             "version": "==1.25.8"
         },
         "web3": {
-            "hashes": [
-                "sha256:8bd0d4e024948a2d42f9ec9c9f45f98f145bbbec2309661f6d637fc4a692d545",
-                "sha256:c594551d4ef9542934acef5e80cfa1ff8a9aedaf2c492d4cfa9bcfa5f049d586"
-            ],
-            "version": "==4.7.2"
+            "git": "https://github.com/ethereum/web3.py.git",
+            "ref": "79a661d591663d330e02d35876217414f0157e38"
         },
         "websockets": {
             "hashes": [
