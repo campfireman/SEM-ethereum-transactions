@@ -92,12 +92,12 @@ Ein spezieller Typ von Transkation ist eine interne Transaktion. Diese treten nu
 % Ethereumverbrennung
 
 \subsection{Serialisierung}
-Da Ethereum ein Weltcomputer ist und Daten somit über die ganze Welt verschickt werden, müssen diese kompakt, effizient und einheitlich verschickt werden. Dabei wird das Kodierungsverfahren \textit{Recursive Length Prefix (RLP)} verwendet. Alle serialisierten Daten in Ethereum sind Listen von Bytes \cite[S. 3]{wood_ethereum/yellowpaper_2019}. Auch die Daten einer Transaktion werden mit Hilfe von RLP in eine Liste von Bytes serialisiert und wieder deserialisiert. Bei der RLP Kodierung handelt es sich nur um ein Verfahren um Struktur zu serialisieren. Das heit die Methode nimmt nur ein so genanntes "`Item"' als Parameter entgegen. Dieses Item ist entweder ein String, welcher in ein Byte-Array konvertiert wird, oder eine Liste von Items. Relevant ist für die Methode nur die Länge des Items. Je nach Fall werden dabei unterschiedliche Regeln definiert:
+Da Ethereum ein Weltcomputer ist und Daten somit über die ganze Welt verschickt werden, müssen diese kompakt, effizient und einheitlich verschickt werden. Dabei wird das Kodierungsverfahren \textit{Recursive Length Prefix (RLP)} verwendet. Alle serialisierten Daten in Ethereum sind Listen von Bytes \cite[S. 3]{wood_ethereum/yellowpaper_2019}. Auch die Daten einer Transaktion werden mit Hilfe von RLP in eine Liste von Bytes serialisiert und wieder deserialisiert. Bei der RLP Kodierung handelt es sich nur um ein Verfahren um Struktur zu serialisieren. Das heißt die Methode nimmt nur ein so genanntes "`Item"' als Parameter entgegen. Dieses Item ist entweder ein String, welcher in ein Byte-Array konvertiert wird, oder eine Liste von Items. Relevant ist für die Methode nur die Länge des Items. Je nach Fall werden dabei unterschiedliche Regeln definiert:
 \begin{enumerate}
   \item Item ist eine Zeichenkette (Byte-Array):
   \begin{itemize}
-    \item Besteht dieses nur aus einem Byte mit einem Wert kleiner als 128 (\textit{0x7f}), ist das Byte ihre eigene RLP Repräsentation
-    \item Enthält das Byte-Array weniger als 56 Byte, ist die RLP Repräsentation der Inhalt dieses mit einem Präfix von \textit{0x80} (128) plus die Länge des Arrays. Beispiel: "`Ethereum"' $\Rightarrow$ [0x85, 'E', 't', 'h', 'e', 'r'] bzw. mit ASCII Kodierung : [0x85, 0x45, 0x74, 0x68, 0x65, 0x72]
+    \item Besteht dieses nur aus einem Byte mit einem Wert kleiner als 128 (\texttt{0x7f}), ist das Byte ihre eigene RLP Repräsentation
+    \item Enthält das Byte-Array weniger als 56 Byte, ist die RLP Repräsentation der Inhalt dieses mit einem Präfix von \texttt{0x80} (128) plus die Länge des Arrays. Beispiel: "`Ethereum"' $\Rightarrow$ \texttt{[0x85, 'E', 't', 'h', 'e', 'r']} bzw. mit ASCII Kodierung : \texttt{[0x85, 0x45, 0x74, 0x68, 0x65, 0x72]}
   \end{itemize} 
 \end{enumerate}
 % Erklärung RLP
