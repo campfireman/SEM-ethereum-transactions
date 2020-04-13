@@ -98,8 +98,16 @@ Da Ethereum ein Weltcomputer ist und Daten somit über die ganze Welt verschickt
   \begin{itemize}
     \item Besteht dieses nur aus einem Byte mit einem Wert kleiner als 128 (\texttt{0x7f}), ist das Byte ihre eigene RLP Repräsentation
     \item Enthält das Byte-Array weniger als 56 Byte, ist die RLP Repräsentation der Inhalt dieses mit einem Präfix von \texttt{0x80} (128) plus die Länge des Arrays. Beispiel: "`Ethereum"' $\Rightarrow$ \texttt{[0x85, 'E', 't', 'h', 'e', 'r']} bzw. mit ASCII Kodierung : \texttt{[0x85, 0x45, 0x74, 0x68, 0x65, 0x72]}
+    \item Ist das Byte-Array größer als 55 Byte wird ein Präfix aus mehreren Bestandteilen verwendet. Zum einen \texttt{0xb7} plus die Anzahl der Bytes die benötigt werden, um die Länge des String darzustellen. Gefolgt von der Länge des Strings im Big-Endian Format und dem Inhalt des Byte-Arrays. So ergibt sich für ein 2048-Byte langes Byte-Array folgender Präfix: \texttt{[0xb9, 0x80, 0x00]}.
+    2048 entsprechen in Hexadezimal \texttt{0x800} somit werden zwei Bytes (\texttt{0x80} und \texttt{0x00}) benötigt, um die Länge des Bytes darzustellen. Somit erhalten wir $\texttt{0xb7} + 2 = \texttt{0xb9}$.
   \end{itemize} 
+  \item Item ist eine (verschachtelte) Liste von Items:
+  \begin{itemize}
+    \item Ist die Gesamtlänge alle in der Liste enthaltenen Items mit ihrer jeweiligen RLP Repräsentation 0-55 Bytes lang, so wird der Präfix \texttt{0xc0} plus die Länge der konkatenierten Liste der RLP Repräsentation gesetzt. Anschließend folgt die Liste selbst. So wäre die Kodierung der Liste \texttt{["Ether", "Wei"]} \texttt{[0xca, 0x85, 'E', 't', 'h', 'e', 'r', 0x83, 'W', 'e', 'i']} bzw. inklusive ASCII-Kodierung \texttt{[0xca, 0x85, 0x45, 0x74, 0x68, 0x65, 0x72, 0x83, 0x57, 0x65, 0x69]}. Das zweite bis siebte Byte ist dabei die RLP Repräsentation von "`Ether"' und die Bytes acht bis elf die von "`Wei"'. Somit ergibt sich eine Länge von 10 Byte, somit lautet der Präfix \texttt{0xca}
+    \item Ab einer Gesamtlänge von 56 Bytes wird der Präfix \texttt{0x7f} plus die Anzahl der Bytes die benötigt werden, um die Länge der Liste darzustellen. Danach folgt die Länge der Liste mit der konkatenierten Liste von RLP Repräsentation
+  \end{itemize}
 \end{enumerate}
+Das Item darf nicht länger als $2^{64}$ Bytes enthalten, da sonst die Länge des Präfix in allen Fällen länger als 255 ist und somit nicht in einem Byte dargestellt werden kann.
 % Erklärung RLP
 \section{Aufbau einer Transaktion}
 
