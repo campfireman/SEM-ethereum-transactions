@@ -113,6 +113,16 @@ Das Item darf nicht länger als $2^{64}$ Bytes enthalten, da sonst die Länge de
 
 \subsection{Nonce}
 \label{nonce}
+Die Nonce wurde nicht von Ethereum eingeführt, sondern kommen aus dem Bereich der Kryptographie. Eine Nonce ist dort laut Definition % Wikipedia-Quelle% 
+eine willkürliche Nummer, die nur einmal in einer kryptographischen Kommunikation verwendet wird. Dabei handelt es sich meistens um eine zufällig oder pseudo-zufällig generierte Zahl. Mit der die Einmaligkeit und der Kommunikation gesichert wird.
+
+In Ethereum-Transaktionen ist die Nonce eine Zahl, welche bei der Accounterstellung den Wert Null hat und bei jeder erfolgreichen Transaktion\footnote{Eine Transaktion ist erfolgreich, wenn sie in einem Block der Blockchain aufgenommen wurde} um eins inkrementiert wird. Dieser Wert wird nicht explizit im Account in der Blockchain gespeichert, sondern dynamisch, indem die Anzahl der erfolgreichen Transaktionen gespeichert wird \cite[S.101]{antonopoulos_mastering_2019}.
+
+Mit der Nonce werden sogenannte "Replay attacks" verhindert. Im Rahmen von Ethereum gesprochen wird so verhindert, dass eine Transkation mehrmals ausgeführt werden kann. Da Transaktionen in der Blockchain gespeichert werden und alle Daten zu dieser Transkation eingesehen werden kann, wäre es ohne die die Nonce möglich, dass eine Unbeteiligter der Transkation diese unbegrenzt oft wiederholen kann, ohne die Zustimmung des Absenders zu haben. Wird eine Transkation mit gleicher Nonce vom selben Account gesendet, wird diese vom Netzwerk abgelehnt.
+
+Des Weiteren dient die Nonce auch der Transaktionsabwicklung innerhalb des Netzwerks.  Werden mehrere Transaktionen von einem Account versendet, kommen diese meistens in unterschiedlicher Reihenfolge bei den Nodes an. So ist nicht sichergestellt, dass eine Transaktion die eine höhere Priorität hat, auch als erste verarbeitet wird. Mit der Nonce kann dies jedoch realisiert werden. So vergleicht das Netzwerk die Nonce, die mit der Transkation gesendet wird, mit der Nonce des Account. Stimmen diese überein, so wird die Transkation sofort verarbeitet. Ist die Nonce der Transaktion größer als die erwartet, landet die Transkation im \textit{Mempool}, in der sich alle noch nicht verarbeiteten Transkationen befinden. Ist die Nonce des Accounts zum Beispiel 2 und die der Transkation 5, so geht der Node davon aus, dass die anderen sich verspäten. Somit bleibt die Transaktion nur solange im Pool, bis die Transaktion mit den Nonce 2, 3 und 4 im Netzwerk registriert wurden. Somit kann die Priorisierung von Transaktionen durch senden der Transaktionen in absteigender Prioritätsreihenfolge sicher gestellt werden.
+
+
 \subsection{Gas}
 \label{gas}
 Gas ist ein zentraler konzeptioneller Lösungsansatz im Rahmen von Ethereum. Da Ethereum turing-vollständig ist \cite[S. 1]{wood_ethereum/yellowpaper_2019}, ergibt sich unter anderem das sogenannte "Halteproblem". Dieses besagt, dass im Voraus nicht vorhergesagt werden kann, ob das Programm einer Turing-Maschine jemals zu einem Ende kommt. \cite[S.70]{davis_computability_2013} Um die Funktionalität des Netzwerks zu gewährleisten, wird die Laufzeit einer jeden Zustandsveränderung der Blockchain, sprich Transaktion, durch Gas begrenzt.
