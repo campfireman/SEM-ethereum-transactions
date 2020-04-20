@@ -2,6 +2,7 @@ import os
 from datetime import datetime
 
 import matplotlib.pyplot as plt
+import numpy as np
 
 from utils import Dataset
 
@@ -9,14 +10,15 @@ REL_FILEPATH = '../../data/transactions.csv'
 # REL_FILEPATH = 'test_data.csv'
 
 PATH = os.path.dirname(os.getcwd()) + '/images'
-WIDTH_IN_INCHES = 10
+WIDTH_IN_INCHES = 18
 HEIGHT_IN_INCHES = 6
 DPI = 800
 
 
 def main():
     dataset = Dataset(
-        REL_FILEPATH, ['gas_price', 'gas', 'block_timestamp']
+        REL_FILEPATH, [('gas_price', np.float), ('gas', np.float),
+                       ('block_timestamp', np.float), ]
     )
     dataset.standard_analysis()
 

@@ -2,11 +2,12 @@ import os
 from datetime import datetime
 
 import matplotlib.pyplot as plt
+import numpy as np
 
 from utils import Dataset
 
 PATH = os.path.dirname(os.getcwd()) + '/images'
-WIDTH_IN_INCHES = 10
+WIDTH_IN_INCHES = 18
 HEIGHT_IN_INCHES = 6
 DPI = 800
 
@@ -17,8 +18,8 @@ REL_FILEPATH = '../../data/blocks.csv'
 
 def main():
     dataset = Dataset(
-        REL_FILEPATH, ['transaction_count',
-                       'gas_limit', 'gas_used', 'timestamp']
+        REL_FILEPATH, [('transaction_count', np.float),
+                       ('gas_limit', np.float), ('gas_used', np.float), ('timestamp', np.float), ]
     )
     dataset.data['unused_gas'] = list(map(
         lambda x, y: x - y,
@@ -53,7 +54,7 @@ def main():
     fig, ax = plt.subplots(1, 1)
     plt.hist(
         dataset.data['transaction_count'],
-        50,
+        60,
         density=True,
     )
     plt.grid(True)

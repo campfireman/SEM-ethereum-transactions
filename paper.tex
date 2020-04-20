@@ -60,7 +60,9 @@ Das Wort Transaktion stammt von dem lateinischen Wort \textit{transigere} ab, we
 
 Ethereum ist ein "transaktionsbasierter Automat" (\textit{transaction-based state machine}). Somit sind Transaktionen ein grundlegender Baustein von Ethereum im Allgemeinen und ihnen kommt eine ähnliche Bedeutung wie ACID Transaktionen bei. Der Automat speichert seinen Zuständ $ \sigma_t $ in der Blockchain, eine Transaktion $ T $ ist Argument der Zugstandsübergangsfunktion $ \Upsilon $, die von \textit{externen Akteuren (EA)} angestoßen wird und diesen gespeicherten Zustand $ \sigma_t $ in einen neuen, gültigen Zustand $ \sigma_{t + 1} $ überführen soll: $\sigma_{t+1} = \Upsilon(T, \sigma_t) $. Im Falle eines Konsens des Netzwerkes wird diese Zustandsveränderung durchgeführt beziehungsweise gespeichert.
 
-Im Kontrast zu Kryptowährungen wie Bitcoin ist der Umfang des Automaten bzw. des Protokolls bei Ethereum deutlich geweitet, denn Zweck ist nicht nur die Schöpfung, Speicherung und der Austausch eines digitalen Zahlungsmittels \cite{nakamoto_bitcoin_nodate}, sondern eine allgemeine dezentrale Rechenmaschine, ein "Weltcomputer". Daher bestehen bei Ethereum auch an Transaktionen andere technische und konzeptionelle Anforderungen, die im Folgenden erläutert werden. \cite[S. 1-4]{wood_ethereum/yellowpaper_2019}
+Im Kontrast zu Kryptowährungen wie Bitcoin ist der Umfang des Automaten bzw. des Protokolls bei Ethereum deutlich geweitet, denn Zweck ist nicht nur die Schöpfung, Speicherung und der Austausch eines digitalen Zahlungsmittels \cite{nakamoto_bitcoin_nodate}, sondern eine allgemeine dezentrale Rechenmaschine, ein "Weltcomputer".  \cite[S. 1-4]{wood_ethereum/yellowpaper_2019}
+
+Im Folgenden betrachten wir eine beispielhafte Transaktion $ T_x $, anhand derer wir die technischen und konzeptionellen Spezifikationen von Transaktionen in Ethereum erläutern werden.
 
 \section{Struktur und technische Umsetzung einer Transaktion}
 Die Komponenten welche eine Transaktion in Ethereum ausmachen sind vergleichbar mit denen eines Briefes. Sie besitzen einen Empfänger sowie eine Frankierung, welche die Transportkosten zum Empfänger bezahlen. In einen Brief kann man z.B. Geld oder einen Text verschicken. Auch Transaktionen in Ethereum können Geld in Form von Ether und einen Text in Form von Nutzdaten verschicken. Im Weiteren wir die allgemeine Struktur und technische Umsetzung einer Transaktion vorgestellt.
@@ -135,7 +137,8 @@ Gas ist eine eigenständige Währung innerhalb von Ethereum, dessen Einheit eine
 
 Die maximale Gebühr einer Transaktion wird durch die Kombination der Datenfelder \textit{gasPrice} und \textit{gasLimit} angegeben. Die resultierende Gebühr $ \text{\textit{gasPrice}} \times \text{\textit{gasLimit}} $ wird bei Erstellung der Transaktion in voller Höhe vom Konto abgezogen. Nach Bestätigung der Transaktion wird nicht genutztes Gas zu dem angegebenen Preis in Ethereum zurückerstattet.
 
-Somit gilt es im Voraus abzuschätzen wie hoch der Rechenaufwand sein wird. Je mehr Ressourcen des Weltcomputers in Anspruch genommen werden, desto höher die Gebühr. Gerade wegen des Halteproblems kann dies aber nur grob vorgenommen werden, eine robuste Programmierung von \textit{Smart Contracts} ist essentiell. Ein erster Anhaltepunkt dafür sind zunächst die intrinsischen Kosten einer Transaktion. Das ist der Overhead der allein durch die Transaktion und deren Inhalt betsteht. Diese intrinsischen Kosten $ g_0 $ lassen sich mit auf Basis folgender Grundlage berechnen.
+Somit gilt es nun im Voraus abzuschätzen wie hoch der Rechenaufwand für unsere Beispieltransaktion $ T_x $ sein wird. Je mehr Ressourcen des Weltcomputers sie in Anspruch nimmt, desto höher die Gebühr. Gerade wegen des Halteproblems kann dies aber nur grob vorgenommen werden, eine robuste Programmierung von \textit{Smart Contracts} ist essentiell. Ein erster Anhaltepunkt dafür sind zunächst die intrinsischen Kosten einer Transaktion. Das ist der Overhead der allein durch die Transaktion und deren Inhalt betsteht. Diese intrinsischen Kosten $ g_0 $ lassen sich mit auf Basis folgender Grundlage berechnen.
+
 $$ g_0 \equiv \sum_{i \in T_i, T_d}
   \begin{cases}
     G_{datazero} \text{ if } i=0 \\
@@ -158,22 +161,27 @@ Dort wird auch ein Umstand kenntlich, denn die Höhe des Gas-Preises scheint ma�
 
 Zusätzlich kann das \textit{gasLimit} $ H_1 $ eines Blocks nur durch die Miner nach erfolgreichem Schürfen eines Blockes um maximal $ \frac{P(H)_{H1}}{1024} $ des alten Limits  $ P(H)_{H1} $ erhöht oder verringert werden. Dies soll eine Zentralisierung der Rechenleistung auf wenige, große Miner verhindern. Gleichzeitig limitiert dies die Fähigkeit viele Transaktionen in einem kurzen Zeitintervall zu verarbeiten.
 
-Unter Betrachtung aller Transaktionen im Zeitraum vom 01.03.2020 00:00:17 UTC (Block 9581792) bis 31.03.2020 23:59:57 UTC (Block 9782601) mit dem Python Werkzeug \textit{ethereum-etl} \cite{noauthor_blockchain-etl/ethereum-etl_2020} ergibt sich aktuell folgender Durchsatz $ T_{max} $ pro Block: \cite{neemann_appendix_nodate}
+Unter Betrachtung aller Transaktionen im Zeitraum vom 01.03.2020 00:00:17 UTC (Block 9581792) bis 31.03.2020 23:59:57 UTC (Block 9782601) mit dem Python Werkzeug \textit{ethereum-etl} \cite{noauthor_blockchain-etl/ethereum-etl_2020} ergibt sich aktuell folgender durchschnittlicher Durchsatz $ T_{max} $ pro Block: \cite{neemann_appendix_nodate}
 $$
   T_{max} = \frac{\textit{blockGasLimit}}{\textit{transactionMedianGas}} = \frac{9817880}{80000} = 122.72
 $$
-Bei kurzzeitig stark erhöhter Anzahl an Transaktionen wie beispielsweise bei einem \textit{ICO}, werden teilweise um ein vielfaches höhere Transaktionskosten gezahlt, um möglichst schnellen Zugriff auf die Wertanlagen zu erhalten. \cite[S. 9:6 f.]{m.spain_oasics-tokeneconomics_2019} Im Betrachteten Zeitraum war dies zum Beispiel am 13.03.2020 der Fall (s. \ref{transactions_gasprice_timeseries}), zu diessem Zeitpunkt wurde teilweise 800 GWei pro Einheit Gas gezahlt. Es ist zu vermuten, dass die Ursache für diesen Anstieg ein \textit{DOS-Angriff} auf die Börse Bitmex Ursache für diesen extremen Anstieg der Netzwerkaktivität ist. \cite{bitmex_ddos_nodate}
+Bei kurzzeitig stark erhöhter Anzahl an Transaktionen wie beispielsweise bei einem \textit{ICO (initial coin offering)}, werden teilweise um ein vielfaches höhere Transaktionskosten gezahlt, um möglichst schnellen Zugriff auf die Wertanlagen zu erhalten. \cite[S. 9:6 f.]{m.spain_oasics-tokeneconomics_2019} Im Betrachteten Zeitraum war dies zum Beispiel am 13.03.2020 der Fall (s. \ref{transactions_gasprice_timeseries}). Zu diessem Zeitpunkt wurde teilweise 800 GWei pro Einheit Gas gezahlt. Der Angriff ist zeitlich stark mit einem \textit{DOS-Angriff} auf die Börse Bitmex korreliert. Ob dies tatsächlich die Ursache für den extremen Anstieg der Netzwerkaktivität ist, wird allerdings im folgenden nicht weiter analysiert. \cite{bitmex_ddos_nodate}
+
 \begin{figure}[h!]
-  \includegraphics[width=\textwidth, keepaspectratio]{transactions_gasprice_timeseries.png}
+  \centerline{\includegraphics[width=18cm, keepaspectratio]{transactions_gasprice_timeseries.png}}
   \caption{gasPrice nach Tag im Monat März \cite{neemann_appendix_nodate}}
   \label{transactions_gasprice_timeseries}
 \end{figure}
 
-Bei Betrachtung der Verteilung der Anazahl Transaktionen pro Block \ref{blocks_transactions_per_block} zeigt sich ein weiteres Problem. Zunächst verteilt sich das Gros der Transaktionen ungefähr um den zuvor berechneten maximalen Durchsatz. Jedoch gibt es einen beträchtlichen Anteil an Transaktionen, der fast keine oder sehr wenige Transaktionen enthalten. Es können mehrere Vermutungen angestellt werden, wo der Grund dafür liegt. Alle Miner stehen unter einem wirtschaftlichen Druck, es werden beträchtliche Ressourcen investiert, eine Auszahlung der aufgewendeten Rechenleistung gibt es nur, wenn ein Block erfolgreich geschürft wird. \cite{research_empty_nodate}
+Bei Betrachtung der Verteilung der Anazahl Transaktionen pro Block \ref{blocks_transactions_per_block} zeigt sich ein weiteres Problem. Zunächst verteilt sich das Gros der Transaktionen ungefähr um den zuvor berechneten Durchsatz $ T_{max} $. Jedoch gibt es einen beträchtlichen Anteil an Transaktionen, der fast keine oder sehr wenige Transaktionen enthalten und gleichzeitig nur einen Bruchteil des \textit{blockGasLimit} ausschöpfen. Es können mehrere Vermutungen angestellt werden, wo der Grund dafür liegt.
+
+Alle Miner stehen unter einem wirtschaftlichen Druck. Es werden beträchtliche Ressourcen investiert, eine Auszahlung der aufgewendeten Rechenleistung gibt es nur, wenn ein Block erfolgreich geschürft wird. Wenn die Lösung für den nächsten Block gefunden wurde, muss diese noch über das Netzwerk an die anderen Nodes veröffentlicht werden. Je mehr Transaktionen im Block vom Miner gespeichert werden, desto länger dauert die Verifizierung der Transaktionen. Beim sogennanten \textit{SPV-Minig} wird sogar komplett auf die Verifizierung verzichtet. Hier erhöhen mehr Transaktionen die Gefahr eines \textit{double-spend} und die Ungültigkeit des Blockes. Außderdem verbrauchen mehr Transaktionen mehr Speicher (ergo Bandbreite) benötigt der Block.
+
+Alle Vermutungen deuten in die gleiche Richtung: Je mehr Zeit verbraucht wird, steigt proportional dazu das Risiko, dass keine Belohnung ausgezahlt wird, da ein anderer Miner seine Lösung schneller veröffentlicht. \cite{research_empty_nodate} \cite{svanevik_why_2018}
 
 \begin{figure}[h!]
-  \includegraphics[width=\textwidth, keepaspectratio]{blocks_transactions_per_block.png}
-  \caption{Verteilung der Zahl an Transaktionen pro Block \cite{neemann_appendix_nodate}}
+  \centerline{\includegraphics[width=18cm, keepaspectratio]{blocks_transactions_per_block.png}}
+  \caption{Verteilung der Zahl an Transaktionen pro Block (60 konstante Klassen) \cite{neemann_appendix_nodate}}
   \label{blocks_transactions_per_block}
 \end{figure}
 
