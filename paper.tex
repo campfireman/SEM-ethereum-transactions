@@ -66,6 +66,7 @@ Im Kontrast zu Kryptowährungen wie Bitcoin ist der Umfang des Automaten bzw. de
 Die Komponenten welche eine Transaktion in Ethereum ausmachen sind vergleichbar mit denen eines Briefes. Sie besitzen einen Empfänger sowie eine Frankierung, welche die Transportkosten zum Empfänger bezahlen. In einen Brief kann man z.B. Geld oder einen Text verschicken. Auch Transaktionen in Ethereum können Geld in Form von Ether und einen Text in Form von Nutzdaten verschicken. Im Weiteren wir die allgemeine Struktur und technische Umsetzung einer Transaktion vorgestellt.
 
 \subsection{Komponenten einer Transaktion}
+\label{komponenten}
 Transkationen enthalten laut ihrer offiziellen Definition \cite[S. 4]{wood_ethereum/yellowpaper_2019} folgende Datenfelder:
 \begin{description}
   \item[nonce:] Ein Skalar welcher gleich der Anzahl der vom EOA versendeten Transaktionen ist. Der Nutzen wird in \ref{nonce} erläutert.
@@ -92,12 +93,40 @@ Ein spezieller Typ von Transkation ist eine interne Transaktion. Diese treten nu
 % Ethereumverbrennung
 
 \subsection{Serialisierung}
-Da Ethereum ein Weltcomputer ist und Daten somit über die ganze Welt verschickt werden, müssen diese kompakt, effizient und einheitlich verschickt werden. Dabei wird das Kodierungsverfahren \textit{Recursive Length Prefix (RLP)} verwendet. Alle serialisierten Daten in Ethereum sind Listen von Bytes \cite[S. 3]{wood_ethereum/yellowpaper_2019}. Auch die Daten einer Transaktion werden mit Hilfe von RLP in eine Liste von Bytes serialisiert und wieder deserialisiert.
+Da Ethereum ein Weltcomputer ist und Daten somit über die ganze Welt verschickt werden, müssen diese kompakt, effizient und einheitlich verschickt werden. Dabei wird das Kodierungsverfahren \textit{Recursive Length Prefix (RLP)} verwendet. Alle serialisierten Daten in Ethereum sind Listen von Bytes \cite[S. 3]{wood_ethereum/yellowpaper_2019}. Auch die Daten einer Transaktion werden mit Hilfe von RLP in eine Liste von Bytes serialisiert und wieder deserialisiert. Bei der RLP Kodierung handelt es sich nur um ein Verfahren um Struktur zu serialisieren. Das heißt die Methode nimmt nur ein so genanntes "`Item"' als Parameter entgegen. Dieses Item ist entweder ein String, welcher in ein Byte-Array konvertiert wird, oder eine Liste von Items. Relevant ist für die Methode nur die Länge des Items. Je nach Fall werden dabei unterschiedliche Regeln definiert:
+\begin{enumerate}
+  \item Item ist eine Zeichenkette (Byte-Array):
+  \begin{itemize}
+    \item Besteht dieses nur aus einem Byte mit einem Wert kleiner als 128 (\texttt{0x7f}), ist das Byte ihre eigene RLP Repräsentation
+    \item Enthält das Byte-Array weniger als 56 Byte, ist die RLP Repräsentation der Inhalt dieses mit einem Präfix von \texttt{0x80} (128) plus die Länge des Arrays. Beispiel: "`Ethereum"' $\Rightarrow$ \texttt{[0x85, 'E', 't', 'h', 'e', 'r']} bzw. mit ASCII Kodierung : \texttt{[0x85, 0x45, 0x74, 0x68, 0x65, 0x72]}
+    \item Ist das Byte-Array größer als 55 Byte wird ein Präfix aus mehreren Bestandteilen verwendet. Zum einen \texttt{0xb7} plus die Anzahl der Bytes die benötigt werden, um die Länge des String darzustellen. Gefolgt von der Länge des Strings im Big-Endian Format und dem Inhalt des Byte-Arrays. So ergibt sich für ein 2048-Byte langes Byte-Array folgender Präfix: \texttt{[0xb9, 0x80, 0x00]}.
+    2048 entsprechen in Hexadezimal \texttt{0x800} somit werden zwei Bytes (\texttt{0x80} und \texttt{0x00}) benötigt, um die Länge des Bytes darzustellen. Somit erhalten wir $\texttt{0xb7} + 2 = \texttt{0xb9}$.
+  \end{itemize} 
+  \item Item ist eine (verschachtelte) Liste von Items:
+  \begin{itemize}
+    \item Ist die Gesamtlänge alle in der Liste enthaltenen Items mit ihrer jeweiligen RLP Repräsentation 0-55 Bytes lang, so wird der Präfix \texttt{0xc0} plus die Länge der konkatenierten Liste der RLP Repräsentation gesetzt. Anschließend folgt die Liste selbst. So wäre die Kodierung der Liste \texttt{["Ether", "Wei"]} \texttt{[0xca, 0x85, 'E', 't', 'h', 'e', 'r', 0x83, 'W', 'e', 'i']} bzw. inklusive ASCII-Kodierung \texttt{[0xca, 0x85, 0x45, 0x74, 0x68, 0x65, 0x72, 0x83, 0x57, 0x65, 0x69]}. Das zweite bis siebte Byte ist dabei die RLP Repräsentation von "`Ether"' und die Bytes acht bis elf die von "`Wei"'. Somit ergibt sich eine Länge von 10 Byte, somit lautet der Präfix \texttt{0xca}
+    \item Ab einer Gesamtlänge von 56 Bytes wird der Präfix \texttt{0x7f} plus die Anzahl der Bytes die benötigt werden, um die Länge der Liste darzustellen. Danach folgt die Länge der Liste mit der konkatenierten Liste von RLP Repräsentation
+  \end{itemize}
+\end{enumerate}
+Das Item darf nicht länger als $2^{64}$ Bytes sein, da sonst die Länge des Präfix in allen Fällen länger als 255 ist und somit nicht in einem Byte dargestellt werden kann.
 % Erklärung RLP
 \section{Aufbau einer Transaktion}
 
 \subsection{Nonce}
 \label{nonce}
+Die Nonce wurde nicht von Ethereum eingeführt, sondern kommt aus dem Bereich der Kryptographie. Eine Nonce ist dort laut Definition % Wikipedia-Quelle% 
+eine willkürliche Nummer, die nur einmal in einer kryptographischen Kommunikation verwendet wird. Dabei handelt es sich meistens um eine zufällig oder pseudo-zufällig generierte Zahl. Mit der die Einmaligkeit der Kommunikation gesichert wird.
+
+In Ethereum-Transaktionen ist die Nonce eine Zahl, welche bei der Accounterstellung den Wert Null hat und bei jeder erfolgreichen Transaktion\footnote{Eine Transaktion ist erfolgreich, wenn sie in einem Block der Blockchain aufgenommen wurde} um eins inkrementiert wird. Dieser Wert wird dabei nicht explizit im Account in der Blockchain gespeichert, sondern dynamisch, indem die Anzahl der erfolgreichen Transaktionen gespeichert wird \cite[S.101]{antonopoulos_mastering_2019}.
+
+Mit der Nonce werden sogenannte "Replay attacks" verhindert. Im Rahmen von Ethereum gesprochen wird so verhindert, dass die selbe Transkation mehrmals ausgeführt werden kann. Da Transaktionen in der Blockchain gespeichert werden und alle Daten zu dieser Transkation eingesehen werden können, wäre es ohne die Nonce möglich, dass eine Unbeteiligter der Transkation diese unbegrenzt oft wiederholen kann, ohne die Zustimmung des Absenders zu haben. Da die Transkation jedoch schon einmal abgeschlossen ist, entspricht die des Absenders nicht mehr der der Transaktion, somit kann die Transkation nicht widerholt werden.
+Das gleiche gilt, wenn der Absender die Transkation wiederholen möchte.
+
+Des Weiteren dient die Nonce auch der Transaktionsabwicklung innerhalb des Netzwerks.  Werden mehrere Transaktionen von einem Account versendet, kommen diese meistens in unterschiedlicher Reihenfolge bei den Nodes an. So ist nicht sichergestellt, dass eine Transaktion die eine höhere Priorität hat, auch als erste verarbeitet wird. Mit der Nonce kann dies jedoch realisiert werden. So vergleicht das Netzwerk die Nonce, die mit der Transkation gesendet wird, mit der Nonce des Account. Stimmen diese überein, so wird die Transkation sofort verarbeitet. Ist die Nonce der Transaktion größer als die erwartet, landet die Transkation im \textit{Mempool}, in der sich alle noch nicht verarbeiteten Transkationen befinden. Ist die Nonce des Accounts zum Beispiel 2 und die der Transkation 5, so geht der Node davon aus, dass die Transaktionen mit den noch fehlenden Noncen sich verspäten. Somit bleibt die Transaktion solange im Pool, bis die Transaktion mit den Nonce 2, 3 und 4 im Netzwerk registriert wurden. Somit kann eine Priorisierung von Transaktionen durch eine in der Priorität absteigende Transaktionsreihenfolge sichergestellt werden.
+
+% Nebenläufigkeit %
+
+
 \subsection{Gas}
 \label{gas}
 Gas ist ein zentraler konzeptioneller Lösungsansatz im Rahmen von Ethereum. Da Ethereum turing-vollständig ist \cite[S. 1]{wood_ethereum/yellowpaper_2019}, ergibt sich unter anderem das sogenannte "Halteproblem". Dieses besagt, dass im Voraus nicht vorhergesagt werden kann, ob das Programm einer Turing-Maschine jemals zu einem Ende kommt. \cite[S.70]{davis_computability_2013} Um die Funktionalität des Netzwerks zu gewährleisten, wird die Laufzeit einer jeden Zustandsveränderung der Blockchain, sprich Transaktion, durch Gas begrenzt.
@@ -152,7 +181,40 @@ Bei Betrachtung der Verteilung der Anazahl Transaktionen pro Block \ref{blocks_t
 Beide Probleme lassen sich auf das Anreizsystem von Ethereum zurückführen. Generell stellt sich für die Teilnehmer des Netzwerkes die Frage  
 
 \subsection{Value und Data}
+Wie in \ref{komponenten} schon vorgestellt, enthalten das \textit{value}- und \textit{data}-Feld die eigentliche Nutzlast einer Transaktion. Dabei enthält das \textit{value}-Feld ausschließlich den Betrag an Wei, der an die Empfängeradresse gesendet werden soll und das \textit{data}-Feld enthält die Nachricht. 
+Eine Transkation die ein \textit{value}-Feld enthält, wird dabei auch Zahlung bzw. \textit{payment} genannt. Das \textit{data}-Feld ist ein Aufruf bzw. \textit{invocation}\cite[S.108]{antonopoulos_mastering_2019}. Eine Zahlung zwischen zwei EOAs ist dabei eine einfache Zustandsänderung der EVM und Übertragung des Wei Betrags auf den empfangenden Account. Enthält diese Transkation Daten im \textit{data}-Feld so wird diese von der Blockchain ignoriert \cite[S.10]{wood_ethereum/yellowpaper_2019}. So werden diese auch von der eigenen Wallet ignoriert und nur angezeigt.
+\begin{figure}
+  \includegraphics[width=\textwidth, keepaspectratio]{dataTransaction.png}
+  \caption{Beispieltranskation an EOA mit gefülltem \textit{data}-Feld \cite[S.109]{antonopoulos_mastering_2019}}
+\end{figure}
+Relevant wird der Inhalt, wenn es sich bei der \textit{to} Adresse um einen Kontrakt handelt. Der Inhalt wird dann von der EVM als ein Funktionsaufruf interpretiert. Ein Kontrakt enthält beispielsweise folgende Funktion:\\ 
+\texttt{function getTokenValueFromWei(uint256) public return (uint ret) \{...\}}
+Diese Funktion ist Teil eines Token-Kontrakt und gibt den Wert des übergebenen Weis in diesem Token zurück.
 
+Damit diese Funktion aufgerufen werden kann, muss der Funktionsaufruf der Spezifikation des Contract Application Binary Interface (ABI) entsprechen. % https://solidity.readthedocs.io/en/v0.6.6/abi-spec.html %
+Das heißt der endgültige Inhalt setzt sich im allgemeinen aus dem Funktionsselektor und den Funktionsargumenten zusammen. Der Funktionsselektor teilt dem Kontrakt mit welche Funktion er ausführen soll und entspricht den ersten vier Bytes des Keccak-256-Hash\footnote{Keccak-256 ist das am meisten genutzte Hashverfahren in Ethereum} des Funktionsprototypen. Laut ABI Spezifikation setzt sich der Funktionsprototyp aus dem Namen der Funktion und in Klammern folgend die einzelnen Parametertypen. Der Rückgabetyp ist nicht Teil des Funktionsprototyps.
+Daraus resultiert folgender Prototyp für unsere Funktion: \texttt{getTokenValueFromWei(uint256)}.
+Daraus wird der Keccak-256 Hash generiert:
+\begin{center}
+  \texttt{0xd4cab210b3a8e169e406b664e23e24c06965d9b622a884a0d74864771d67f5a8}
+\end{center}
+Somit entspricht \texttt{0xd4cab210} dem Funktionsselektor.
+Unser Funktionsaufruf soll den Tokenwert für 1000000000000000000 Wei (entspricht einem Ether) zurück liefern.
+Laut ABI Spezifikation gilt für einen korrekt kodierten uint256, dass dessen Hexwert mit Hilfe von Paddingbytes auf ein vielfaches von 32Byte aufgefüllt wird. 1000000000000000000 entspricht \texttt{0xDE0B6B3A7640000} somit lautet unser Funktionsargument 
+\begin{center}
+  \texttt{0x0000000000000000000000000000000000000000000000000de0b6b3a7640000}
+\end{center}
+Unsere Nutzlast ergibt sich nun aus der Konktenation von beidem:
+\begingroup
+  \fontsize{8pt}{10pt}\selectfont
+  \begin{center}
+    \texttt{0xd4cab2100000000000000000000000000000000000000000000000000de0b6b3a7640000}
+  \end{center}
+\endgroup
+
+Man kann jedoch über das \textit{data}-Feld keinen Ether an den Kontrakt übergeben. Dies ist ausschließlich über das \textit{value}-Feld möglich. Damit der Kontrakt dieses Ether an nimmt muss, muss mindestens eine Funktion das Schlüsselwort \texttt{payable} enthalten. Die EVM sucht dann nach der dieser Funktion, wenn ein Betrag gesendet wird. Dabei kann es die Funktion im \textit{data}-Feld sein oder eine andere Funktion die Ether akzeptiert. Wird keine Funktion gefunden, kann man im Kontrakt eine sogenannte fallback-Funktion definieren. Sie hat keinen Namen und dient alleine dazu den Etherbetrag entgegen zunehmen und dem Kontrakt gut zuschreiben. Ist auch diese nicht definiert, wird eine Exception geworfen und die Transaktion abgebrochen. % Solidity Dokumentation %
+
+Die letzte mögliche Kombination ist, wenn sowohl das \textit{value}- und \textit{data}-Feld leer sind. Dies ist ebenfalls eine gültige Transkation würde. Diese erfüllt jedoch keinen besonderen Zweck außer der Verwendung des bezahlten Gas und somit nur einer Senkung des eigenen Kontostands.
 \subsection{Signatur}
 
 \subsubsection{ECDSA}
