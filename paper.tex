@@ -134,15 +134,15 @@ $$
   T_{max} = \frac{\textit{blockGasLimit}}{\textit{transactionMedianGas}} = \frac{9817880}{80000} = 122.72
 $$
 Bei kurzzeitig stark erhöhter Anzahl an Transaktionen wie beispielsweise bei einem \textit{ICO}, werden teilweise um ein vielfaches höhere Transaktionskosten gezahlt, um möglichst schnellen Zugriff auf die Wertanlagen zu erhalten. \cite[S. 9:6 f.]{m.spain_oasics-tokeneconomics_2019} Im Betrachteten Zeitraum war dies zum Beispiel am 13.03.2020 der Fall (s. \ref{transactions_gasprice_timeseries}), zu diessem Zeitpunkt wurde teilweise 800 GWei pro Einheit Gas gezahlt. Es ist zu vermuten, dass die Ursache für diesen Anstieg ein \textit{DOS-Angriff} auf die Börse Bitmex Ursache für diesen extremen Anstieg der Netzwerkaktivität ist. \cite{bitmex_ddos_nodate}
-\begin{figure}
+\begin{figure}[h!]
   \includegraphics[width=\textwidth, keepaspectratio]{transactions_gasprice_timeseries.png}
   \caption{gasPrice nach Tag im Monat März \cite{neemann_appendix_nodate}}
   \label{transactions_gasprice_timeseries}
-\end{figure}[h]
+\end{figure}
 
-Bei Betrachtung der Verteilung der Anazahl Transaktionen pro Block \ref{blocks_transactions_per_block} zeigt sich ein weiteres Problem. Zunächst verteilt sich das Gros der Transaktionen ungefähr um den zuvor berechneten maximalen Durchsatz. Jedoch gibt es einen beträchtlichen Anteil an Transaktionen, der Fast keine Transaktionen enthält. Es können mehrere Vermutungen angestellt werden, wo der Grund dafür liegt. Alle Miner stehen unter einem wirtschaftlichen Druck, es werden beträchtliche Ressourcen investiert, eine Auszahlung der aufgewendeten Rechenleistung gibt es nur, wenn ein Block erfolgreich geschürft wird. \cite{research_empty_nodate}
+Bei Betrachtung der Verteilung der Anazahl Transaktionen pro Block \ref{blocks_transactions_per_block} zeigt sich ein weiteres Problem. Zunächst verteilt sich das Gros der Transaktionen ungefähr um den zuvor berechneten maximalen Durchsatz. Jedoch gibt es einen beträchtlichen Anteil an Transaktionen, der fast keine oder sehr wenige Transaktionen enthalten. Es können mehrere Vermutungen angestellt werden, wo der Grund dafür liegt. Alle Miner stehen unter einem wirtschaftlichen Druck, es werden beträchtliche Ressourcen investiert, eine Auszahlung der aufgewendeten Rechenleistung gibt es nur, wenn ein Block erfolgreich geschürft wird. \cite{research_empty_nodate}
 
-\begin{figure}[h]
+\begin{figure}[h!]
   \includegraphics[width=\textwidth, keepaspectratio]{blocks_transactions_per_block.png}
   \caption{Verteilung der Zahl an Transaktionen pro Block \cite{neemann_appendix_nodate}}
   \label{blocks_transactions_per_block}

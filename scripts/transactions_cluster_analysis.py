@@ -118,7 +118,8 @@ def map_edges():
             else:
                 recievers[to] = total
 
-        percentile = np.percentile(list(recievers.values()), 99.88)
+        percentile = np.percentile(list(recievers.values()), 99)
+        print(percentile)
         count = 0
         for frm, to, total in zip(dataset.data['frm'], dataset.data['to'], dataset.data['total']):
             if frm == to:
@@ -140,7 +141,7 @@ def map_edges():
 
 def main():
     # create_edges()
-    # map_edges()
+    map_edges()
 
     print('building graph...')
     data_path = '../../data/edges_mapped_s.txt'
