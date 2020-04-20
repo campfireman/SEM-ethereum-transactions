@@ -3,7 +3,7 @@ lib
 node_modules
 octave-workspace
 data
-
+__pycache__
 #
 # latex
 #
