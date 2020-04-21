@@ -69,7 +69,7 @@ Die Komponenten welche eine Transaktion in Ethereum ausmachen sind vergleichbar 
 
 \subsection{Komponenten einer Transaktion}
 \label{komponenten}
-Transkationen enthalten laut ihrer offiziellen Definition \cite[S. 4]{wood_ethereum/yellowpaper_2019} folgende Datenfelder:
+Transkationen, so auch unsere Transaktion $T_x$, enthalten laut ihrer offiziellen Definition \cite[S. 4]{wood_ethereum/yellowpaper_2019} folgende Datenfelder:
 \begin{description}
   \item[nonce:] Ein Skalar welcher gleich der Anzahl der vom EOA versendeten Transaktionen ist. Der Nutzen wird in \ref{nonce} erläutert.
   \item[gasPrice:] Ein Skalar der angibt, wie viel Wei man pro Einheit \textit{Gas} bezahlt, die bei der Gesamtheit aller Berechnungen die während der Ausführung der Transaktion anfallen (S. \ref{gas})
@@ -186,6 +186,7 @@ Alle Vermutungen deuten in die gleiche Richtung: Je mehr Zeit verbraucht wird, s
 \end{figure}
 
 \subsubsection{Anreiz und Spieletheorie}
+<<<<<<< HEAD
 Es lässt sich postulieren, dass beide Probleme auf das Anreizsystem von Ethereum zurückzuführen sind. Generell stellt sich für die Teilnehmer des Netzwerkes die Frage, warum sie eigene Ressourcen aufwenden sollten, um das Netzwerk zu ermöglichen. Nun kann natürlich davon ausgangen werden, dass alle altruistisch motiviert sind und aus Idealismus ihren Beitrag leisten. Ethereum geht aber von einer anderen Prämisse aus. Das Feld der \textit{Cryptoeconomics} beschreibt wie ökonomische Anreize genutzt werden, um die Funktion und die Korrektheit von Kryptowährungen zu garantieren. Die Modellierung von Ethereum und seinem Anreizsystem basiert auf spieletheoretischen Ansätzen. \cite{noauthor_cryptoeconomics_nodate}
 
 In der Spieletheorie wird davon ausgegangen, dass Entscheidungsträger rational sind und sie die Nützlichkeit (\textit{utility payoff})  ihrer Entscheidungen, unter Berüchksichtigung ihres Zustandes $ t $ und der möglichen Belohnungen $ x \in X $,  maximieren wollen. Unter dieser Annahme muss eine Kryptowährung also Anreize schaffen, die für den Fortbestand des Systems zuträglich sind und gleichzeitig die Nützlichkeitsfunktion $ u(x, t) $ möglichst maximieren.  \cite[S. 2 ff.]{myerson_game_1997} Das Protokoll von Ethereum bildet den Rahmen des Spiels und seine Regeln. Überträgt man die beiden genannte Problem der leeren Blöcke auf diesen Hintergrund, ergibt sich eine mögliche Erklärung.
@@ -196,37 +197,76 @@ In der Spieletheorie wird davon ausgegangen, dass Entscheidungsträger rational 
 Wie in \ref{komponenten} schon vorgestellt, enthalten das \textit{value}- und \textit{data}-Feld die eigentliche Nutzlast einer Transaktion. Dabei enthält das \textit{value}-Feld ausschließlich den Betrag an Wei, der an die Empfängeradresse gesendet werden soll und das \textit{data}-Feld enthält die Nachricht.
 Eine Transkation die ein \textit{value}-Feld enthält, wird dabei auch Zahlung bzw. \textit{payment} genannt. Das \textit{data}-Feld ist ein Aufruf bzw. \textit{invocation}\cite[S.108]{antonopoulos_mastering_2019}. Eine Zahlung zwischen zwei EOAs ist dabei eine einfache Zustandsänderung der EVM und Übertragung des Wei Betrags auf den empfangenden Account. Enthält diese Transkation Daten im \textit{data}-Feld so wird diese von der Blockchain ignoriert \cite[S.10]{wood_ethereum/yellowpaper_2019}. So werden diese auch von der eigenen Wallet ignoriert und nur angezeigt.
 
+=======
+Beide Probleme lassen sich auf das Anreizsystem von Ethereum zurückführen. Generell stellt sich für die Teilnehmer des Netzwerkes die Frage
+
+\subsection{Value und Data}
+Wie in \ref{komponenten} schon vorgestellt, enthalten das \textit{value}- und \textit{data}-Feld die eigentliche Nutzlast einer Transaktion. Dabei enthält das \textit{value}-Feld ausschließlich den Betrag an Wei, der an die Empfängeradresse gesendet werden soll und das \textit{data}-Feld enthält die Nachricht.
+Eine Transkation die ein \textit{value}-Feld enthält, wird dabei auch Zahlung bzw. \textit{payment} genannt. Das \textit{data}-Feld ist ein Aufruf bzw. \textit{invocation}\cite[S.108]{antonopoulos_mastering_2019}. Eine Zahlung zwischen zwei EOAs ist dabei eine einfache Zustandsänderung der EVM und Übertragung des Etherbetrags in Weis auf den empfangenden Account. Enthält diese Transkation Daten im \textit{data}-Feld so wird diese von der Blockchain ignoriert \cite[S.10]{wood_ethereum/yellowpaper_2019}. So werden diese auch von der eigenen Wallet ignoriert und nur angezeigt.
+>>>>>>> e58dc38f47270ef5648bc771d179fb860d675af1
 \begin{figure}
   \includegraphics[width=\textwidth, keepaspectratio]{dataTransaction.png}
   \caption{Beispieltranskation an EOA mit gefülltem \textit{data}-Feld \cite[S.109]{antonopoulos_mastering_2019}}
 \end{figure}
+<<<<<<< HEAD
 
 Relevant wird der Inhalt, wenn es sich bei der \textit{to} Adresse um einen Kontrakt handelt. Der Inhalt wird dann von der EVM als ein Funktionsaufruf interpretiert. Ein Kontrakt enthält beispielsweise folgende Funktion:\\
 \texttt{function getTokenValueFromWei(uint256) public return (uint ret) \{...\}}
 Diese Funktion ist Teil eines Token-Kontrakt und gibt den Wert des übergebenen Weis in diesem Token zurück.
+=======
+Relevant wird der Inhalt, wenn es sich bei der \textit{to} Adresse um einen Kontrakt handelt. Der Inhalt wird dann von der EVM als ein Funktionsaufruf interpretiert. Unsere Transaktion $T_x$ soll die Funktion\\
+\begin{verbatim}
+  function deposit(string _depositReason) public payable {
+    balances[msg.sender] += msg.value;
+    reasons[msg.sender].push(_depositReason);
+  }
+\end{verbatim}
+unseres Kontrakts aufrufen. Diese Funktion fügt den kontraktinternen Konto dem im \textit{value}-Feld übergeben Wert hinzu. Dabei muss als Parameter der Einzahlungsgrund genannt werden. 
+>>>>>>> e58dc38f47270ef5648bc771d179fb860d675af1
 
 Damit diese Funktion aufgerufen werden kann, muss der Funktionsaufruf der Spezifikation des Contract Application Binary Interface (ABI) entsprechen. % https://solidity.readthedocs.io/en/v0.6.6/abi-spec.html %
-Das heißt der endgültige Inhalt setzt sich im allgemeinen aus dem Funktionsselektor und den Funktionsargumenten zusammen. Der Funktionsselektor teilt dem Kontrakt mit welche Funktion er ausführen soll und entspricht den ersten vier Bytes des Keccak-256-Hash\footnote{Keccak-256 ist das am meisten genutzte Hashverfahren in Ethereum} des Funktionsprototypen. Laut ABI Spezifikation setzt sich der Funktionsprototyp aus dem Namen der Funktion und in Klammern folgend die einzelnen Parametertypen. Der Rückgabetyp ist nicht Teil des Funktionsprototyps.
-Daraus resultiert folgender Prototyp für unsere Funktion: \texttt{getTokenValueFromWei(uint256)}.
-Daraus wird der Keccak-256 Hash generiert:
-\begin{center}
-  \texttt{0xd4cab210b3a8e169e406b664e23e24c06965d9b622a884a0d74864771d67f5a8}
-\end{center}
-Somit entspricht \texttt{0xd4cab210} dem Funktionsselektor.
-Unser Funktionsaufruf soll den Tokenwert für 1000000000000000000 Wei (entspricht einem Ether) zurück liefern.
-Laut ABI Spezifikation gilt für einen korrekt kodierten uint256, dass dessen Hexwert mit Hilfe von Paddingbytes auf ein vielfaches von 32Byte aufgefüllt wird. 1000000000000000000 entspricht \texttt{0xDE0B6B3A7640000} somit lautet unser Funktionsargument
-\begin{center}
-  \texttt{0x0000000000000000000000000000000000000000000000000de0b6b3a7640000}
-\end{center}
-Unsere Nutzlast ergibt sich nun aus der Konktenation von beidem:
+Das heißt der endgültige Inhalt setzt sich im allgemeinen aus dem Funktionsselektor und den Funktionsargumenten zusammen. Der Funktionsselektor teilt dem Kontrakt mit welche Funktion er ausführen soll und entspricht den ersten vier Bytes des Keccak-256-Hash, welches das meist genutzte Hash-Verfahren in Ethereum ist, des Funktionsprototypen. Laut ABI Spezifikation setzt sich der Funktionsprototyp aus dem Namen der Funktion und in Klammern folgend die einzelnen Parametertypen. Der Rückgabetyp einer Funktion ist nicht Teil des Funktionsprototyps.
+Daraus resultiert folgender Prototyp für unsere Funktion: \texttt{deposit(string)}.
+Dessen vollständiger Keccak256-Hash entspricht:
 \begingroup
 \fontsize{8pt}{10pt}\selectfont
 \begin{center}
+  \texttt{a26e11860cdb80ecca46e4f433c3c9533f6d37cdf0f6eb16343556cfdbcf47ec}
+\end{center}
+<<<<<<< HEAD
+Somit entspricht \texttt{0xd4cab210} dem Funktionsselektor.
+Unser Funktionsaufruf soll den Tokenwert für 1000000000000000000 Wei (entspricht einem Ether) zurück liefern.
+Laut ABI Spezifikation gilt für einen korrekt kodierten uint256, dass dessen Hexwert mit Hilfe von Paddingbytes auf ein vielfaches von 32Byte aufgefüllt wird. 1000000000000000000 entspricht \texttt{0xDE0B6B3A7640000} somit lautet unser Funktionsargument
+=======
+\endgroup
+Somit entspricht \texttt{0xa26e1186} dem ABI konformen Funktionsselektor.\\
+Unser Funktionsaufruf soll 1000000000000000000 Wei (entspricht einem Ether) auf das Konto einzahlen. Als Parameter übergeben wir "`Einzahlung"'. Um einen String ABI konform zu kodieren müssen wir den Offset angeben, ab dem der Inhalt unseres Parameter startet, konkatiniert mit der Länge des Strings und beides nach links auf 32 Byte mit Paddingsbytes aufgefüllt. Danach folgt der String in UTF-8 kodiert, welcher nach rechts auf 32 Bytes aufgefüllt wurde. In unserem Fall müssen wir 32 Zeichen überspringen (\texttt{0x20}). Der String ist 10 (\texttt{0xa}) Zeichen lang. Somit lautet die Kodierung unserer Funktionsargumente wie folgt: 
+\begingroup
+\fontsize{8pt}{10pt}\selectfont
+>>>>>>> e58dc38f47270ef5648bc771d179fb860d675af1
+\begin{center}
+  \texttt{0x0000000000000000000000000000000000000000000000000000000000000020 \textbackslash} \\
+  \texttt{000000000000000000000000000000000000000000000000000000000000000a \textbackslash} \\
+  \texttt{45696e7a61686c756e6700000000000000000000000000000000000000000000}
+\end{center}
+\endgroup
+Unsere Nutzlast, welche wir im \textit{data}-Feld nun eintragen müssen, erhalten wir aus der Konkatenation beider Kodierungen:
+\begingroup
+\fontsize{8pt}{10pt}\selectfont
+\begin{center}
+<<<<<<< HEAD
   \texttt{0xd4cab2100000000000000000000000000000000000000000000000000de0b6b3a7640000}
+=======
+  \texttt{0xa26e1186 \textbackslash} \\
+  \texttt{0000000000000000000000000000000000000000000000000000000000000020 \textbackslash} \\
+  \texttt{000000000000000000000000000000000000000000000000000000000000000a \textbackslash} \\
+  \texttt{45696e7a61686c756e6700000000000000000000000000000000000000000000}
+>>>>>>> e58dc38f47270ef5648bc771d179fb860d675af1
 \end{center}
 \endgroup
 
-Man kann jedoch über das \textit{data}-Feld keinen Ether an den Kontrakt übergeben. Dies ist ausschließlich über das \textit{value}-Feld möglich. Damit der Kontrakt dieses Ether an nimmt muss, muss mindestens eine Funktion das Schlüsselwort \texttt{payable} enthalten. Die EVM sucht dann nach der dieser Funktion, wenn ein Betrag gesendet wird. Dabei kann es die Funktion im \textit{data}-Feld sein oder eine andere Funktion die Ether akzeptiert. Wird keine Funktion gefunden, kann man im Kontrakt eine sogenannte fallback-Funktion definieren. Sie hat keinen Namen und dient alleine dazu den Etherbetrag entgegen zunehmen und dem Kontrakt gut zuschreiben. Ist auch diese nicht definiert, wird eine Exception geworfen und die Transaktion abgebrochen. % Solidity Dokumentation %
+Damit unser Kontrakt auch die 1 Ehter erhält müssen wir diese im \textit{value}-Feld eintragen. Unsere Funktion besitzt das Schlüsselwort \texttt{payable}, dieses wird bei Kontrakten verwendet um anzuzeigen, dass diese Funktion Ether annehmen kann. Dabei muss die im \textit{data}-Feld aufgerufene Funktion nicht zwingend auch \texttt{payable} deklariert sein. Die EVM such in dem Fall alle Funktionen durch, bis sie eine so deklarierte Funktion findet. Wenn keine Funktion \texttt{payable} deklariert wurde, gibt es meistens eine sogenannte Fallback-Funktion, welche keinen Funktionsnamen besitzt und alleinig dazu dient Ether entgegen zu nehmen und diese dem Kontrakt gut zuschreiben. Ist auch diese nicht definiert, wirft die EVM eine Exception und die Transaktion wird abgebrochen.
+Man kann jedoch über das \textit{data}-Feld keinen Ether an den Kontrakt übergeben. Dies ist ausschließlich über das \textit{value}-Feld möglich. Damit der Kontrakt dieses Ether annimmt, muss die Funktion genau wie unsere Funktion mit dem Schlüsselwort \texttt{payable} deklariert sein. Akzeptiert die aufgerufene Funkntion kein Ether, so wird die sogenannte Fallback-Funktion aufgerufen, die den übergenenen Etherbetrag auf das Konto des Kontrakts gut schreibt. Ist auch diese nicht definiert, wird eine Exception geworfen und die Transaktion abgebrochen.% Gas muss trotzdem gezahlt werden. % Solidity Dokumentation %
 
 Die letzte mögliche Kombination ist, wenn sowohl das \textit{value}- und \textit{data}-Feld leer sind. Dies ist ebenfalls eine gültige Transkation würde. Diese erfüllt jedoch keinen besonderen Zweck außer der Verwendung des bezahlten Gas und somit nur einer Senkung des eigenen Kontostands.
 \subsection{Signatur}
@@ -237,9 +277,10 @@ Die letzte mögliche Kombination ist, wenn sowohl das \textit{value}- und \texti
 \subsubsection{Multisignaturen}
 
 \section{Transaktionsabwicklung}
-
+Wir haben nun alle notwendigen Konzepte und Inhalte einer Ethereumtranskation kennengelernt. Im weiteren wird vorgestellt, wie unsere Transkation $T_x$ im Netzt verteilt wird und diese in der Blockchain aufgenommen wird.
+Damit unsere Transaktion versendet werden kann, werden unsere Transaktionsdaten mit dem privaten Schlüssel des sendenden Accounts signiert\footnote{Es wird angenommen, dass ein eigener Node betrieben wird. Werden Anwendungen wie MetaMask verwendet übernimmt diese die Signierung} und anschließend mit RLP kodiert\cite{antonopoulos_mastering_2019}.
 \subsection{Propagation}
-
+Bevor die Transaktion über das Ethereumnetzwerk verbreitet wird, überprüft der lokale Node (oder der Node, welcher MetaMask verwendet) ob die Transaktion wirklich von der eigenen Adresse stammt. Ist dies der Fall wird die Transkation über das P2P-Netwerk versendet. Ein Node ist mit mindestens 13 weiteren Nodes verbunden\cite[S.123]{antonopoulos_mastering_2019}. Jeder dieser erhält die Transkation und validiert dieser. Wenn dies erfolgreich ist sendet der jeweilige Node die Transaktion an seine Nachbarn weiter \cite[S.123]{antonopoulos_mastering_2019}. So wird erreicht, dass die Transkation sehr schnell bei jedem Node im Ethereumnetzwerk angekommen ist. Die Transaktion erreicht somit auch sogenannte Miner Nodes. Diese Nodes speichern unsere Transaktion in ihrem \textit{Mempool}. Abhängig von unserer Platzierung in dieser Liste, wird die Transaktion an einem Zeitpunkt in einen Block aufgenommen. Sobald der der Block geschürft wurde, das heißt der \textit{Proof of Work} gefunden wurde, findet eine Zustandsänderung des Zustandsautomat statt. Das heißt, die Funktion des Kontrakts wird von der EVM ausgeführt und das Ehter von dem Senderaccount abgebucht und dem Konto des Kontrakts gutgeschrieben. Schließlich kann man unsere Transaktion in der Blockchain wiederfinden: % Link zur Transaktion in Etherscan %
 \subsection{Speicherung}
 % receipt
 
