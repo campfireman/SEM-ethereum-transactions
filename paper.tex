@@ -186,34 +186,26 @@ Alle Vermutungen deuten in die gleiche Richtung: Je mehr Zeit verbraucht wird, s
 \end{figure}
 
 \subsubsection{Anreiz und Spieletheorie}
-<<<<<<< HEAD
 Es lässt sich postulieren, dass beide Probleme auf das Anreizsystem von Ethereum zurückzuführen sind. Generell stellt sich für die Teilnehmer des Netzwerkes die Frage, warum sie eigene Ressourcen aufwenden sollten, um das Netzwerk zu ermöglichen. Nun kann natürlich davon ausgangen werden, dass alle altruistisch motiviert sind und aus Idealismus ihren Beitrag leisten. Ethereum geht aber von einer anderen Prämisse aus. Das Feld der \textit{Cryptoeconomics} beschreibt wie ökonomische Anreize genutzt werden, um die Funktion und die Korrektheit von Kryptowährungen zu garantieren. Die Modellierung von Ethereum und seinem Anreizsystem basiert auf spieletheoretischen Ansätzen. \cite{noauthor_cryptoeconomics_nodate}
 
-In der Spieletheorie wird davon ausgegangen, dass Entscheidungsträger rational sind und sie die Nützlichkeit (\textit{utility payoff})  ihrer Entscheidungen, unter Berüchksichtigung ihres Zustandes $ t $ und der möglichen Belohnungen $ x \in X $,  maximieren wollen. Unter dieser Annahme muss eine Kryptowährung also Anreize schaffen, die für den Fortbestand des Systems zuträglich sind und gleichzeitig die Nützlichkeitsfunktion $ u(x, t) $ möglichst maximieren.  \cite[S. 2 ff.]{myerson_game_1997} Das Protokoll von Ethereum bildet den Rahmen des Spiels und seine Regeln. Überträgt man die beiden genannte Problem der leeren Blöcke auf diesen Hintergrund, ergibt sich eine mögliche Erklärung.
+In der Spieletheorie wird davon ausgegangen, dass Entscheidungsträger rational sind und sie die Nützlichkeit (\textit{utility payoff}) ihrer Entscheidungen, unter Berüchksichtigung ihres Zustandes $ t $ und der möglichen Belohnungen $ x \in X $,  maximieren wollen. Unter dieser Annahme muss eine Kryptowährung also Anreize schaffen, die für den Fortbestand des Systems zuträglich sind und gleichzeitig die Nützlichkeitsfunktion $ u(x, t) $ möglichst maximieren.  \cite[S. 2 ff.]{myerson_game_1997}
 
+Das Protokoll von Ethereum bildet den Rahmen des Spiels und seine Regeln. Überträgt man zum Beispiel genannte Problem der leeren Blöcke auf dieses Modell, ergibt sich eine mögliche Erklärung des Verhaltens. Die Rentabilität von Mining lässt sich unter Berüchksichtigung der aktuellen \textit{block rewards}, \textit{block difficulty}, etc. sehr gut errechnen. \cite{noauthor_ethereum_nodate} Nun kann sich durch Erfahrungswerte des rationalen Entscheidungsträgers herausstellen, dass die Nützlichkeit höher liegt, wenn keine Transaktionen in Blöcken inkludiert werden. Als Resultat sind rein wirtschaftlich motivierte deutlich eher dazu geneigt leere Blöcke zu schürfen, obwohl dies jeglichem Sinn des Netzwerkes widerspricht.
 
+Daran zeigt sich wie schwierig es ist, ein wohl balancierts Anreizsystem zu entwerfen, im Anbetracht der Komplexität der Realität. Ein angedachter Wechsel zu \textit{proof of stake} birgt das Potential derartige Probleme zu beheben, aber gleichzeitig wird es unweigerlich neue unerwartete Nebenwirkungen mit sich bringen. \cite{noauthor_ethereum/wiki_pos_nodate}
 
-\subsection{Value und Data}
-Wie in \ref{komponenten} schon vorgestellt, enthalten das \textit{value}- und \textit{data}-Feld die eigentliche Nutzlast einer Transaktion. Dabei enthält das \textit{value}-Feld ausschließlich den Betrag an Wei, der an die Empfängeradresse gesendet werden soll und das \textit{data}-Feld enthält die Nachricht.
-Eine Transkation die ein \textit{value}-Feld enthält, wird dabei auch Zahlung bzw. \textit{payment} genannt. Das \textit{data}-Feld ist ein Aufruf bzw. \textit{invocation}\cite[S.108]{antonopoulos_mastering_2019}. Eine Zahlung zwischen zwei EOAs ist dabei eine einfache Zustandsänderung der EVM und Übertragung des Wei Betrags auf den empfangenden Account. Enthält diese Transkation Daten im \textit{data}-Feld so wird diese von der Blockchain ignoriert \cite[S.10]{wood_ethereum/yellowpaper_2019}. So werden diese auch von der eigenen Wallet ignoriert und nur angezeigt.
-
-=======
-Beide Probleme lassen sich auf das Anreizsystem von Ethereum zurückführen. Generell stellt sich für die Teilnehmer des Netzwerkes die Frage
 
 \subsection{Value und Data}
 Wie in \ref{komponenten} schon vorgestellt, enthalten das \textit{value}- und \textit{data}-Feld die eigentliche Nutzlast einer Transaktion. Dabei enthält das \textit{value}-Feld ausschließlich den Betrag an Wei, der an die Empfängeradresse gesendet werden soll und das \textit{data}-Feld enthält die Nachricht.
 Eine Transkation die ein \textit{value}-Feld enthält, wird dabei auch Zahlung bzw. \textit{payment} genannt. Das \textit{data}-Feld ist ein Aufruf bzw. \textit{invocation}\cite[S.108]{antonopoulos_mastering_2019}. Eine Zahlung zwischen zwei EOAs ist dabei eine einfache Zustandsänderung der EVM und Übertragung des Etherbetrags in Weis auf den empfangenden Account. Enthält diese Transkation Daten im \textit{data}-Feld so wird diese von der Blockchain ignoriert \cite[S.10]{wood_ethereum/yellowpaper_2019}. So werden diese auch von der eigenen Wallet ignoriert und nur angezeigt.
->>>>>>> e58dc38f47270ef5648bc771d179fb860d675af1
 \begin{figure}
   \includegraphics[width=\textwidth, keepaspectratio]{dataTransaction.png}
   \caption{Beispieltranskation an EOA mit gefülltem \textit{data}-Feld \cite[S.109]{antonopoulos_mastering_2019}}
 \end{figure}
-<<<<<<< HEAD
 
 Relevant wird der Inhalt, wenn es sich bei der \textit{to} Adresse um einen Kontrakt handelt. Der Inhalt wird dann von der EVM als ein Funktionsaufruf interpretiert. Ein Kontrakt enthält beispielsweise folgende Funktion:\\
 \texttt{function getTokenValueFromWei(uint256) public return (uint ret) \{...\}}
 Diese Funktion ist Teil eines Token-Kontrakt und gibt den Wert des übergebenen Weis in diesem Token zurück.
-=======
 Relevant wird der Inhalt, wenn es sich bei der \textit{to} Adresse um einen Kontrakt handelt. Der Inhalt wird dann von der EVM als ein Funktionsaufruf interpretiert. Unsere Transaktion $T_x$ soll die Funktion\\
 \begin{verbatim}
   function deposit(string _depositReason) public payable {
@@ -221,8 +213,7 @@ Relevant wird der Inhalt, wenn es sich bei der \textit{to} Adresse um einen Kont
     reasons[msg.sender].push(_depositReason);
   }
 \end{verbatim}
-unseres Kontrakts aufrufen. Diese Funktion fügt den kontraktinternen Konto dem im \textit{value}-Feld übergeben Wert hinzu. Dabei muss als Parameter der Einzahlungsgrund genannt werden. 
->>>>>>> e58dc38f47270ef5648bc771d179fb860d675af1
+unseres Kontrakts aufrufen. Diese Funktion fügt den kontraktinternen Konto dem im \textit{value}-Feld übergeben Wert hinzu. Dabei muss als Parameter der Einzahlungsgrund genannt werden.
 
 Damit diese Funktion aufgerufen werden kann, muss der Funktionsaufruf der Spezifikation des Contract Application Binary Interface (ABI) entsprechen. % https://solidity.readthedocs.io/en/v0.6.6/abi-spec.html %
 Das heißt der endgültige Inhalt setzt sich im allgemeinen aus dem Funktionsselektor und den Funktionsargumenten zusammen. Der Funktionsselektor teilt dem Kontrakt mit welche Funktion er ausführen soll und entspricht den ersten vier Bytes des Keccak-256-Hash, welches das meist genutzte Hash-Verfahren in Ethereum ist, des Funktionsprototypen. Laut ABI Spezifikation setzt sich der Funktionsprototyp aus dem Namen der Funktion und in Klammern folgend die einzelnen Parametertypen. Der Rückgabetyp einer Funktion ist nicht Teil des Funktionsprototyps.
@@ -233,17 +224,11 @@ Dessen vollständiger Keccak256-Hash entspricht:
 \begin{center}
   \texttt{a26e11860cdb80ecca46e4f433c3c9533f6d37cdf0f6eb16343556cfdbcf47ec}
 \end{center}
-<<<<<<< HEAD
-Somit entspricht \texttt{0xd4cab210} dem Funktionsselektor.
-Unser Funktionsaufruf soll den Tokenwert für 1000000000000000000 Wei (entspricht einem Ether) zurück liefern.
-Laut ABI Spezifikation gilt für einen korrekt kodierten uint256, dass dessen Hexwert mit Hilfe von Paddingbytes auf ein vielfaches von 32Byte aufgefüllt wird. 1000000000000000000 entspricht \texttt{0xDE0B6B3A7640000} somit lautet unser Funktionsargument
-=======
 \endgroup
 Somit entspricht \texttt{0xa26e1186} dem ABI konformen Funktionsselektor.\\
-Unser Funktionsaufruf soll 1000000000000000000 Wei (entspricht einem Ether) auf das Konto einzahlen. Als Parameter übergeben wir "`Einzahlung"'. Um einen String ABI konform zu kodieren müssen wir den Offset angeben, ab dem der Inhalt unseres Parameter startet, konkatiniert mit der Länge des Strings und beides nach links auf 32 Byte mit Paddingsbytes aufgefüllt. Danach folgt der String in UTF-8 kodiert, welcher nach rechts auf 32 Bytes aufgefüllt wurde. In unserem Fall müssen wir 32 Zeichen überspringen (\texttt{0x20}). Der String ist 10 (\texttt{0xa}) Zeichen lang. Somit lautet die Kodierung unserer Funktionsargumente wie folgt: 
+Unser Funktionsaufruf soll 1000000000000000000 Wei (entspricht einem Ether) auf das Konto einzahlen. Als Parameter übergeben wir "`Einzahlung"'. Um einen String ABI konform zu kodieren müssen wir den Offset angeben, ab dem der Inhalt unseres Parameter startet, konkatiniert mit der Länge des Strings und beides nach links auf 32 Byte mit Paddingsbytes aufgefüllt. Danach folgt der String in UTF-8 kodiert, welcher nach rechts auf 32 Bytes aufgefüllt wurde. In unserem Fall müssen wir 32 Zeichen überspringen (\texttt{0x20}). Der String ist 10 (\texttt{0xa}) Zeichen lang. Somit lautet die Kodierung unserer Funktionsargumente wie folgt:
 \begingroup
 \fontsize{8pt}{10pt}\selectfont
->>>>>>> e58dc38f47270ef5648bc771d179fb860d675af1
 \begin{center}
   \texttt{0x0000000000000000000000000000000000000000000000000000000000000020 \textbackslash} \\
   \texttt{000000000000000000000000000000000000000000000000000000000000000a \textbackslash} \\
@@ -254,14 +239,10 @@ Unsere Nutzlast, welche wir im \textit{data}-Feld nun eintragen müssen, erhalte
 \begingroup
 \fontsize{8pt}{10pt}\selectfont
 \begin{center}
-<<<<<<< HEAD
-  \texttt{0xd4cab2100000000000000000000000000000000000000000000000000de0b6b3a7640000}
-=======
   \texttt{0xa26e1186 \textbackslash} \\
   \texttt{0000000000000000000000000000000000000000000000000000000000000020 \textbackslash} \\
   \texttt{000000000000000000000000000000000000000000000000000000000000000a \textbackslash} \\
   \texttt{45696e7a61686c756e6700000000000000000000000000000000000000000000}
->>>>>>> e58dc38f47270ef5648bc771d179fb860d675af1
 \end{center}
 \endgroup
 
