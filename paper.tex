@@ -52,17 +52,13 @@
 %
 %
 \section{Einführung}
-% was sind transaktionen im allgemeinen
-% was sind transaktionen bei ethereum: Statemaschine
-% vergelich zu bitcon
-% 
 Das Wort Transaktion stammt von dem lateinischen Wort \textit{transigere} ab, welches im übertragenden Sinne mit 'durchführen', 'vollführen' oder 'abmachen' (Geschäft) übersetzt werden kann. \cite{noauthor_transigere_nodate} Dieser Wortsinn besteht auch weiterhin im technischen und wirtschaftlichen Bereich, jedoch gibt es noch spezifischere Abgrenzungen. In der Wirtschaft ist es ein Vorgang bei dem Waren und Forderungen ausgetauscht werden. \cite[S. 18 f.]{ehrlicher_kompendium_1975} In der Informatik ist es im Zusammenhang mit Datenbanken eine unteilbare, \textit{atomare}, Abfolge von Anweisungen, die einen Übergang von einem konsistenten Zustand in einen Anderen beschreibt. \cite[S.520]{herold_grundlagen_2017}
 
 Ethereum ist ein "transaktionsbasierter Automat" (\textit{transaction-based state machine}). Somit sind Transaktionen ein grundlegender Baustein von Ethereum im Allgemeinen und ihnen kommt eine ähnliche Bedeutung wie ACID Transaktionen bei. Der Automat speichert seinen Zuständ $ \sigma_t $ in der Blockchain, eine Transaktion $ T $ ist Argument der Zugstandsübergangsfunktion $ \Upsilon $, die von \textit{externen Akteuren (EA)} angestoßen wird und diesen gespeicherten Zustand $ \sigma_t $ in einen neuen, gültigen Zustand $ \sigma_{t + 1} $ überführen soll: $\sigma_{t+1} = \Upsilon(T, \sigma_t) $. Im Falle eines Konsens des Netzwerkes wird diese Zustandsveränderung durchgeführt beziehungsweise gespeichert.
 
 Im Kontrast zu Kryptowährungen wie Bitcoin ist der Umfang des Automaten bzw. des Protokolls bei Ethereum deutlich geweitet, denn Zweck ist nicht nur die Schöpfung, Speicherung und der Austausch eines digitalen Zahlungsmittels \cite{nakamoto_bitcoin_nodate}, sondern eine allgemeine dezentrale Rechenmaschine, ein "Weltcomputer".  \cite[S. 1-4]{wood_ethereum/yellowpaper_2019}
 
-Im Folgenden betrachten wir eine beispielhafte Transaktion $ T_x $, anhand derer wir die technischen und konzeptionellen Spezifikationen von Transaktionen in Ethereum erläutern werden.
+Im Folgenden betrachten wir eine beispielhafte Transaktion $ T_x $ von der Erzeugung, Signatur und Veröffentlichung, woran wir die technischen Spezifikationen von Transaktionen in Ethereum erläutern werden.
 
 \section{Struktur und technische Umsetzung einer Transaktion}
 Die Komponenten welche eine Transaktion in Ethereum ausmachen sind vergleichbar mit denen eines Briefes. Sie besitzen einen Empfänger sowie eine Frankierung, welche die Transportkosten zum Empfänger bezahlen. In einen Brief kann man z.B. Geld oder einen Text verschicken. Auch Transaktionen in Ethereum können Geld in Form von Ether und einen Text in Form von Nutzdaten verschicken. Im Weiteren wir die allgemeine Struktur und technische Umsetzung einer Transaktion vorgestellt.
@@ -250,12 +246,36 @@ Damit unser Kontrakt auch die 1 Ehter erhält müssen wir diese im \textit{value
 Man kann jedoch über das \textit{data}-Feld keinen Ether an den Kontrakt übergeben. Dies ist ausschließlich über das \textit{value}-Feld möglich. Damit der Kontrakt dieses Ether annimmt, muss die Funktion genau wie unsere Funktion mit dem Schlüsselwort \texttt{payable} deklariert sein. Akzeptiert die aufgerufene Funkntion kein Ether, so wird die sogenannte Fallback-Funktion aufgerufen, die den übergenenen Etherbetrag auf das Konto des Kontrakts gut schreibt. Ist auch diese nicht definiert, wird eine Exception geworfen und die Transaktion abgebrochen.% Gas muss trotzdem gezahlt werden. % Solidity Dokumentation %
 
 Die letzte mögliche Kombination ist, wenn sowohl das \textit{value}- und \textit{data}-Feld leer sind. Dies ist ebenfalls eine gültige Transkation würde. Diese erfüllt jedoch keinen besonderen Zweck außer der Verwendung des bezahlten Gas und somit nur einer Senkung des eigenen Kontostands.
+
 \subsection{Signatur}
+Die Signatur einer Transaktion belegt den Besitz eines Schlüssels, der unter aktuell die \textit{Authenzität} und die \textit{Integrität} der Nachricht beweisen kann. Dies basiert auf den Eigenschaften von \textit{Trapdoor-Funktionen} im Allgemeinen und von asymmetrischer Verschlüsselung im Speziellen. Ohne Besitz des privaten Schlüssels ist es sehr leicht die Echtheit einer Nachricht zu prüfen, allerdings extrem schwierig eine gültige Nachricht zu generieren. \cite{roeder_asymmetric-key_nodate}
+
+Für eine gültige Transaktion in Ethereum braucht es einen zufälligen privaten Schlüssel $ k $, also eine 256 bit große Zahl, aus dem dann wiederrum ein 512 bit großer öffentlicher Schlüssel $ K $ generiert wird. Mit dem $ \text{keccak256-Hash} $ von $ K $ kann daraus die Ethereum Addresse abgeleitet werden. Mit der Erzeugung eines privaten Schlüssels gelangt man also Kontrolle über einen Ethereum Account. Aufgrund der Größe des Schlüssels ist die Kollisionswahrscheinlichkeit zu vernachlässigen.
+
+Um die Transaktion $ T_x $ mit einer Signatur $ \text{Sig} $ zu versehen, verwenden wir alle bisher genannten Datenfelder der Transaktion, also \textit{nonce}, \textit{gasPrice}, \textit{gasLimit}, \textit{to}, \textit{value} und \textit{data}, in RLP codierter Form. Nach dem DAO Hack und dem Fork zu Ethereum Classic wurde eine Erweiterung dieser sechs Felder in EIP-155 \cite{noauthor_ethereum/eips_nodate} um eine \textit{Chain ID}, und $ r = 0 $ und $ s = 0 $ vorgeschlagen und in \textit{Spurius Dragon} umgesetzt. Dies verhindert etwaige \textit{Replay-Attacken}, bei denen Transaktionen über verschiedene Blockchainnetze gültig sind. \cite[S. 138]{iyer_cryptoeconomics_2018} Hier zeigt sich auch eine weitere Rolle des \textit{nonce}, denn alle anderen Werte könnten potentiell identisch sein, sodass die resultierende Signatur auch identisch wäre. So ließe sich die Transaktion ungewollt wiederholen.
+
+Der gesamte Korpus der Transaktion $ m $ wird dann in gehashter Form Argument des Signierungsalgorithmus zusammen mit dem privaten Schlüssel $ k $.
+
+$$
+\text{Sig} = F_{sig}(F_{keccak256}(m), k)
+$$
 
 \subsubsection{ECDSA}
 \label{ecdsa}
+Die resultierende Signatur $ \text{Sig} $ besteht aus den Komponenten $ r $, $ s $ und dem Signaturpräfixwert $ v $.  Diese drei Komponenten sind Teil einer spezielle Form des \textit{Digital Signature Algorithm}, die Elliptische-Kurven-Kryptographie verwendet. Der ursprüngliche Ansatz von \textit{DSA} basiert auf der Annahme eines naiven Algorithmus, einer \textit{Trapdoor-Funktion}, die auf dem großen Aufwandsunterschied zwischen Faktorisierung und Multiplikation beruht. Durch Verbesserung des ursprünglich zugrunde gelegten Algorithmus konnte dieser Aufwandsunterschied verkleinert werden, was immer größere Schlüssel erfordert. Bei \textit{ECDSA} für das "Problem des diskreten Logarithmus in elliptischen Kurven" wurde noch kein bessere Ansatz als die naive Variante gefunden, sodass deutlich kleinere Schlüsselgrößen möglich sind.
+
+Die Komponente $ r $ repräsentiert einen öffentlichen Punkt auf der elliptischen Kurve mit dem der $ s\text{-Wert} $ mit Hilfe des öffentlichen Schlüssel $ K $ verifiziert werden kann. 
+
+Wenden wir den Signaturalgorithmus auf die Transaktion $ T_x $ an, so erhalten wir folgende Komponenten, die dem Transaktionskörper angehängt werden:
+
+\begin{description}
+ \item[v:] 26
+ \item [r:] dade772f31d20b4ed1c7f63ae035c0cc83fd7b786ca9339eb01763138877a6d4
+ \item[s:] 13e16f7a55d261e504e27ea4fecc174a1a46c87d804b9a3917aebde665c1ddb1
+\end{description}
 
 \subsubsection{Multisignaturen}
+Eine spezielle Form der Signatur sind Multisignaturen. Wo bei gewöhnlichen 
 
 \section{Transaktionsabwicklung}
 Wir haben nun alle notwendigen Konzepte und Inhalte einer Ethereumtranskation kennengelernt. Im weiteren wird vorgestellt, wie unsere Transkation $T_x$ im Netzt verteilt wird und diese in der Blockchain aufgenommen wird.
