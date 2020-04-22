@@ -264,9 +264,7 @@ $$
 \label{ecdsa}
 Die resultierende Signatur $ \text{Sig} $ besteht aus den Komponenten $ r $, $ s $ und dem Signaturpräfixwert $ v $.  Diese drei Komponenten sind Teil einer spezielle Form des \textit{Digital Signature Algorithm}, die Elliptische-Kurven-Kryptographie verwendet. Der ursprüngliche Ansatz von \textit{DSA} basiert auf der Annahme eines naiven Algorithmus, einer \textit{Trapdoor-Funktion}, die auf dem großen Aufwandsunterschied zwischen Faktorisierung und Multiplikation beruht. Durch Verbesserung des ursprünglich zugrunde gelegten Algorithmus konnte dieser Aufwandsunterschied verkleinert werden, was immer größere Schlüssel erfordert. Bei \textit{ECDSA} für das "Problem des diskreten Logarithmus in elliptischen Kurven" wurde noch kein bessere Ansatz als die naive Variante gefunden, sodass deutlich kleinere Schlüsselgrößen möglich sind.
 
-Die Komponente $ r $ repräsentiert einen öffentlichen Punkt auf der elliptischen Kurve mit dem der $ s\text{-Wert} $ mit Hilfe des öffentlichen Schlüssel $ K $ verifiziert werden kann. 
-
-Wenden wir den Signaturalgorithmus auf die Transaktion $ T_x $ an, so erhalten wir folgende Komponenten, die dem Transaktionskörper angehängt werden:
+Die Komponente $ r $ repräsentiert einen öffentlichen Punkt auf der elliptischen Kurve mit dem der $ s\text{-Wert} $ mit Hilfe des öffentlichen Schlüssel $ K $ verifiziert werden kann. Die Wert von $ v $ ist doppelt belegt. Einerseits gibt er eine weitere Referenz auf \textit{Chain-ID}, andererseits kann mit ihm der öffentliche Schlüssel $ K $ des Senders schneller rekonstruiert werden, denn Transaktionnen enthalten kein \textit{from} Feld im klassischen Sinne. Wenden wir den Signaturalgorithmus auf die Transaktion $ T_x $ an, so erhalten wir folgende Komponenten, die dem Transaktionskörper angehängt werden:
 
 \begin{description}
  \item[v:] 26
@@ -275,15 +273,17 @@ Wenden wir den Signaturalgorithmus auf die Transaktion $ T_x $ an, so erhalten w
 \end{description}
 
 \subsubsection{Multisignaturen}
-Eine spezielle Form der Signatur sind Multisignaturen. Wo bei gewöhnlichen 
+Eine spezielle Form der Signatur sind Multisignaturen. Bei einem \textit{multi-signature} Schema muss eine Nachricht $ t $ von $ n $ aus $ m $ Entiäten unterzeichnet werden, wobei $ m \geq n > 1 $. \cite[S. 2]{hutchison_identity-based_2006} Dies erlaubt es beispielsweise eine Absicherung gegenüber nicht vertrauenswürdigen Parteien zu schaffen, gemeinschaftlich ein Wallet zu verwalten oder gegen den Verlust eines privaten Schlüssels abzusichern. Während bei Bitcoin dies durch das Protokoll selbst ermöglicht wird \cite{noauthor_multisignature_nodate}, bedarf es bei Ethereum die Verwendung eines Contracts \cite{noauthor_frequently_nodate}
+
 
 \section{Transaktionsabwicklung}
 Wir haben nun alle notwendigen Konzepte und Inhalte einer Ethereumtranskation kennengelernt. Im weiteren wird vorgestellt, wie unsere Transkation $T_x$ im Netzt verteilt wird und diese in der Blockchain aufgenommen wird.
 Damit unsere Transaktion versendet werden kann, werden unsere Transaktionsdaten mit dem privaten Schlüssel des sendenden Accounts signiert\footnote{Es wird angenommen, dass ein eigener Node betrieben wird. Werden Anwendungen wie MetaMask verwendet übernimmt diese die Signierung} und anschließend mit RLP kodiert\cite{antonopoulos_mastering_2019}.
 \subsection{Propagation}
 Bevor die Transaktion über das Ethereumnetzwerk verbreitet wird, überprüft der lokale Node (oder der Node, welcher MetaMask verwendet) ob die Transaktion wirklich von der eigenen Adresse stammt. Ist dies der Fall wird die Transkation über das P2P-Netwerk versendet. Ein Node ist mit mindestens 13 weiteren Nodes verbunden\cite[S.123]{antonopoulos_mastering_2019}. Jeder dieser erhält die Transkation und validiert dieser. Wenn dies erfolgreich ist sendet der jeweilige Node die Transaktion an seine Nachbarn weiter \cite[S.123]{antonopoulos_mastering_2019}. So wird erreicht, dass die Transkation sehr schnell bei jedem Node im Ethereumnetzwerk angekommen ist. Die Transaktion erreicht somit auch sogenannte Miner Nodes. Diese Nodes speichern unsere Transaktion in ihrem \textit{Mempool}. Abhängig von unserer Platzierung in dieser Liste, wird die Transaktion an einem Zeitpunkt in einen Block aufgenommen. Sobald der der Block geschürft wurde, das heißt der \textit{Proof of Work} gefunden wurde, findet eine Zustandsänderung des Zustandsautomat statt. Das heißt, die Funktion des Kontrakts wird von der EVM ausgeführt und das Ehter von dem Senderaccount abgebucht und dem Konto des Kontrakts gutgeschrieben. Schließlich kann man unsere Transaktion in der Blockchain wiederfinden: % Link zur Transaktion in Etherscan %
+
 \subsection{Speicherung}
-% receipt
+
 
 \section{Ausblick}
 
