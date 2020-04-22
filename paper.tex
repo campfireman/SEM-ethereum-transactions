@@ -65,7 +65,9 @@ Im Kontrast zu Kryptowährungen wie Bitcoin ist der Umfang des Automaten bzw. de
 Im Folgenden betrachten wir eine beispielhafte Transaktion $ T_x $, anhand derer wir die technischen und konzeptionellen Spezifikationen von Transaktionen in Ethereum erläutern werden.
 
 \section{Struktur und technische Umsetzung einer Transaktion}
-Die Komponenten welche eine Transaktion in Ethereum ausmachen sind vergleichbar mit denen eines Briefes. Sie besitzen einen Empfänger sowie eine Frankierung, welche die Transportkosten zum Empfänger bezahlen. In einen Brief kann man z.B. Geld oder einen Text verschicken. Auch Transaktionen in Ethereum können Geld in Form von Ether und einen Text in Form von Nutzdaten verschicken. Im Weiteren wir die allgemeine Struktur und technische Umsetzung einer Transaktion vorgestellt.
+% Die Komponenten welche eine Transaktion in Ethereum ausmachen sind vergleichbar mit denen eines Briefes. Sie besitzen einen Empfänger sowie eine Frankierung, welche die Transportkosten zum Empfänger bezahlen. In einen Brief kann man z.B. Geld oder einen Text verschicken. Auch Transaktionen in Ethereum können Geld in Form von Ether und einen Text in Form von Nutzdaten verschicken. Im Weiteren wir die allgemeine Struktur und technische Umsetzung einer Transaktion vorgestellt.
+
+Die Struktur einer Transaktion ist vergleichbar mit der eines Briefes. Es gibt jeweils einen Absender, Empfänger und eine Bezahlung für die Zustellungskosten. Bei Transkationen nicht in vorm einer Briefmarke, sondern in Form von Gas \ref{gas}. Außderdem kann beides eine "`Nutzlast enthalten"'. Dabei handelt es sich meistens um einenen Etherbetrag und/oder zusätzliche Daten. Genauso kann man in einem Brief Geld oder einen Text verschicken. Im Folgenden wird die allgemeine Struktur und technische Umsetzung von Transkation in Ethereum vorgestellt.
 
 \subsection{Komponenten einer Transaktion}
 \label{komponenten}
@@ -80,33 +82,45 @@ Transkationen, so auch unsere Transaktion $T_x$, enthalten laut ihrer offizielle
   \item[init:] Ein Byte-Array unbegrenzter Länge, welches nur bei einer Kontrakterzeugung verwendet wird und den kompilierten Sourcecode des Kontrakts enthält
   \item[data:] Ein Byte-Array unbegrenzter Länge, welches die Nutzdaten des Kontrakts enthält
 \end{description}
+Im Verlaufe dieser Ausarbeitung werden wir diese Felder für unsere Transaktion $T_x$ füllen und auf die genaue Bedeutung und weitere technische Spezifikationen eingehen. 
 
 
 \subsection{Typen von Transaktionen}
-Es gibt genau zwei Typen von Transaktion. Transaktionen die eine Nachricht von einem Account\footnote{Mit Account ist hier ein EOA oder ein Kontrakt gemeint} zu einem anderen überträgt ("`message calls"' \cite[S. 4]{wood_ethereum/yellowpaper_2019}) oder Transaktionen die einen neuen Kontrakt erzeugen ("`contract creation"' \cite[S. 4]{wood_ethereum/yellowpaper_2019})). Mit Nachricht ist dabei der Inhalt von den Feldern \textit{value} und \textit{data} gemeint.
+Es gibt genau zwei Typen von Transaktion die in der Blockchain dokumentiert werden. Transaktionen die eine Nachricht von einem Account\footnote{Mit Account ist hier ein EOA oder ein Kontrakt gemeint} zu einem Anderem überträgt ("`message calls"' \cite[S. 4]{wood_ethereum/yellowpaper_2019}) oder Transaktionen die einen neuen Kontrakt erzeugen ("`contract creation"' \cite[S. 4]{wood_ethereum/yellowpaper_2019}). Mit Nachricht ist dabei der Inhalt von den Feldern \textit{value} und \textit{data} gemeint.
 
-Bei massage call Transaktionen enthält das \textit{to} Feld die öffentliche Adresse eines EOA oder eines Kontrakts. Zusätzlich besteht die Option \textit{value} und \textit{data} zusetzen. Speziell ist das \textit{data} Feld von Bedeutung, wenn das Transaktionsziel ein Kontrakt ist, denn in diesem Feld wird der konkrete
-Funktionsaufruf in Bytecode gespeichert und wird von dem Kontrakt ausgeführt.
+Bei massage call Transaktionen enthält das \textit{to} Feld die öffentliche Adresse eines EOA oder eines Kontrakts. Zusätzlich besteht die Option \textit{value} und \textit{data} zusetzen. Speziell ist das \textit{data} Feld von Bedeutung, wenn das Transaktionsziel ein Kontrakt ist, denn die EVM führt den dort in Bytecode gespeicherten Funktionsaufruf aus.
 
-Die Besonderheit bei contract creation Transaktionen ist, dass die Empfängeradresse die Nulladresse (\textit{0x0}) ist. Diese Adresse ist keinem Account zugewiesen und dient ausschließlich als "`kontrakterzeugungs Adresse"' \cite{antonopoulos_mastering_2019}.
+Die Besonderheit bei contract creation Transaktionen ist, dass die Empfängeradresse die Nulladresse (\textit{0x0}) ist. Diese Adresse ist keinem Account zugewiesen und dient ausschließlich als "`kontrakterzeugungs Adresse"' \cite{antonopoulos_mastering_2019}. Werden Ether als eine normale Transkation mit einem EOA an diese Adresse gesendet werden, sind diese verloren und können nicht mehr zurückerstattet werden\cite[S. 112]{antonopoulos_mastering_2019}.
 
-Ein spezieller Typ von Transkation ist eine interne Transaktion. Diese treten nur ausgehend von einem Kontrakt aus auf. Sie werden auch nicht in der Blockchain aufgefasst. Somit kann eine Transkation die an einen Kontrakt gerichtet ist, eine Funktion aufrufen, welche dem Sender einen Etherbetrag zurücksendet. Diese eigentlich Transaktion wird als interne Transaktion gewertet und nur der Funktionsaufruf wird in der Blockchain dokumentiert.
+Ein spezieller Ausnahme von Transkation ist eine interne Transaktion. Diese treten nur dann auf, wenn ein Kontrakt eine Transkation ausführt. So wird zum Beispiel eine Transaktion die eine Funktion eines Kontrakts aufruft in der Blockchain registriert. Die Transaktion die aus dem Aufruf resultieren kann, zum Beispiel einen Etherbetrag an den Senderaccount übertragen, wird nicht dokumentiert\cite[S. 40]{antonopoulos_mastering_2019}.
+
+% Diese treten nur ausgehend von einem Kontrakt aus auf. Sie werden auch nicht in der Blockchain aufgefasst. Somit kann zum Beispiel eine Transkation die an einen Kontrakt gerichtet ist, eine Funktion aufrufen, welche dem Sender einen Etherbetrag zurücksendet. Diese eigentlich Transaktion wird als interne Transaktion gewertet und nur der Funktionsaufruf wird in der Blockchain dokumentiert.
 % Statistik noch hinzufügen
-% Ethereumverbrennung
 
 \subsection{Serialisierung}
-Da Ethereum ein Weltcomputer ist und Daten somit über die ganze Welt verschickt werden, müssen diese kompakt, effizient und einheitlich verschickt werden. Dabei wird das Kodierungsverfahren \textit{Recursive Length Prefix (RLP)} verwendet. Alle serialisierten Daten in Ethereum sind Listen von Bytes \cite[S. 3]{wood_ethereum/yellowpaper_2019}. Auch die Daten einer Transaktion werden mit Hilfe von RLP in eine Liste von Bytes serialisiert und wieder deserialisiert. Bei der RLP Kodierung handelt es sich nur um ein Verfahren um Struktur zu serialisieren. Das heißt die Methode nimmt nur ein so genanntes "`Item"' als Parameter entgegen. Dieses Item ist entweder ein String, welcher in ein Byte-Array konvertiert wird, oder eine Liste von Items. Relevant ist für die Methode nur die Länge des Items. Je nach Fall werden dabei unterschiedliche Regeln definiert:
+Da Ethereum ein Weltcomputer ist und Daten somit über die ganze Welt verschickt werden, müssen diese kompakt, effizient und einheitlich verschickt werden. Dabei wird das Kodierungsverfahren \textit{Recursive Length Prefix (RLP)} verwendet. Alle serialisierten Daten in Ethereum sind Listen von Bytes \cite[S. 3]{wood_ethereum/yellowpaper_2019}. Auch die Daten unserer Transaktion $T_x$ werden mit Hilfe von RLP in eine Liste von Bytes serialisiert und wieder deserialisiert. Bei der RLP Kodierung handelt es sich nur um ein Verfahren um Struktur zu serialisieren. Das heißt die Methode nimmt nur ein so genanntes "`Item"' als Parameter entgegen. Dieses Item ist entweder ein String, welcher in ein Byte-Array konvertiert wird, oder eine Liste von Items. Relevant ist für die Methode nur die Länge des Items. Je nach Fall werden dabei unterschiedliche Regeln definiert:
 \begin{enumerate}
   \item Item ist eine Zeichenkette (Byte-Array):
         \begin{itemize}
           \item Besteht dieses nur aus einem Byte mit einem Wert kleiner als 128 (\texttt{0x7f}), ist das Byte ihre eigene RLP Repräsentation
-          \item Enthält das Byte-Array weniger als 56 Byte, ist die RLP Repräsentation der Inhalt dieses mit einem Präfix von \texttt{0x80} (128) plus die Länge des Arrays. Beispiel: "`Ethereum"' $\Rightarrow$ \texttt{[0x85, 'E', 't', 'h', 'e', 'r']} bzw. mit ASCII Kodierung : \texttt{[0x85, 0x45, 0x74, 0x68, 0x65, 0x72]}
+          \item Enthält das Byte-Array weniger als 56 Byte, ist die RLP Repräsentation der Inhalt dieses mit einem Präfix von \texttt{0x80} (128) plus die Länge des Arrays. Beispiel: "`Ethereum"':
+          \begin{center}
+            \texttt{[0x88, 'E', 't', 'h', 'e', 'r', 'e', 'u', 'm']}\\
+            bzw inkl. ASCII-Kodierung\\
+            \texttt{[0x85, 0x45, 0x74, 0x65, 0x68, 0x72, 0x65, 0x75, 0x6d]}
+          \end{center}  
           \item Ist das Byte-Array größer als 55 Byte wird ein Präfix aus mehreren Bestandteilen verwendet. Zum einen \texttt{0xb7} plus die Anzahl der Bytes die benötigt werden, um die Länge des String darzustellen. Gefolgt von der Länge des Strings im Big-Endian Format und dem Inhalt des Byte-Arrays. So ergibt sich für ein 2048-Byte langes Byte-Array folgender Präfix: \texttt{[0xb9, 0x80, 0x00]}.
                 2048 entsprechen in Hexadezimal \texttt{0x800} somit werden zwei Bytes (\texttt{0x80} und \texttt{0x00}) benötigt, um die Länge des Bytes darzustellen. Somit erhalten wir $\texttt{0xb7} + 2 = \texttt{0xb9}$.
         \end{itemize}
   \item Item ist eine (verschachtelte) Liste von Items:
         \begin{itemize}
-          \item Ist die Gesamtlänge alle in der Liste enthaltenen Items mit ihrer jeweiligen RLP Repräsentation 0-55 Bytes lang, so wird der Präfix \texttt{0xc0} plus die Länge der konkatenierten Liste der RLP Repräsentation gesetzt. Anschließend folgt die Liste selbst. So wäre die Kodierung der Liste \texttt{["Ether", "Wei"]} \texttt{[0xca, 0x85, 'E', 't', 'h', 'e', 'r', 0x83, 'W', 'e', 'i']} bzw. inklusive ASCII-Kodierung \texttt{[0xca, 0x85, 0x45, 0x74, 0x68, 0x65, 0x72, 0x83, 0x57, 0x65, 0x69]}. Das zweite bis siebte Byte ist dabei die RLP Repräsentation von "`Ether"' und die Bytes acht bis elf die von "`Wei"'. Somit ergibt sich eine Länge von 10 Byte, somit lautet der Präfix \texttt{0xca}
+          \item Ist die Gesamtlänge alle in der Liste enthaltenen Items mit ihrer jeweiligen RLP Repräsentation 0-55 Bytes lang, so wird der Präfix \texttt{0xc0} plus die Länge der konkatenierten Liste der RLP Repräsentation gesetzt. Anschließend folgt die Liste selbst. So wäre die Kodierung der Liste \texttt{["Ether", "Wei"]}:
+          \begin{center}
+            \texttt{[0xca, 0x85, 'E', 't', 'h', 'e', 'r', 0x83, 'W', 'e', 'i']}\\
+            bzw. inkl. ASCII-Kodierung\\
+            \texttt{[0xca, 0x85, 0x45, 0x74, 0x68, 0x65, 0x72, 0x83, 0x57, 0x65, 0x69]}
+          \end{center}
+          Das zweite bis siebte Byte ist dabei die RLP Repräsentation von "`Ether"' und die Bytes acht bis elf die von "`Wei"'. Somit ergibt sich eine Länge von 10 Byte, somit lautet der Präfix \texttt{0xca}.
           \item Ab einer Gesamtlänge von 56 Bytes wird der Präfix \texttt{0x7f} plus die Anzahl der Bytes die benötigt werden, um die Länge der Liste darzustellen. Danach folgt die Länge der Liste mit der konkatenierten Liste von RLP Repräsentation
         \end{itemize}
 \end{enumerate}
@@ -191,7 +205,7 @@ Beide Probleme lassen sich auf das Anreizsystem von Ethereum zurückführen. Gen
 \subsection{Value und Data}
 Wie in \ref{komponenten} schon vorgestellt, enthalten das \textit{value}- und \textit{data}-Feld die eigentliche Nutzlast einer Transaktion. Dabei enthält das \textit{value}-Feld ausschließlich den Betrag an Wei, der an die Empfängeradresse gesendet werden soll und das \textit{data}-Feld enthält die Nachricht.
 Eine Transkation die ein \textit{value}-Feld enthält, wird dabei auch Zahlung bzw. \textit{payment} genannt. Das \textit{data}-Feld ist ein Aufruf bzw. \textit{invocation}\cite[S.108]{antonopoulos_mastering_2019}. Eine Zahlung zwischen zwei EOAs ist dabei eine einfache Zustandsänderung der EVM und Übertragung des Etherbetrags in Weis auf den empfangenden Account. Enthält diese Transkation Daten im \textit{data}-Feld so wird diese von der Blockchain ignoriert \cite[S.10]{wood_ethereum/yellowpaper_2019}. So werden diese auch von der eigenen Wallet ignoriert und nur angezeigt.
-\begin{figure}
+\begin{figure}[h!]
   \includegraphics[width=\textwidth, keepaspectratio]{dataTransaction.png}
   \caption{Beispieltranskation an EOA mit gefülltem \textit{data}-Feld \cite[S.109]{antonopoulos_mastering_2019}}
 \end{figure}
@@ -235,7 +249,7 @@ Unsere Nutzlast, welche wir im \textit{data}-Feld nun eintragen müssen, erhalte
 \end{center}
 \endgroup
 
-Damit unser Kontrakt auch die 1 Ehter erhält müssen wir diese im \textit{value}-Feld eintragen. Unsere Funktion besitzt das Schlüsselwort \texttt{payable}, dieses wird bei Kontrakten verwendet um anzuzeigen, dass diese Funktion Ether annehmen kann. Dabei muss die im \textit{data}-Feld aufgerufene Funktion nicht zwingend auch \texttt{payable} deklariert sein. Die EVM such in dem Fall alle Funktionen durch, bis sie eine so deklarierte Funktion findet. Wenn keine Funktion \texttt{payable} deklariert wurde, gibt es meistens eine sogenannte Fallback-Funktion, welche keinen Funktionsnamen besitzt und alleinig dazu dient Ether entgegen zu nehmen und diese dem Kontrakt gut zuschreiben. Ist auch diese nicht definiert, wirft die EVM eine Exception und die Transaktion wird abgebrochen.
+Damit unser Kontrakt auch die 1 Ehter erhält müssen wir diese im \textit{value}-Feld eintragen. Die Funktion besitzt das Schlüsselwort \texttt{payable}, dieses wird bei Kontrakten verwendet um anzuzeigen, dass diese Funktion Ether annehmen kann. Dabei muss die im \textit{data}-Feld aufgerufene Funktion nicht zwingend auch \texttt{payable} deklariert sein. Die EVM such in dem Fall alle Funktionen durch, bis sie eine so deklarierte Funktion findet. Wenn keine Funktion \texttt{payable} deklariert wurde, gibt es meistens eine sogenannte Fallback-Funktion, welche keinen Funktionsnamen besitzt und alleinig dazu dient Ether entgegen zu nehmen und diese dem Kontrakt gut zuschreiben. Ist auch diese nicht definiert, wirft die EVM eine Exception und die Transaktion wird abgebrochen.
 Man kann jedoch über das \textit{data}-Feld keinen Ether an den Kontrakt übergeben. Dies ist ausschließlich über das \textit{value}-Feld möglich. Damit der Kontrakt dieses Ether annimmt, muss die Funktion genau wie unsere Funktion mit dem Schlüsselwort \texttt{payable} deklariert sein. Akzeptiert die aufgerufene Funkntion kein Ether, so wird die sogenannte Fallback-Funktion aufgerufen, die den übergenenen Etherbetrag auf das Konto des Kontrakts gut schreibt. Ist auch diese nicht definiert, wird eine Exception geworfen und die Transaktion abgebrochen.% Gas muss trotzdem gezahlt werden. % Solidity Dokumentation %
 
 Die letzte mögliche Kombination ist, wenn sowohl das \textit{value}- und \textit{data}-Feld leer sind. Dies ist ebenfalls eine gültige Transkation würde. Diese erfüllt jedoch keinen besonderen Zweck außer der Verwendung des bezahlten Gas und somit nur einer Senkung des eigenen Kontostands.
@@ -247,10 +261,26 @@ Die letzte mögliche Kombination ist, wenn sowohl das \textit{value}- und \texti
 \subsubsection{Multisignaturen}
 
 \section{Transaktionsabwicklung}
-Wir haben nun alle notwendigen Konzepte und Inhalte einer Ethereumtranskation kennengelernt. Im weiteren wird vorgestellt, wie unsere Transkation $T_x$ im Netzt verteilt wird und diese in der Blockchain aufgenommen wird.
-Damit unsere Transaktion versendet werden kann, werden unsere Transaktionsdaten mit dem privaten Schlüssel des sendenden Accounts signiert\footnote{Es wird angenommen, dass ein eigener Node betrieben wird. Werden Anwendungen wie MetaMask verwendet übernimmt diese die Signierung} und anschließend mit RLP kodiert\cite{antonopoulos_mastering_2019}.
+Wir haben nun alle notwendigen Konzepte und Inhalte einer Ethereumtranskation kennengelernt und können alle Felder unserer Transaktion füllen. Für $T_x$ gilt jetzt somit:
+\begin{center}
+  \begin{verbatim}
+    T_x = { 
+      nonce: '0x6',
+      gasPrice: '0x3B9ACA00',
+      gasLimit: '0x1117A',
+      to: '0xd76595f64aaf9a79f27cf6831788f7575f0c7f38',
+      data: '0xa26e11860...a45696e7a61686c756e670...0',\\
+      v: '0x3'
+      r: 0,
+      s: 0
+  }
+  \end{verbatim}
+\end{center}
+
+Um diese , werden alle Werte der Datenfelder (die Feldernamen sind nicht teil der Transkation \cite[S. 100]{antonopoulos_mastering_2019}) mit dem privaten Schlüssels des Accounts signiert und anschließend mit RLP kodiert.
+
 \subsection{Propagation}
-Bevor die Transaktion über das Ethereumnetzwerk verbreitet wird, überprüft der lokale Node (oder der Node, welcher MetaMask verwendet) ob die Transaktion wirklich von der eigenen Adresse stammt. Ist dies der Fall wird die Transkation über das P2P-Netwerk versendet. Ein Node ist mit mindestens 13 weiteren Nodes verbunden\cite[S.123]{antonopoulos_mastering_2019}. Jeder dieser erhält die Transkation und validiert dieser. Wenn dies erfolgreich ist sendet der jeweilige Node die Transaktion an seine Nachbarn weiter \cite[S.123]{antonopoulos_mastering_2019}. So wird erreicht, dass die Transkation sehr schnell bei jedem Node im Ethereumnetzwerk angekommen ist. Die Transaktion erreicht somit auch sogenannte Miner Nodes. Diese Nodes speichern unsere Transaktion in ihrem \textit{Mempool}. Abhängig von unserer Platzierung in dieser Liste, wird die Transaktion an einem Zeitpunkt in einen Block aufgenommen. Sobald der der Block geschürft wurde, das heißt der \textit{Proof of Work} gefunden wurde, findet eine Zustandsänderung des Zustandsautomat statt. Das heißt, die Funktion des Kontrakts wird von der EVM ausgeführt und das Ehter von dem Senderaccount abgebucht und dem Konto des Kontrakts gutgeschrieben. Schließlich kann man unsere Transaktion in der Blockchain wiederfinden: % Link zur Transaktion in Etherscan %
+Bevor die Transaktion über das Ethereumnetzwerk verbreitet wird, überprüft der lokale Node (oder der Node, welcher MetaMask verwendet) ob die Transaktion wirklich von der eigenen Adresse stammt. Ist dies der Fall wird die Transkation über das P2P-Netwerk versendet. Ein Node ist mit mindestens 13 weiteren Nodes verbunden\cite[S.123]{antonopoulos_mastering_2019}. Jeder dieser erhält die Transkation und validiert dieser. Wenn dies erfolgreich ist sendet der jeweilige Node die Transaktion an seine Nachbarn weiter \cite[S.123]{antonopoulos_mastering_2019}. So wird erreicht, dass die Transkation sehr schnell bei jedem Node im Ethereumnetzwerk angekommen ist. Die Transaktion erreicht somit auch sogenannte Miner Nodes. Diese Nodes speichern unsere Transaktion in ihrem \textit{Mempool}. Abhängig von unserer Platzierung in dieser Liste, wird die Transaktion an einem Zeitpunkt in einen Block aufgenommen. Sobald der der Block geschürft wurde, das heißt der \textit{Proof of Work} gefunden wurde, findet eine Zustandsänderung des Zustandsautomat statt. Das heißt, die Funktion des Kontrakts wird von der EVM ausgeführt und das Ehter von dem Senderaccount abgebucht und dem Konto des Kontrakts gutgeschrieben. Schließlich kann man unsere Transaktion in der Blockchain wiederfinden: \href{https://ropsten.etherscan.io/tx/0x6c5cd70f3464a6b68f95ba1bb7ebb5ece5a2f1ab4d45a5bb068e727e08fa827d}{Unsere Transaktion auf Etherscan}
 \subsection{Speicherung}
 % receipt
 
