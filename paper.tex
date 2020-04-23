@@ -63,7 +63,7 @@ Im Folgenden betrachten wir eine beispielhafte Transaktion $ T_x $ von der Erzeu
 \section{Struktur und technische Umsetzung einer Transaktion}
 % Die Komponenten welche eine Transaktion in Ethereum ausmachen sind vergleichbar mit denen eines Briefes. Sie besitzen einen Empfänger sowie eine Frankierung, welche die Transportkosten zum Empfänger bezahlen. In einen Brief kann man z.B. Geld oder einen Text verschicken. Auch Transaktionen in Ethereum können Geld in Form von Ether und einen Text in Form von Nutzdaten verschicken. Im Weiteren wir die allgemeine Struktur und technische Umsetzung einer Transaktion vorgestellt.
 
-Die Struktur einer Transaktion ist vergleichbar mit der eines Briefes. Es gibt jeweils einen Absender, Empfänger und eine Bezahlung für die Zustellungskosten. Bei Transkationen nicht in vorm einer Briefmarke, sondern in Form von Gas \ref{gas}. Außderdem kann beides eine "`Nutzlast enthalten"'. Dabei handelt es sich meistens um einenen Etherbetrag und/oder zusätzliche Daten. Genauso kann man in einem Brief Geld oder einen Text verschicken. Im Folgenden wird die allgemeine Struktur und technische Umsetzung von Transkation in Ethereum vorgestellt.
+Die Struktur einer Transaktion ist vergleichbar mit der eines Briefes. Es gibt jeweils einen Absender, Empfänger und eine Bezahlung für die Zustellungskosten. Bei Transkationen nicht in vorm einer Briefmarke, sondern in Form von Gas \ref{gas}. Außderdem kann beides eine "`Nutzlast enthalten"'. Dabei handelt es sich meistens um einenen Etherbetrag und/oder zusätzliche Daten. Genauso wie man in einem Brief Geld oder einen Text verschicken kann. Im Folgenden wird die allgemeine Struktur und technische Umsetzung von Transkation in Ethereum vorgestellt.
 
 \subsection{Komponenten einer Transaktion}
 \label{komponenten}
@@ -82,19 +82,21 @@ Im Verlaufe dieser Ausarbeitung werden wir diese Felder für unsere Transaktion 
 
 
 \subsection{Typen von Transaktionen}
+\label{types}
 Es gibt genau zwei Typen von Transaktion die in der Blockchain dokumentiert werden. Transaktionen die eine Nachricht von einem Account\footnote{Mit Account ist hier ein EOA oder ein Kontrakt gemeint} zu einem Anderem überträgt ("`message calls"' \cite[S. 4]{wood_ethereum/yellowpaper_2019}) oder Transaktionen die einen neuen Kontrakt erzeugen ("`contract creation"' \cite[S. 4]{wood_ethereum/yellowpaper_2019}). Mit Nachricht ist dabei der Inhalt von den Feldern \textit{value} und \textit{data} gemeint.
 
-Bei massage call Transaktionen enthält das \textit{to} Feld die öffentliche Adresse eines EOA oder eines Kontrakts. Zusätzlich besteht die Option \textit{value} und \textit{data} zusetzen. Speziell ist das \textit{data} Feld von Bedeutung, wenn das Transaktionsziel ein Kontrakt ist, denn die EVM führt den dort in Bytecode gespeicherten Funktionsaufruf aus.
+Bei Message-call-Transaktionen enthält das \textit{to} Feld die öffentliche Adresse eines EOA oder eines Kontrakts. Beispielsweise lautet diese Adresse  der Transaktion $T_x$ \verb+0xd76595f64aaf9a79f27cf6831788f7575f0c7f38+, welche zu einem Kontrakt gehört. Zusätzlich besteht die Option die Felder \textit{value} und \textit{data} zufüllen. Speziell ist das \textit{data} Feld für unsere Transkation von Bedeutung, da wir einen Kontrakt ansprechen wollen und wir in diesem Feld den Funktionsaufruf in Bytecode hinterlegen, der von der EVM ausgeführt werden soll.
 
-Die Besonderheit bei contract creation Transaktionen ist, dass die Empfängeradresse die Nulladresse (\textit{0x0}) ist. Diese Adresse ist keinem Account zugewiesen und dient ausschließlich als "`kontrakterzeugungs Adresse"' \cite{antonopoulos_mastering_2019}. Werden Ether als eine normale Transkation mit einem EOA an diese Adresse gesendet werden, sind diese verloren und können nicht mehr zurückerstattet werden\cite[S. 112]{antonopoulos_mastering_2019}.
+Die Besonderheit bei Contract-Creation Transaktionen ist, dass die Empfängeradresse die Nulladresse (\textit{0x0}) ist. Diese Adresse ist keinem Account zugewiesen und dient ausschließlich als "`kontrakterzeugungs Adresse"' \cite{antonopoulos_mastering_2019}. Zusätzlich können Ether mitgesendet werden, die als Startfinanzierung des Kontrakt verwendet werden \cite[S. 4]{wood_ethereum/yellowpaper_2019}. Es sollten jedoch keine Ether an diese Adresse mit einer Message-Call-Transkation gesendet werden, da diese sonst verloren sind und nicht mehr zurückerstattet werden können \cite[S. 112]{antonopoulos_mastering_2019}.
 
 Ein spezieller Ausnahme von Transkation ist eine interne Transaktion. Diese treten nur dann auf, wenn ein Kontrakt eine Transkation ausführt. So wird zum Beispiel eine Transaktion die eine Funktion eines Kontrakts aufruft in der Blockchain registriert. Die Transaktion die aus dem Aufruf resultieren kann, zum Beispiel einen Etherbetrag an den Senderaccount übertragen, wird nicht dokumentiert\cite[S. 40]{antonopoulos_mastering_2019}.
+% Eventuell T_x eine internet Transaktion ausführen lassen? %
 
 % Diese treten nur ausgehend von einem Kontrakt aus auf. Sie werden auch nicht in der Blockchain aufgefasst. Somit kann zum Beispiel eine Transkation die an einen Kontrakt gerichtet ist, eine Funktion aufrufen, welche dem Sender einen Etherbetrag zurücksendet. Diese eigentlich Transaktion wird als interne Transaktion gewertet und nur der Funktionsaufruf wird in der Blockchain dokumentiert.
 % Statistik noch hinzufügen
 
 \subsection{Serialisierung}
-Da Ethereum ein Weltcomputer ist und Daten somit über die ganze Welt verschickt werden, müssen diese kompakt, effizient und einheitlich verschickt werden. Dabei wird das Kodierungsverfahren \textit{Recursive Length Prefix (RLP)} verwendet. Alle serialisierten Daten in Ethereum sind Listen von Bytes \cite[S. 3]{wood_ethereum/yellowpaper_2019}. Auch die Daten unserer Transaktion $T_x$ werden mit Hilfe von RLP in eine Liste von Bytes serialisiert und wieder deserialisiert. Bei der RLP Kodierung handelt es sich nur um ein Verfahren um Struktur zu serialisieren. Das heißt die Methode nimmt nur ein so genanntes "`Item"' als Parameter entgegen. Dieses Item ist entweder ein String, welcher in ein Byte-Array konvertiert wird, oder eine Liste von Items. Relevant ist für die Methode nur die Länge des Items. Je nach Fall werden dabei unterschiedliche Regeln definiert:
+Da Ethereum ein Weltcomputer ist, müssen Daten schnell, kompakt, effizient und einheitlich verschickt werden. Dabei wird das Kodierungsverfahren \textit{Recursive Length Prefix (RLP)} verwendet \cite[S. 100]{antonopoulos_mastering_2019}. Alle serialisierten Daten in Ethereum sind Listen von Bytes \cite[S. 3]{wood_ethereum/yellowpaper_2019}. Auch die Daten unserer Transaktion $T_x$ werden mit Hilfe von RLP in eine Liste von Bytes serialisiert und wieder deserialisiert. Bei der RLP Kodierung handelt es sich nur um ein Verfahren um Struktur zu serialisieren. Das heißt die Methode nimmt nur ein so genanntes "`Item"' als Parameter entgegen. Dieses Item ist entweder ein String, welcher in ein Byte-Array konvertiert wird, oder eine Liste von Items. Relevant ist für die Methode nur die Länge des Items. Je nach Fall werden dabei unterschiedliche Regeln definiert:
 \begin{enumerate}
   \item Item ist eine Zeichenkette (Byte-Array):
         \begin{itemize}
@@ -167,9 +169,7 @@ Also steigen die Kosten einer Transaktion mit der Größe des Feldes \textit{dat
 \subsubsection{Preis und Latenz}
 Gas kann bewusst nur mit Ether erworben werden, da die Gas-Preise möglichst unabhändig von den Preisschwankungen (von Ether) sein sollen. Der \textit{gasPrice} kann frei gesetzt werden, auch ein Wert von 0 ist gültig. Ein Richtwert für den Wert lässt sich durch Werkzeuge wie \href{https://www.ethgasstation.info/}{ETH Gas Station} ermitteln, welche vergangene Transaktionen im \textit{Ledger} betrachten und daraus Richtwerte ermitteln. Für $ T_x $ empfiehlt sich ein \textit{gasPrice} von 9 GWei laut ETH Gas Station. Am 20.04.2020 aktzeptieren  ungefähr 84\% der letzten 200 Blöcke diesen Preis, sodass sich für unsere Transaktion $ T_x $ Kosten in Höhe von TODO CALC $ \times 9\text{Gwei} = X $ ergeben.
 
-Dort wird auch ein Umstand kenntlich, denn die Höhe des Gas-Preises scheint maßgeblich über die Latenz zu entscheiden, also die Zeit bzw. Zahl der Blöcke zwischen Veroeffentlichung einer Transaktion und ihrer Inkludierung in einem Block. Übersteigt der \textit{gasPrice} das Mittel der anderen Transaktionen im \textit{mempool} so steigt die Wahrscheinlichkeit in nächsten Block bearbeitet zu werden. Diese Korrelation schwindet allerdings, sobald die Durchsatzfähigkeit des Netzwerkes erreicht ist. \cite[S. 30 f.]{pierro_influence_2019}
-
-Zusätzlich kann das \textit{gasLimit} $ H_1 $ eines Blocks nur durch die Miner nach erfolgreichem Schürfen eines Blockes um maximal $ \frac{P(H)_{H1}}{1024} $ des alten Limits  $ P(H)_{H1} $ erhöht oder verringert werden. Dies soll eine Zentralisierung der Rechenleistung auf wenige, große Miner verhindern. Gleichzeitig limitiert dies die Fähigkeit viele Transaktionen in einem kurzen Zeitintervall zu verarbeiten oder dynamisch auf eine höhere Last zu reagieren.
+Dort wird auch ein Umstand kenntlich, denn die Höhe des Gas-Preises scheint maßgeblich über die Latenz zu entscheiden, also die Zeit bzw. Zahl der Blöcke zwischen Veroeffentlichung einer Transaktion und ihrer Inkludierung in einem Block. Übersteigt der \textit{gasPrice} das Mittel der anderen Transaktionen im \textit{mempool} so steigt die Wahrscheinlichkeit in nächsten Block bearbeitet zu werden. Diese Korrelation schwindet allerdings, sobald die Durchsatzfähigkeit des Netzwerkes erreicht ist. \cite[S. 30 f.]{pierro_influence_2019} erfolgreichem Schürfen eines Blockes um maximal $ \frac{P(H)_{H1}}{1024} $ des alten Limits  $ P(H)_{H1} $ erhöht oder verringert werden. Dies soll eine Zentralisierung der Rechenleistung auf wenige, große Miner verhindern. Gleichzeitig limitiert dies die Fähigkeit viele Transaktionen in einem kurzen Zeitintervall zu verarbeiten oder dynamisch auf eine höhere Last zu reagieren.
 
 Unter Betrachtung aller Transaktionen im Zeitraum vom 01.03.2020 00:00:17 UTC (Block 9581792) bis 31.03.2020 23:59:57 UTC (Block 9782601) mit dem Python Werkzeug \textit{ethereum-etl} \cite{noauthor_blockchain-etl/ethereum-etl_2020} ergibt sich aktuell folgender durchschnittlicher Durchsatz $ T_{max} $ pro Block: \cite{neemann_appendix_nodate}
 $$
@@ -213,30 +213,28 @@ Eine Transkation die ein \textit{value}-Feld enthält, wird dabei auch Zahlung b
   \caption{Beispieltranskation an EOA mit gefülltem \textit{data}-Feld \cite[S.109]{antonopoulos_mastering_2019}}
 \end{figure}
 
-Relevant wird der Inhalt, wenn es sich bei der \textit{to} Adresse um einen Kontrakt handelt. Der Inhalt wird dann von der EVM als ein Funktionsaufruf interpretiert. Ein Kontrakt enthält beispielsweise folgende Funktion:\\
-\texttt{function getTokenValueFromWei(uint256) public return (uint ret) \{...\}}
-Diese Funktion ist Teil eines Token-Kontrakt und gibt den Wert des übergebenen Weis in diesem Token zurück.
-Relevant wird der Inhalt, wenn es sich bei der \textit{to} Adresse um einen Kontrakt handelt. Der Inhalt wird dann von der EVM als ein Funktionsaufruf interpretiert. Unsere Transaktion $T_x$ soll die Funktion\\
+Wie bereits in \ref{types} erwähnt wird der Inhalt des \textit{data}-Feld erst von Interesse, wenn wir einen Kontrakt ansprechen.
+Beispielsweise soll unsere Transkation die Funktion \\
 \begin{verbatim}
   function deposit(string _depositReason) public payable {
     balances[msg.sender] += msg.value;
     reasons[msg.sender].push(_depositReason);
   }
 \end{verbatim}
-unseres Kontrakts aufrufen. Diese Funktion fügt den kontraktinternen Konto dem im \textit{value}-Feld übergeben Wert hinzu. Dabei muss als Parameter der Einzahlungsgrund genannt werden.
+des Kontrakts aufrufen. Diese Funktion fügt den kontraktinternen Konto dem im \textit{value}-Feld übergeben Wert hinzu. Dabei muss als Parameter der Einzahlungsgrund genannt werden.
 
 Damit diese Funktion aufgerufen werden kann, muss der Funktionsaufruf der Spezifikation des Contract Application Binary Interface (ABI) entsprechen. % https://solidity.readthedocs.io/en/v0.6.6/abi-spec.html %
 Das heißt der endgültige Inhalt setzt sich im allgemeinen aus dem Funktionsselektor und den Funktionsargumenten zusammen. Der Funktionsselektor teilt dem Kontrakt mit welche Funktion er ausführen soll und entspricht den ersten vier Bytes des Keccak-256-Hash, welches das meist genutzte Hash-Verfahren in Ethereum ist, des Funktionsprototypen. Laut ABI Spezifikation setzt sich der Funktionsprototyp aus dem Namen der Funktion und in Klammern folgend die einzelnen Parametertypen. Der Rückgabetyp einer Funktion ist nicht Teil des Funktionsprototyps.
-Daraus resultiert folgender Prototyp für unsere Funktion: \texttt{deposit(string)}.
+Daraus resultiert folgender Prototyp für unsere Funktion: \verb+deposit(string)+.
 Dessen vollständiger Keccak256-Hash entspricht:
 \begingroup
 \fontsize{8pt}{10pt}\selectfont
 \begin{center}
-  \texttt{a26e11860cdb80ecca46e4f433c3c9533f6d37cdf0f6eb16343556cfdbcf47ec}
+  \verb+0xa26e11860cdb80ecca46e4f433c3c9533f6d37cdf0f6eb16343556cfdbcf47ec+
 \end{center}
 \endgroup
-Somit entspricht \texttt{0xa26e1186} dem ABI konformen Funktionsselektor.\\
-Unser Funktionsaufruf soll 1000000000000000000 Wei (entspricht einem Ether) auf das Konto einzahlen. Als Parameter übergeben wir "`Einzahlung"'. Um einen String ABI konform zu kodieren müssen wir den Offset angeben, ab dem der Inhalt unseres Parameter startet, konkatiniert mit der Länge des Strings und beides nach links auf 32 Byte mit Paddingsbytes aufgefüllt. Danach folgt der String in UTF-8 kodiert, welcher nach rechts auf 32 Bytes aufgefüllt wurde. In unserem Fall müssen wir 32 Zeichen überspringen (\texttt{0x20}). Der String ist 10 (\texttt{0xa}) Zeichen lang. Somit lautet die Kodierung unserer Funktionsargumente wie folgt:
+Somit entspricht \verb+0xa26e1186+ dem ABI konformen Funktionsselektor.\\
+Unser Funktionsaufruf soll $1000000000000000000$ Wei (entspricht einem Ether) auf das Konto einzahlen. Als Parameter übergeben wir "`Einzahlung"'. Um einen String ABI konform zu kodieren müssen wir den Offset angeben, ab dem der Inhalt unseres Parameter startet, konkatiniert mit der Länge des Strings und beides nach links auf 32 Byte mit Paddingsbytes aufgefüllt. Danach folgt der String in UTF-8 kodiert, welcher nach rechts auf 32 Bytes aufgefüllt wurde. In unserem Fall müssen wir 32 Zeichen überspringen (\texttt{0x20}). Der String ist 10 (\texttt{0xa}) Zeichen lang. Somit lautet die Kodierung unserer Funktionsargumente wie folgt:
 \begingroup
 \fontsize{8pt}{10pt}\selectfont
 \begin{center}
@@ -295,23 +293,23 @@ Eine spezielle Form der Signatur sind Multisignaturen. Wo bei gewöhnlichen
 Wir haben nun alle notwendigen Konzepte und Inhalte einer Ethereumtranskation kennengelernt und können alle Felder unserer Transaktion füllen. Für $T_x$ gilt jetzt somit:
 \begin{center}
   \begin{verbatim}
-    T_x = { 
+    T = { 
       nonce: '0x6',
       gasPrice: '0x3B9ACA00',
       gasLimit: '0x1117A',
       to: '0xd76595f64aaf9a79f27cf6831788f7575f0c7f38',
       data: '0xa26e11860...a45696e7a61686c756e670...0',\\
-      v: '0x3'
-      r: 0,
-      s: 0
-  }
+      v: '0x26'
+      r: 0xdade772f31d20b4ed1c7f63ae035c0cc83fd7b786ca9339eb01763138877a6d4,
+      s: 0x13e16f7a55d261e504e27ea4fecc174a1a46c87d804b9a3917aebde665c1ddb1
+    }
   \end{verbatim}
 \end{center}
 
 Um diese , werden alle Werte der Datenfelder (die Feldernamen sind nicht teil der Transkation \cite[S. 100]{antonopoulos_mastering_2019}) mit dem privaten Schlüssels des Accounts signiert und anschließend mit RLP kodiert.
 
 \subsection{Propagation}
-Bevor die Transaktion über das Ethereumnetzwerk verbreitet wird, überprüft der lokale Node (oder der Node, welcher MetaMask verwendet) ob die Transaktion wirklich von der eigenen Adresse stammt. Ist dies der Fall wird die Transkation über das P2P-Netwerk versendet. Ein Node ist mit mindestens 13 weiteren Nodes verbunden\cite[S.123]{antonopoulos_mastering_2019}. Jeder dieser erhält die Transkation und validiert dieser. Wenn dies erfolgreich ist sendet der jeweilige Node die Transaktion an seine Nachbarn weiter \cite[S.123]{antonopoulos_mastering_2019}. So wird erreicht, dass die Transkation sehr schnell bei jedem Node im Ethereumnetzwerk angekommen ist. Die Transaktion erreicht somit auch sogenannte Miner Nodes. Diese Nodes speichern unsere Transaktion in ihrem \textit{Mempool}. Abhängig von unserer Platzierung in dieser Liste, wird die Transaktion an einem Zeitpunkt in einen Block aufgenommen. Sobald der der Block geschürft wurde, das heißt der \textit{Proof of Work} gefunden wurde, findet eine Zustandsänderung des Zustandsautomat statt. Das heißt, die Funktion des Kontrakts wird von der EVM ausgeführt und das Ehter von dem Senderaccount abgebucht und dem Konto des Kontrakts gutgeschrieben. Schließlich kann man unsere Transaktion in der Blockchain wiederfinden: \href{https://ropsten.etherscan.io/tx/0x6c5cd70f3464a6b68f95ba1bb7ebb5ece5a2f1ab4d45a5bb068e727e08fa827d}{Unsere Transaktion auf Etherscan}
+Bevor die Transaktion über das Ethereumnetzwerk verbreitet wird, überprüft der lokale Node (oder der Node, welcher MetaMask verwendet) ob die Transaktion wirklich von der eigenen Adresse stammt. Ist dies der Fall wird die Transkation über das P2P-Netwerk versendet. Ein Node ist mit mindestens 13 weiteren Nodes verbunden \cite[S. 123]{antonopoulos_mastering_2019}. Jeder dieser erhält die Transkation und validiert dieser. Wenn dies erfolgreich ist sendet der jeweilige Node die Transaktion an seine Nachbarn weiter \cite[S. 123]{antonopoulos_mastering_2019}. So wird erreicht, dass die Transkation sehr schnell bei jedem Node im Ethereumnetzwerk angekommen ist. Die Transaktion erreicht somit auch sogenannte Miner Nodes. Diese Nodes speichern unsere Transaktion in ihrem \textit{Mempool}. Abhängig von unserer Platzierung in dieser Liste, wird die Transaktion an einem Zeitpunkt in einen Block aufgenommen. Sobald der der Block geschürft wurde, das heißt der \textit{Proof of Work} gefunden wurde, findet eine Zustandsänderung des Zustandsautomat statt. Das heißt, die Funktion des Kontrakts wird von der EVM ausgeführt und das Ehter von dem Senderaccount abgebucht und dem Konto des Kontrakts gutgeschrieben. Schließlich kann man unsere Transaktion in der Blockchain wiederfinden: \href{https://ropsten.etherscan.io/tx/0x6c5cd70f3464a6b68f95ba1bb7ebb5ece5a2f1ab4d45a5bb068e727e08fa827d}{Unsere Transaktion auf Etherscan}
 \subsection{Speicherung}
 % receipt
 
