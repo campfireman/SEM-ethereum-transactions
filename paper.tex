@@ -58,10 +58,6 @@ Hannover, den \today \hfill
   \keywords{Ethereum \and Transaktionen \and RLP \and Gas \and Propagation}
 \end{abstract}
 
-\tableofcontents  % Inhaltsverzeichnis
-%
-%
-%
 \section{Einführung}
 Das Wort Transaktion stammt von dem lateinischen Wort \textit{transigere} ab, welches im übertragenden Sinne mit 'durchführen', 'vollführen' oder 'abmachen' (Geschäft) übersetzt werden kann. \cite{noauthor_transigere_nodate} Dieser Wortsinn besteht auch weiterhin im technischen und wirtschaftlichen Bereich, jedoch gibt es noch spezifischere Abgrenzungen. In der Wirtschaft ist es ein Vorgang bei dem Waren und Forderungen ausgetauscht werden. \cite[S. 18 f.]{ehrlicher_kompendium_1975} In der Informatik ist es im Zusammenhang mit Datenbanken eine unteilbare, \textit{atomare}, Abfolge von Anweisungen, die einen Übergang von einem konsistenten Zustand in einen Anderen beschreibt. \cite[S.520]{herold_grundlagen_2017}
 
@@ -189,7 +185,7 @@ $$
 Bei kurzzeitig stark erhöhter Anzahl an Transaktionen wie beispielsweise bei einem \textit{ICO (initial coin offering)}, werden teilweise um ein Vielfaches höhere Transaktionskosten gezahlt, um möglichst schnellen Zugriff auf die Wertanlagen zu erhalten. \cite[S. 9:6 f.]{m.spain_oasics-tokeneconomics_2019} Im Betrachteten Zeitraum war dies zum Beispiel am 13.03.2020 der Fall (s. \ref{transactions_gasprice_timeseries}). Zu diessem Zeitpunkt wurde teilweise 800 GWei pro Einheit Gas gezahlt. Der Angriff ist zeitlich stark mit einem \textit{DOS-Angriff} auf die Börse Bitmex korreliert. Ob dies tatsächlich die Ursache für den extremen Anstieg der Netzwerkaktivität ist, wird allerdings im folgenden nicht weiter analysiert. \cite{bitmex_ddos_nodate}
 
 \begin{figure}[h!]
-  \centerline{\includegraphics[width=18cm, keepaspectratio]{transactions_gasprice_timeseries.png}}
+  \centerline{\includegraphics[width=\textwidth, keepaspectratio]{transactions_gasprice_timeseries.png}}
   \caption{gasPrice nach Tag im Monat März \cite{neemann_appendix_nodate}}
   \label{transactions_gasprice_timeseries}
 \end{figure}
@@ -201,7 +197,7 @@ Alle Miner stehen unter einem wirtschaftlichen Druck. Es werden beträchtliche R
 Alle Vermutungen deuten in die gleiche Richtung: Je mehr Zeit verbraucht wird, steigt proportional dazu das Risiko, dass keine Belohnung ausgezahlt wird, da ein anderer Miner seine Lösung schneller veröffentlicht.
 
 \begin{figure}[h!]
-  \centerline{\includegraphics[width=18cm, keepaspectratio]{blocks_transactions_per_block.png}}
+  \centerline{\includegraphics[width=\textwidth, keepaspectratio]{blocks_transactions_per_block.png}}
   \caption{Verteilung der Zahl an Transaktionen pro Block (60 konstante Klassen) \cite{neemann_appendix_nodate}}
   \label{blocks_transactions_per_block}
 \end{figure}
@@ -285,7 +281,7 @@ $$
 
 \subsubsection{ECDSA}
 \label{ecdsa}
-Die resultierende Signatur $ \text{Sig} $ besteht aus den Komponenten $ r $, $ s $ und dem Signaturpräfixwert $ v $.  Diese drei Komponenten sind Teil einer spezielle Form des \textit{Digital Signature Algorithm}, die Elliptische-Kurven-Kryptographie verwendet. Der ursprüngliche Ansatz von \textit{DSA} basiert auf der Annahme eines naiven Algorithmus, einer \textit{Trapdoor-Funktion}, die auf dem großen Aufwandsunterschied zwischen Faktorisierung und Multiplikation beruht. Durch Verbesserung des ursprünglich zugrunde gelegten Algorithmus konnte dieser Aufwandsunterschied verkleinert werden, was immer größere Schlüssel erfordert. Bei \textit{ECDSA} für das "Problem des diskreten Logarithmus in elliptischen Kurven" wurde noch kein bessere Ansatz als die naive Variante gefunden, sodass deutlich kleinere Schlüsselgrößen möglich sind.
+Die resultierende Signatur $ \text{Sig} $ besteht aus den Komponenten $ r $, $ s $ und dem Signaturpräfixwert $ v $.  Diese drei Komponenten sind Teil einer spezielle Form des \textit{Digital Signature Algorithm}, die Elliptische-Kurven-Kryptographie verwendet. Der ursprüngliche Ansatz von \textit{DSA} basiert auf der Annahme eines naiven Algorithmus, einer \textit{Trapdoor-Funktion}, die auf dem großen Aufwandsunterschied zwischen Faktorisierung und Multiplikation beruht. Durch Verbesserung des ursprünglich zugrunde gelegten Algorithmus konnte dieser Aufwandsunterschied verkleinert werden, was immer größere Schlüssel erfordert. Bei \textit{ECDSA} für das "Problem des diskreten Logarithmus in elliptischen Kurven" wurde noch kein bessere Ansatz als die naive Variante gefunden, sodass deutlich kleinere Schlüsselgrößen möglich sind. \cite{noauthor_elliptic_2020}
 
 Die Komponente $ r $ repräsentiert einen öffentlichen Punkt auf der elliptischen Kurve mit dem der $ s\text{-Wert} $ mit Hilfe des öffentlichen Schlüssel $ K $ verifiziert werden kann. Die Wert von $ v $ ist doppelt belegt. Einerseits gibt er eine weitere Referenz auf \textit{Chain-ID}, andererseits kann mit ihm der öffentliche Schlüssel $ K $ des Senders schneller rekonstruiert werden, denn Transaktionnen enthalten kein \textit{from} Feld im klassischen Sinne. Wenden wir den Signaturalgorithmus auf die Transaktion $ T_x $ an, so erhalten wir folgende Komponenten, die dem Transaktionskörper angehängt werden: \cite[S. 114 ff.]{antonopoulos_mastering_2019}
 
@@ -330,7 +326,10 @@ $$
 Dieser Bloom Filter ist zusätzlich in dem Feld \textit{logsBloom} abgelegt, wodurch Clients bedeuete schneller relevante Informationen aus dem Block filtern können. \cite[S. 5]{wood_ethereum_nodate} So schließlich ist auch die Transaktion $ T_x $ ein unveränderbarer Teil der Ethereum Blochain geworden.
 
 \section{Ausblick}
-Transaktionen in Ethereum sind ein mächtiges und vielseitiges Werkzeug. Sie sind Teil des Rückgrates des angestrebten Weltcomputers. Allerdings gibt es noch Probleme bei der Leistungsfähigkeit und der Zuverlässigkeit des Netzwerkes, sodass sich ihr wahres Potential möglicherweise noch nicht entfaltet hat.
+Transaktionen in Ethereum sind ein mächtiges und vielseitiges Werkzeug. Sie sind Teil des Rückgrates des angestrebten Weltcomputers. Allerdings gibt es noch Probleme bei der Leistungsfähigkeit und der Zuverlässigkeit des Netzwerkes, sodass sich ihr wahres Potential möglicherweise noch nicht entfaltet hat. Durch einen neuene Konsensmechanismus, namentlich \textit{proof of stake}, könnte der Durchsatz an Transaktionen drastisch steigen. Auch eine Unterstützung von homomorphischer Verschlüsselung der Transaktionsdaten ist geplant.
+% proof of stake throughput
+% data field 
+% homomorphische verschluesselung
 
 
 % Literatur
