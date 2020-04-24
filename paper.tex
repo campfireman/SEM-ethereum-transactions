@@ -1,13 +1,26 @@
 \documentclass[runningheads]{llncs}
 % Grundgröße 12pt, zweiseitig
 % Standardpakete
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
+% richtiges encoding fuer verschiedene compiler
+\usepackage{iftex}
+\ifPDFTeX
+   \usepackage[utf8]{inputenc}
+   \usepackage[T1]{fontenc}
+   \usepackage{lmodern}
+\else
+   \ifXeTeX
+     \usepackage{fontspec}
+   \else 
+     \usepackage{luatextra}
+   \fi
+   \defaultfontfeatures{Ligatures=TeX}
+\fi
 % deutsche Silbentrennung
 \usepackage[ngerman]{babel}
 \usepackage{amsmath}
 \usepackage{cite}
 \usepackage{float}
+
 
 % Grafiken einbinden
 \usepackage{graphicx}
@@ -17,34 +30,32 @@
 % tiefe des Inhaltsverzeichnisses
 \setcounter{tocdepth}{2}
 
+\begin{document}
+
 \title{Transaktionen}
 \author{Ture Claußen, 1531067, \email{ture.claussen@stud.hs-hannover.de} \and Jannes Neemann, 1530893, \email{jannes.neemann@stud.hs-hannover.de}}
 \authorrunning{T. Claußen \and J. Neemann}
 \institute{Fakultät IV, Abteilung Informatik, Hochschule Hannover, Ricklinger Stadtweg 120, 30459 Hannover}
 
-
 % jetzt gehts los
-\begin{document}% hier gehts los{\def\addcontentsline#1#2#3{}\maketitle}
 {\def\addcontentsline#1#2#3{}\maketitle} % Wird gebraucht, damit der Title nicht im Inhaltsverzeichnis steht
 
+\begin{center} \sffamily\bfseries Selbständigkeitserklärung \end{center}
+% fett und zentriert in der minipage
 
+Mit der Abgabe der Ausarbeitung erklären wir, dass wir die eingereichte Seminar-Arbeit
+selbständig und ohne fremde Hilfe verfasst, andere als die von uns angegebenen Quellen
+und Hilfsmittel nicht benutzt und die den benutzten Werken wörtlich oder
+inhaltlich entnommenen Stellen als solche kenntlich gemacht haben.
+\vspace*{7ex}
 
-
-% \begin{center} \sffamily\bfseries Selbständigkeitserklärung \end{center}
-% % fett und zentriert in der minipage
-
-% Mit der Abgabe der Ausarbeitung erklären wir, dass wir die eingereichte Seminar-Arbeit
-% selbständig und ohne fremde Hilfe verfasst, andere als die von uns angegebenen Quellen
-% und Hilfsmittel nicht benutzt und die den benutzten Werken wörtlich oder
-% inhaltlich entnommenen Stellen als solche kenntlich gemacht haben.
-% \vspace*{7ex}
-
-% Hannover, den \today \hfill
+Hannover, den \today \hfill
 
 
 
 \begin{abstract}
-  \keywords{}
+  Transaktionen verändern den Zustand der Ethereum-Blockchain.  
+  \keywords{Ethereum \and Transaktionen \and RLP \and Gas \and Propagation}
 \end{abstract}
 
 % \tableofcontents  % Inhaltsverzeichnis
@@ -176,7 +187,7 @@ Bei kurzzeitig stark erhöhter Anzahl an Transaktionen wie beispielsweise bei ei
   \label{transactions_gasprice_timeseries}
 \end{figure}
 
-Bei Betrachtung der Verteilung der Anazahl Transaktionen pro Block \ref{blocks_transactions_per_block} zeigt sich ein weiteres Problem. Zunächst verteilt sich das Gros der Transaktionen ungefähr um den zuvor berechneten Durchsatz $ T_{max} $. Jedoch gibt es einen beträchtlichen Anteil an Transaktionen, der fast keine oder sehr wenige Transaktionen enthalten und gleichzeitig nur einen Bruchteil des \textit{blockGasLimit} ausschöpfen TODO: SQL PROOF. Es können mehrere Vermutungen angestellt werden, wo der Grund dafür liegt.
+Bei Betrachtung der Verteilung der Anazahl Transaktionen pro Block \ref{blocks_transactions_per_block} zeigt sich ein weiteres Problem. Zunächst verteilt sich das Gros der Transaktionen ungefähr um den zuvor berechneten Durchsatz $ T_{max} $. Jedoch gibt es einen beträchtlichen Anteil an Transaktionen, der fast keine oder sehr wenige Transaktionen enthalten und gleichzeitig nur einen Bruchteil des \textit{blockGasLimit} ausschöpfen, wobei sogar ~3,4\% der Blöcke komplett leer sind. \cite{neemann_appendix_nodate} Es können mehrere Vermutungen angestellt werden, wo der Grund dafür liegt.
 
 Alle Miner stehen unter einem wirtschaftlichen Druck. Es werden beträchtliche Ressourcen investiert, eine Auszahlung der aufgewendeten Rechenleistung gibt es nur, wenn ein Block erfolgreich geschürft wird. Wenn die Lösung für den nächsten Block gefunden wurde, muss diese noch über das Netzwerk an die anderen Nodes veröffentlicht werden. Je mehr Transaktionen im Block vom Miner gespeichert werden, desto länger dauert die Verifizierung der Transaktionen. Beim sogennanten \textit{SPV-Minig} wird sogar komplett auf die Verifizierung verzichtet. \cite{svanevik_why_2018} Hier erhöhen mehr Transaktionen die Gefahr eines \textit{double-spend} und die Ungültigkeit des Blockes. Außderdem verbrauchen mehr Transaktionen mehr Speicher (ergo Bandbreite) benötigt der Block. \cite{research_empty_nodate}
 
@@ -191,7 +202,7 @@ Alle Vermutungen deuten in die gleiche Richtung: Je mehr Zeit verbraucht wird, s
 \subsubsection{Anreiz und Spieletheorie}
 Es lässt sich postulieren, dass beide Probleme auf das Anreizsystem von Ethereum zurückzuführen sind. Generell stellt sich für die Teilnehmer des Netzwerkes die Frage, warum sie eigene Ressourcen aufwenden sollten, um das Netzwerk zu ermöglichen. Nun kann natürlich davon ausgangen werden, dass alle altruistisch motiviert sind und aus Idealismus ihren Beitrag leisten. Ethereum geht aber von einer anderen Prämisse aus. Das Feld der \textit{Cryptoeconomics} beschreibt wie ökonomische Anreize genutzt werden, um die Funktion und die Korrektheit von Kryptowährungen zu garantieren. Die Modellierung von Ethereum und seinem Anreizsystem basiert auf spieletheoretischen Ansätzen. \cite{noauthor_cryptoeconomics_nodate}
 
-In der Spieletheorie wird davon ausgegangen, dass Entscheidungsträger rational sind und sie die Nützlichkeit (\textit{utility payoff}) ihrer Entscheidungen, unter Berüchksichtigung ihres Zustandes $ t $ und der möglichen Belohnungen $ x \in X $,  maximieren wollen. Unter dieser Annahme muss eine Kryptowährung also Anreize schaffen, die für den Fortbestand des Systems zuträglich sind und gleichzeitig die Nützlichkeitsfunktion $ u(x, t) $ möglichst maximieren.  \cite[S. 2 ff.]{myerson_game_1997}
+In der Spieletheorie wird davon ausgegangen, dass Entscheidungsträger rational sind und sie die Nützlichkeit (\textit{utility payoff}) ihrer Entscheidungen, unter Berüchksichtigung ihres Zustandes $ t $ und der möglichen Belohnungen $ x \in X $,  maximieren wollen. Unter dieser Annahme muss eine Kryptowährung also Anreize schaffen, die für den Fortbestand des Systems zuträglich sind und gleichzeitig den \textit{utility payoff} Nützlichkeitsfunktion $ u(x, t) $ möglichst maximieren.  \cite[S. 2 ff.]{myerson_game_1997}
 
 Das Protokoll von Ethereum bildet den Rahmen des Spiels und seine Regeln. Überträgt man zum Beispiel genannte Problem der leeren Blöcke auf dieses Modell, ergibt sich eine mögliche Erklärung des Verhaltens. Die Rentabilität von Mining lässt sich unter Berüchksichtigung der aktuellen \textit{block rewards}, \textit{block difficulty}, etc. sehr gut errechnen. \cite{noauthor_ethereum_nodate} Nun kann sich durch Erfahrungswerte des rationalen Entscheidungsträgers herausstellen, dass die Nützlichkeit höher liegt, wenn keine Transaktionen in Blöcken inkludiert werden. Als Resultat sind rein wirtschaftlich motivierte deutlich eher dazu geneigt leere Blöcke zu schürfen, obwohl dies jeglichem Sinn des Netzwerkes widerspricht.
 
@@ -253,7 +264,7 @@ Man kann jedoch über das \textit{data}-Feld keinen Ether an den Kontrakt überg
 Die letzte mögliche Kombination ist, wenn sowohl das \textit{value}- und \textit{data}-Feld leer sind. Dies ist ebenfalls eine gültige Transkation würde. Diese erfüllt jedoch keinen besonderen Zweck außer der Verwendung des bezahlten Gas und somit nur einer Senkung des eigenen Kontostands.
 
 \subsection{Signatur}
-Die Signatur einer Transaktion belegt den Besitz eines Schlüssels, der unter aktuell die \textit{Authenzität} und die \textit{Integrität} der Nachricht beweisen kann. Dies basiert auf den Eigenschaften von \textit{Trapdoor-Funktionen} im Allgemeinen und von asymmetrischer Verschlüsselung im Speziellen. Ohne Besitz des privaten Schlüssels ist es sehr leicht die Echtheit einer Nachricht zu prüfen, allerdings extrem schwierig eine gültige Nachricht zu generieren. \cite{roeder_asymmetric-key_nodate}
+Die Signatur einer Transaktion belegt den Besitz eines Schlüssels, der aktuell die \textit{Authenzität} und die \textit{Integrität} der Nachricht beweisen kann. Dies basiert auf den Eigenschaften von \textit{Trapdoor-Funktionen} im Allgemeinen und von asymmetrischer Verschlüsselung im Speziellen. Ohne Besitz des privaten Schlüssels ist es sehr leicht die Echtheit einer Nachricht zu prüfen, allerdings extrem schwierig eine gültige Nachricht zu generieren. \cite{roeder_asymmetric-key_nodate}
 
 Für eine gültige Transaktion in Ethereum braucht es einen zufälligen privaten Schlüssel $ k $, also eine 256 bit große Zahl, aus dem dann wiederrum ein 512 bit großer öffentlicher Schlüssel $ K $ generiert wird. Mit dem $ \text{keccak256-Hash} $ von $ K $ kann daraus die Ethereum Addresse abgeleitet werden. Mit der Erzeugung eines privaten Schlüssels gelangt man also Kontrolle über einen Ethereum Account. Aufgrund der Größe des Schlüssels ist die Kollisionswahrscheinlichkeit zu vernachlässigen.
 
@@ -262,25 +273,24 @@ Um die Transaktion $ T_x $ mit einer Signatur $ \text{Sig} $ zu versehen, verwen
 Der gesamte Korpus der Transaktion $ m $ wird dann in gehashter Form Argument des Signierungsalgorithmus zusammen mit dem privaten Schlüssel $ k $.
 
 $$
-\text{Sig} = F_{sig}(F_{keccak256}(m), k)
+  \text{Sig} = F_{sig}(F_{keccak256}(m), k)
 $$
 
 \subsubsection{ECDSA}
 \label{ecdsa}
 Die resultierende Signatur $ \text{Sig} $ besteht aus den Komponenten $ r $, $ s $ und dem Signaturpräfixwert $ v $.  Diese drei Komponenten sind Teil einer spezielle Form des \textit{Digital Signature Algorithm}, die Elliptische-Kurven-Kryptographie verwendet. Der ursprüngliche Ansatz von \textit{DSA} basiert auf der Annahme eines naiven Algorithmus, einer \textit{Trapdoor-Funktion}, die auf dem großen Aufwandsunterschied zwischen Faktorisierung und Multiplikation beruht. Durch Verbesserung des ursprünglich zugrunde gelegten Algorithmus konnte dieser Aufwandsunterschied verkleinert werden, was immer größere Schlüssel erfordert. Bei \textit{ECDSA} für das "Problem des diskreten Logarithmus in elliptischen Kurven" wurde noch kein bessere Ansatz als die naive Variante gefunden, sodass deutlich kleinere Schlüsselgrößen möglich sind.
 
-Die Komponente $ r $ repräsentiert einen öffentlichen Punkt auf der elliptischen Kurve mit dem der $ s\text{-Wert} $ mit Hilfe des öffentlichen Schlüssel $ K $ verifiziert werden kann. 
-
-Wenden wir den Signaturalgorithmus auf die Transaktion $ T_x $ an, so erhalten wir folgende Komponenten, die dem Transaktionskörper angehängt werden:
+Die Komponente $ r $ repräsentiert einen öffentlichen Punkt auf der elliptischen Kurve mit dem der $ s\text{-Wert} $ mit Hilfe des öffentlichen Schlüssel $ K $ verifiziert werden kann. Die Wert von $ v $ ist doppelt belegt. Einerseits gibt er eine weitere Referenz auf \textit{Chain-ID}, andererseits kann mit ihm der öffentliche Schlüssel $ K $ des Senders schneller rekonstruiert werden, denn Transaktionnen enthalten kein \textit{from} Feld im klassischen Sinne. Wenden wir den Signaturalgorithmus auf die Transaktion $ T_x $ an, so erhalten wir folgende Komponenten, die dem Transaktionskörper angehängt werden: \cite[S. 114 ff.]{antonopoulos_mastering_2019}
 
 \begin{description}
- \item[v:] 26
- \item [r:] dade772f31d20b4ed1c7f63ae035c0cc83fd7b786ca9339eb01763138877a6d4
- \item[s:] 13e16f7a55d261e504e27ea4fecc174a1a46c87d804b9a3917aebde665c1ddb1
+  \item[v:] 26
+  \item [r:] dade772f31d20b4ed1c7f63ae035c0cc83fd7b786ca9339eb01763138877a6d4
+  \item[s:] 13e16f7a55d261e504e27ea4fecc174a1a46c87d804b9a3917aebde665c1ddb1
 \end{description}
 
 \subsubsection{Multisignaturen}
-Eine spezielle Form der Signatur sind Multisignaturen. Wo bei gewöhnlichen 
+Eine spezielle Form der Signatur sind Multisignaturen. Bei einem \textit{multi-signature} Schema muss eine Nachricht $ t $ von $ n $ aus $ m $ Entiäten unterzeichnet werden, wobei $ m \geq n > 1 $. \cite[S. 2]{hutchison_identity-based_2006} Dies erlaubt es beispielsweise eine Absicherung gegenüber nicht vertrauenswürdigen Parteien zu schaffen, gemeinschaftlich ein Wallet zu verwalten oder gegen den Verlust eines privaten Schlüssels abzusichern. Während bei Bitcoin dies durch das Protokoll selbst ermöglicht wird \cite{noauthor_multisignature_nodate}, bedarf es bei Ethereum die Verwendung eines Contracts \cite{noauthor_frequently_nodate}
+
 
 \section{Transaktionsabwicklung}
 Wir haben nun alle notwendigen Konzepte und Inhalte einer Ethereumtranskation kennengelernt und können alle Felder unserer Transaktion füllen. Für $T_x$ gilt jetzt somit:
@@ -304,9 +314,17 @@ Um diese , werden alle Werte der Datenfelder (die Feldernamen sind nicht teil de
 \subsection{Propagation}
 Bevor die Transaktion über das Ethereumnetzwerk verbreitet wird, überprüft der lokale Node (oder der Node, welcher MetaMask verwendet) ob die Transaktion wirklich von der eigenen Adresse stammt. Ist dies der Fall wird die Transkation über das P2P-Netwerk versendet. Ein Node ist mit mindestens 13 weiteren Nodes verbunden \cite[S. 123]{antonopoulos_mastering_2019}. Jeder dieser erhält die Transkation und validiert dieser. Wenn dies erfolgreich ist sendet der jeweilige Node die Transaktion an seine Nachbarn weiter \cite[S. 123]{antonopoulos_mastering_2019}. So wird erreicht, dass die Transkation sehr schnell bei jedem Node im Ethereumnetzwerk angekommen ist. Die Transaktion erreicht somit auch sogenannte Miner Nodes. Diese Nodes speichern unsere Transaktion in ihrem \textit{Mempool}. Abhängig von unserer Platzierung in dieser Liste, wird die Transaktion an einem Zeitpunkt in einen Block aufgenommen. Sobald der der Block geschürft wurde, das heißt der \textit{Proof of Work} gefunden wurde, findet eine Zustandsänderung des Zustandsautomat statt. Das heißt, die Funktion des Kontrakts wird von der EVM ausgeführt und das Ehter von dem Senderaccount abgebucht und dem Konto des Kontrakts gutgeschrieben. Schließlich kann man unsere Transaktion in der Blockchain wiederfinden: \href{https://ropsten.etherscan.io/tx/0x6c5cd70f3464a6b68f95ba1bb7ebb5ece5a2f1ab4d45a5bb068e727e08fa827d}{Unsere Transaktion auf Etherscan}
 \subsection{Speicherung}
-% receipt
+Die Speicherung und Ausführung der Transaktion lässt sich mit Hilfe der Felder \textit{transactionRoot}, \textit{receiptRoot} und \textit{logsBloom} des Blockheaders nachverfolgen. Die beiden \textit{root} Felder sind jeweils die Wurzel eines \textit{Merkle-Patricia} Baumes, welche es ermöglicht den zugrunde liegenden \textit{trie} zu traversieren. \cite{noauthor_ethereum/patricia_nodate} Mit der \textit{transactionRoot} können wir alle  im im Block enthaltenen Transaktionskorpora abrufen. Der \textit{trie} zum \textit{receiptRoot} enthält Informationen zu dem Ergebnis der Transaktionen. Ein \textit{receipt} besteht aus dem Zustand $ R_{\sigma} $ nach der Transaktion, dem kumulierten, verbrauchten Gas nach der Transaktion $ R_u $ und den Logs $ R_l $, die zur Laufzeit der Transaktion entstanden sind. Zusätzlich wird noch ein sogenannter \textit{bloom filter} $ R_b $ von den Logs angelegt, um eine schnellere Suche zu ermöglichen. \cite{noauthor_logs_nodate}
+
+$$
+R \equiv (R_{\sigma}, R_u, R_l, R_b)
+$$
+
+Dieser Bloom Filter ist zusätzlich in dem Feld \textit{logsBloom} abgelegt, wodurch Clients bedeuete schneller relevante Informationen aus dem Block filtern können. \cite[S. 5]{wood_ethereum_nodate} So schließlich ist auch die Transaktion $ T_x $ ein unveränderbarer Teil der Ethereum Blochain geworden.
 
 \section{Ausblick}
+Transaktionen in Ethereum sind ein mächtiges und vielseitiges Werkzeug. Sie sind Teil des Rückgrates des angestrebten Weltcomputers. Allerdings gibt es noch Probleme bei der Leistungsfähigkeit und der Zuverlässigkeit des Netzwerkes, sodass sich ihr wahres Potential möglicherweise noch nicht entfaltet hat.
+
 
 % Literatur
 \bibliographystyle{splncs04.bst}
