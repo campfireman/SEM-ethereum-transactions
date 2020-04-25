@@ -132,7 +132,7 @@ Das Item darf nicht länger als $2^{64}$ Bytes sein, da sonst die Länge des Pr�
 
 \subsection{Nonce}
 \label{nonce}
-Die Nonce wurde nicht von Ethereum eingeführt, sondern kommt aus dem Bereich der Kryptographie. Eine Nonce ist dort laut Definition % Wikipedia-Quelle% 
+Die Nonce wurde nicht von Ethereum eingeführt, sondern kommt aus dem Bereich der Kryptographie. Eine Nonce ist dort laut Definition \cite{noauthor_ethereum/wiki/rlp_nodate}.
 eine willkürliche Nummer, die nur einmal in einer kryptographischen Kommunikation verwendet wird. Dabei handelt es sich meistens um eine zufällig oder pseudo-zufällig generierte Zahl. Mit der die Einmaligkeit der Kommunikation gesichert wird.
 
 In Ethereum-Transaktionen ist die Nonce eine Zahl, welche bei der Accounterstellung den Wert Null hat und bei jeder erfolgreichen Transaktion\footnote{Eine Transaktion ist erfolgreich, wenn sie in einem Block der Blockchain aufgenommen wurde} um eins inkrementiert wird. Dieser Wert wird dabei nicht explizit im Account in der Blockchain gespeichert, sondern dynamisch, indem die Anzahl der erfolgreichen Transaktionen gespeichert wird \cite[S.101]{antonopoulos_mastering_2019}.
@@ -227,7 +227,7 @@ Beispielsweise soll unsere Transkation die Funktion \\
 \end{verbatim}
 des Kontrakts aufrufen. Diese Funktion fügt den kontraktinternen Konto dem im \textit{value}-Feld übergeben Wert hinzu. Dabei muss als Parameter der Einzahlungsgrund genannt werden.
 
-Damit diese Funktion aufgerufen werden kann, muss der Funktionsaufruf der Spezifikation des Contract Application Binary Interface (ABI) entsprechen. % https://solidity.readthedocs.io/en/v0.6.6/abi-spec.html %
+Damit diese Funktion aufgerufen werden kann, muss der Funktionsaufruf der Spezifikation des Contract Application Binary Interface (ABI) entsprechen \cite{noauthor_contract_nodate}.
 Das heißt der endgültige Inhalt setzt sich im allgemeinen aus dem Funktionsselektor und den Funktionsargumenten zusammen. Der Funktionsselektor teilt dem Kontrakt mit welche Funktion er ausführen soll und entspricht den ersten vier Bytes des Keccak-256-Hash, welches das meist genutzte Hash-Verfahren in Ethereum ist, des Funktionsprototypen. Laut ABI Spezifikation setzt sich der Funktionsprototyp aus dem Namen der Funktion und in Klammern folgend die einzelnen Parametertypen. Der Rückgabetyp einer Funktion ist nicht Teil des Funktionsprototyps.
 Daraus resultiert folgender Prototyp für unsere Funktion: \verb+deposit(string)+.
 Dessen vollständiger Keccak256-Hash entspricht:
