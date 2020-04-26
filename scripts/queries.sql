@@ -137,12 +137,6 @@ SELECT
 FROM
     top_valuers;
 
--- no. of blocks
-SELECT
-    COUNT(*)
-FROM
-    blocks;
-
 -- empty blocks
 SELECT
     COUNT(*)
@@ -151,3 +145,143 @@ FROM
 WHERE
     CAST(gas_used AS DECIMAL) / gas_limit = 0
     AND transaction_count = 0;
+
+-- total value of transactions
+CREATE MATERIALIZED VIEW IF NOT EXISTS total_value AS
+SELECT
+    (SUM(gas) * SUM(gas_price) + SUM(value)) / POWER(10, 18) AS total
+FROM
+    transactions;
+
+-- ratio of top recievers
+SELECT
+    t.total / tx.total
+FROM
+    (
+        SELECT
+            SUM(total) AS total
+        FROM
+            top_recievers
+    ) AS t,
+    total_value AS tx;
+
+-- examine the value of top reciever
+SELECT
+    t.total / tx.total
+FROM
+    (
+        SELECT
+            *
+        FROM
+            top_recievers
+        LIMIT
+            1
+    ) AS t,
+    (
+        SELECT
+            *
+        FROM
+            total_value
+    ) AS tx;
+
+-- no. of blocks
+CREATE MATERIALIZED VIEW IF NOT EXISTS total_no_tx AS
+SELECT
+    COUNT(*) AS to_no_tx
+FROM
+    transactions;
+
+-- compare top recievers to total value of transactions
+SELECT
+    t1.total_top / t2.total AS ratio_of_top
+FROM
+    (
+        SELECT
+            SUM(total) AS total_top
+        FROM
+            top_recievers
+    ) AS t1,
+    (
+        SELECT
+            total
+        FROM
+            total_value
+    ) AS t2;
+
+-- examine the transaction volume of top accounts
+SELECT
+    tx.no_of_tx / CAST(t.total_no_tx AS FLOAT) AS ratio
+FROM
+    (
+        SELECT
+            to_address,
+            COUNT(*) AS no_of_tx
+        FROM
+            transactions
+        GROUP BY
+            to_address
+        ORDER BY
+            no_of_tx DESC
+        LIMIT
+            100
+    ) AS tx,
+    total_no_tx AS t;
+
+SELECT
+    SUM(ratio)
+FROM
+    (
+        SELECT
+            tx.no_of_tx / CAST(t.total_no_tx AS FLOAT) AS ratio
+        FROM
+            (
+                SELECT
+                    t.to_address,
+                    COUNT(*) AS no_of_tx
+                FROM
+                    transactions AS tx
+                    RIGHT JOIN top_recievers AS t ON tx.to_address = t.to_address
+                GROUP BY
+                    t.to_address
+                ORDER BY
+                    no_of_tx DESC
+            ) AS tx,
+            total_no_tx AS t
+    ) AS t;
+
+\ copy (
+    SELECT
+        COUNT(*) AS no_of_tx,
+        to_address
+    FROM
+        transactions
+    GROUP BY
+        to_address
+    ORDER BY
+        no_of_tx
+) TO '/home/ture/studium/19-20SS/SEM/data/no_of_tx.csv' With CSV DELIMITER ',' HEADER;
+
+SELECT
+    percentile_cont(0.25) within GROUP (
+        ORDER BY
+            t.total ASC
+    ) AS percentile_25,
+    percentile_cont(0.50) within GROUP (
+        ORDER BY
+            t.total ASC
+    ) AS percentile_50,
+    percentile_cont(0.75) within GROUP (
+        ORDER BY
+            t.total ASC
+    ) AS percentile_75,
+    percentile_cont(0.95) within GROUP (
+        ORDER BY
+            t.total ASC
+    ) AS percentile_95
+FROM
+    (
+        SELECT
+            (gas * gas_price + value) / POWER(10, 18) AS total
+        FROM
+            transactions
+    ) AS t;

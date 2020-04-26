@@ -51,17 +51,11 @@ inhaltlich entnommenen Stellen als solche kenntlich gemacht haben.
 
 Hannover, den \today \hfill
 
-
-
 \begin{abstract}
-  Transaktionen verändern den Zustand der Ethereum-Blockchain.
+  Eine explorative Betrachtung von Transaktionen in Ethereum. 
   \keywords{Ethereum \and Transaktionen \and RLP \and Gas \and Propagation}
 \end{abstract}
 
-% \tableofcontents  % Inhaltsverzeichnis
-%
-%
-%
 \section{Einführung}
 Das Wort Transaktion stammt von dem lateinischen Wort \textit{transigere} ab, welches im übertragenden Sinne mit "`durchführen"', "`vollführen"' oder "`abmachen"' (Geschäft) übersetzt werden kann. \cite{noauthor_transigere_nodate} Dieser Wortsinn besteht auch weiterhin im technischen und wirtschaftlichen Bereich, jedoch gibt es noch spezifischere Abgrenzungen. In der Wirtschaft ist es ein Vorgang bei dem Waren und Forderungen ausgetauscht werden. \cite[S. 18 f.]{ehrlicher_kompendium_1975} In der Informatik ist es im Zusammenhang mit Datenbanken eine unteilbare, \textit{atomare}, Abfolge von Anweisungen, die einen Übergang von einem konsistenten Zustand in einen Anderen beschreibt. \cite[S.520]{herold_grundlagen_2017}
 
@@ -97,6 +91,10 @@ Bei Message-Call-Transaktionen enthält das \textit{to} Feld die öffentliche Ad
 Die Besonderheit bei Contract-Creation-Transaktionen ist, dass die Empfängeradresse die Nulladresse (\textit{0x0}) ist. Diese Adresse ist keinem Account zugewiesen und dient ausschließlich als "`kontrakterzeugungs Adresse"' \cite{antonopoulos_mastering_2019}. Zusätzlich können Ether mitgesendet werden, die als Startfinanzierung des Kontrakt verwendet werden \cite[S. 4]{wood_ethereum/yellowpaper_2019}. Es sollten jedoch keine Ether an diese Adresse mit einer Message-Call-Transkation gesendet werden, da diese sonst verloren sind und nicht mehr zurückerstattet werden können \cite[S. 112]{antonopoulos_mastering_2019}.
 
 Ein spezieller "`Typ"' von Transaktion ist eine interne Transaktion. Diese treten nur dann auf, wenn ein Kontrakt eine Transkation ausführt. Beispielsweise wird eine Funktion dieses Kontrakts aufgerufen und dem Sender ein Etherbetrag zurückgesendet. Die Transaktion mit dem Funktionsaufruf wird dabei in der Blockchain dokumentiert. Die Transkation mit der Überweisung aber nicht \cite[S. 40]{antonopoulos_mastering_2019}.
+
+\subsubsection{Verteilung der Transaktionen}
+Unter Betrachtung aller Transaktionen im Zeitraum vom 01.03.2020 00:00:17 UTC (Block 9581792) bis 31.03.2020 23:59:57 UTC (Block 9782601) mit dem Python Werkzeug \textit{ethereum-etl} \cite{noauthor_blockchain-etl/ethereum-etl_2020} lässt sich ein guter Eindruck von dem aktuellen Zustand des \textit{mainnets} von Ethereum gewinnen. Der Datensatz $ D $ enthält ein Gesamtvolumen $ M $ an 22,748,700 Transaktionen, wovon ~2.1\% Kontrakterzeugungen sind. Wiederrum sind X\% der Transaktionen an Kontrakte addressiert. Wir definieren den Gesamtwert einer Transaktion als $ V_{\text{total}} = \textit{gasPrice} \times \textit{gasLimit} + \textit{value} $, wobei wir diesen Wert der Empfängeraddresse zuschreiben. Ordnet man die Addressen nach $ V_{\text{total}} $ machen der kumulierte Wert $ \text{SUM}(V_{\text{total}}) $ der ersten 100 Addressen ~2.3\% des Gesamtwertes aus. Alle diese Adressen sind Kontrakte. Allerdings ist die Anzahl der Transaktion, die an diese Konktrakte addressiert sind, ~44.2\% des gesamten Transaktionsvolumens $ M $. \cite{neemann_appendix_nodate}
+
 \subsection{Serialisierung}
 Da Ethereum ein Weltcomputer ist, müssen Daten schnell, kompakt, effizient und einheitlich verschickt werden. Dabei wird das Kodierungsverfahren \textit{Recursive Length Prefix (RLP)} verwendet \cite[S. 100]{antonopoulos_mastering_2019}. Alle serialisierten Daten in Ethereum sind Listen von Bytes \cite[S. 3]{wood_ethereum/yellowpaper_2019}. Auch die Daten unserer Transaktion $T_x$ werden mit Hilfe von RLP in eine Liste von Bytes serialisiert und wieder deserialisiert. Bei der RLP Kodierung handelt es sich nur um ein Verfahren um Struktur zu serialisieren. Das heißt die Methode nimmt nur ein so genanntes "`Item"' als Parameter entgegen. Dieses Item ist entweder ein String, welcher in ein Byte-Array konvertiert wird, oder eine Liste von Items. Relevant ist für die Methode nur die Länge des Items. Je nach Fall werden dabei unterschiedliche Regeln definiert:
 \begin{enumerate}
@@ -210,7 +208,7 @@ Somit gilt es nun im Voraus abzuschätzen wie hoch der Rechenaufwand für unsere
 
 $$ g_0 \equiv \sum_{i \in T_i, T_d}
   \begin{cases}
-    G_{datazero} \text{ if } i=0 \\
+    G_{txdatazero} \text{ if } i=0 \\
     G_{txdatanonzero} \text{ otherwise}
   \end{cases}
   +
@@ -221,14 +219,14 @@ $$ g_0 \equiv \sum_{i \in T_i, T_d}
   +
   G_{transaction}
 $$
-Also steigen die Kosten einer Transaktion mit der Größe des Feldes \textit{data} an und $ G_{transaction} $ bestimmt den Basiswert an Gas für eine Transaktion, welcher sich im Jahr 2020 auf 21000 beläuft. Generell sollte das \textit{gasLimit} tendenziell zu hoch angelegt sein, da Transaktionen mit unzureichendem Gas einfach abgebrochen werden \textit{(out-of-gas Exception)}. In diesem Fall wird keine der begonnenen Veränderungen am Zustand gespeichert. Durch Einsetzen für $ g_0 $ ergeben sich für die Beispieltransaktion $ T_x $ intrinsische Kosten von:  X TODO calculate
+Also steigen die Kosten einer Transaktion mit der Größe des Feldes \textit{data} an und $ G_{transaction} $ bestimmt den Basiswert an Gas für eine Transaktion, welcher sich im Jahr 2020 auf 21000 \textit{gas} beläuft. Generell sollte das \textit{gasLimit} tendenziell zu hoch angelegt sein, da Transaktionen mit unzureichendem Gas einfach abgebrochen werden \textit{(out-of-gas Exception)}. In diesem Fall wird keine der begonnenen Veränderungen am Zustand gespeichert. Durch Einsetzen für $ g_0 $ ergeben sich für die Beispieltransaktion $ T_x $ mit $ G_{\text{txdatazero}} = 4 $ und $ G_{\text{txdatanonzero}} = 68 $ intrinsische Kosten von: 3524 \textit{gas}. \cite{neemann_appendix_nodate}
 
 \subsubsection{Preis und Latenz}
-Gas kann bewusst nur mit Ether erworben werden, da die Gas-Preise möglichst unabhängig von den Preisschwankungen (von Ether) sein sollen. Der \textit{gasPrice} kann frei gesetzt werden, auch ein Wert von 0 ist gültig. Ein Richtwert für den Wert lässt sich durch Werkzeuge wie \href{https://www.ethgasstation.info/}{ETH Gas Station} ermitteln, welche vergangene Transaktionen im \textit{Ledger} betrachten und daraus Richtwerte ermitteln. Danach empfiehlt sich für $ T_x $ ein \textit{gasPrice} von 9 GWei im \textit{mainnet}. Am 20.04.2020 aktzeptieren ungefähr 84\% der letzten 200 Blöcke diesen Preis, sodass sich für unsere Transaktion $ T_x $ Kosten in Höhe von TODO CALC $ \times 9\text{Gwei} = X $ ergeben.
+Gas kann bewusst nur mit Ether erworben werden, da die Gas-Preise möglichst unabhängig von den Preisschwankungen (von Ether) sein sollen. Der \textit{gasPrice} kann frei gesetzt werden, auch ein Wert von 0 ist gültig. Ein Richtwert für den Wert lässt sich durch Werkzeuge wie \href{https://www.ethgasstation.info/}{ETH Gas Station} ermitteln, welche vergangene Transaktionen im \textit{Ledger} betrachten und daraus Richtwerte ermitteln. Danach empfiehlt sich für $ T_x $ ein \textit{gasPrice} von 9 GWei im \textit{mainnet}. Am 20.04.2020 aktzeptieren ungefähr 84\% der letzten 200 Blöcke diesen Preis, sodass sich für unsere Transaktion $ T_x $ Kosten in Höhe von 3524 $ \times 9 \text{Gwei} = 31716 \text{GWei} $ für die intrinsischen Kosten ergeben.
 
 Dort wird auch ein Umstand kenntlich, denn die Höhe des Gas-Preises scheint maßgeblich über die Latenz zu entscheiden, also die Zeit bzw. Zahl der Blöcke zwischen Veroeffentlichung einer Transaktion und ihrer Inkludierung in einem Block. Übersteigt der \textit{gasPrice} das Mittel der anderen Transaktionen im \textit{mempool} so steigt die Wahrscheinlichkeit in nächsten Block bearbeitet zu werden. Diese Korrelation schwindet allerdings, sobald die Durchsatzfähigkeit des Netzwerkes erreicht ist. \cite[S. 30 f.]{pierro_influence_2019} Da das \textit{gasLimit} eines Blockes nach erfolgreichem Schürfen durch den Miner um maximal $ \frac{P(H)_{H1}}{1024} $ des alten Limits  $ P(H)_{H1} $ erhöht oder verringert werden darf, limitiert dies die Fähigkeit viele Transaktionen in einem kurzen Zeitintervall zu verarbeiten oder dynamisch auf eine höhere Last zu reagieren. Gleichzeitig  verhindert dies eine Zentralisierung der Rechenleistung auf wenige, große Miner durch zu große und rechenintensive Blöcke.
 
-Unter Betrachtung aller Transaktionen im Zeitraum vom 01.03.2020 00:00:17 UTC (Block 9581792) bis 31.03.2020 23:59:57 UTC (Block 9782601) mit dem Python Werkzeug \textit{ethereum-etl} \cite{noauthor_blockchain-etl/ethereum-etl_2020} ergibt sich aktuell folgender durchschnittlicher Durchsatz $ T_{max} $ pro Block: \cite{neemann_appendix_nodate}
+Zieht man den Datensatz $ D $ zu Rate, ergibt sich aktuell folgender durchschnittlicher Durchsatz $ T_{max} $ pro Block: \cite{neemann_appendix_nodate}
 $$
   T_{max} = \frac{\textit{blockGasLimit}}{\textit{transactionMedianGas}} = \frac{9817880}{80000} = 122.72
 $$
