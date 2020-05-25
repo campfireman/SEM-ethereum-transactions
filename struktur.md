@@ -80,3 +80,9 @@ TODO: feingliederung
     3. Multisignatur-Transaktionen
 
 5. Digitale Signaturen
+
+
+## todos vortrag
+- gewichtung von prioritaeten in eigenen Abschnitten (Zeitgruende, Zeit messen)
+- private key fuer transaktion
+- 
