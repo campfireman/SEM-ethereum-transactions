@@ -75,7 +75,7 @@ Transkationen, so auch unsere Transaktion $T_x$, enthalten laut ihrer offizielle
   \item[gasPrice:] Ein Skalar, der angibt, wie viel Wei man pro Einheit \textit{Gas} bezahlt, die bei der Gesamtheit aller Berechnungen, die während der Ausführung der Transaktion anfallen (s. \ref{gas}).
   \item[gasLimit:] Ein Skalar, der die maximal Anzahl an \textit{Gas} angibt, die während der Ausführung der Transaktion verbraucht werden darf. Dieser Betrag muss im Voraus bezahlt werden.
   \item[to:] Die 160-Bit Adresse des Empfängers.
-  \item[value:] Skalar der die Menge Wei angibt, die der Empfänger erhält.
+  \item[value:] Skalar der den Betrag an Wei angibt, die der Empfänger erhält.
   \item[v,r,s:] Komponenten der ECDSA-Signatur (s. \ref{ecdsa}), um den Sender der Transaktion zu bestimmen.
   \item[init:] Ein Byte-Array unbegrenzter Länge, welches nur bei einer Kontrakterzeugung verwendet wird und den kompilierten Sourcecode des Kontrakts enthält.
   \item[data:] Ein Byte-Array unbegrenzter Länge, welches die Nutzdaten des Kontrakts enthält.
@@ -85,7 +85,7 @@ Im Verlaufe dieser Ausarbeitung werden wir diese Felder für unsere Transaktion 
 
 \subsection{Typen von Transaktionen}
 \label{types}
-Es gibt genau zwei Typen von Transaktion die in der Blockchain dokumentiert werden. Transaktionen, die eine Nachricht von einem Account\footnote{Mit Account ist hier ein EOA oder ein Kontrakt gemeint} zu einem Anderem überträgt ("`message calls"' \cite[S. 4]{wood_ethereum/yellowpaper_2019}) oder Transaktionen die einen neuen Kontrakt erzeugen ("`contract creation"' \cite[S. 4]{wood_ethereum/yellowpaper_2019}). Mit dem Wort "`Nachricht"' ist dabei der Inhalt von den Feldern \textit{value} und \textit{data} gemeint.
+Es gibt genau zwei Typen von Transaktion die in der Blockchain dokumentiert werden. Transaktionen, die eine Nachricht von einem EOA zu einem anderen EOA oder Kontrakt überträgt ("`message calls"' \cite[S. 4]{wood_ethereum/yellowpaper_2019}) oder Transaktionen die einen neuen Kontrakt erzeugen ("`contract creation"' \cite[S. 4]{wood_ethereum/yellowpaper_2019}). Mit dem Wort "`Nachricht"' ist dabei der Inhalt von den Feldern \textit{value} und \textit{data} gemeint.
 
 Bei Message-Call-Transaktionen enthält das \textit{to} Feld die öffentliche Adresse eines EOA oder eines Kontrakts. Unsere Transaktion $T_x$ adressiert einen Kontrak mit der Adresse \verb+0xd76595f64aaf9a79f27cf6831788f7575f0c7f38+. Zusätzlich besteht die Option die Felder \textit{value} und \textit{data} zufüllen. Speziell ist das \textit{data} Feld für unsere Transkation von Bedeutung, denn der Funktionsaufruf wird in Bytecode in diesem gepeichert.
 
@@ -106,7 +106,7 @@ Da Ethereum ein Weltcomputer ist, müssen Daten schnell, kompakt, effizient und 
                 \begin{center}
                   \texttt{[0x88, 'E', 't', 'h', 'e', 'r', 'e', 'u', 'm']}\\
                   bzw inkl. ASCII-Kodierung\\
-                  \texttt{[0x85, 0x45, 0x74, 0x65, 0x68, 0x72, 0x65, 0x75, 0x6d]}
+                  \texttt{[0x88, 0x45, 0x74, 0x65, 0x68, 0x72, 0x65, 0x75, 0x6d]}
                 \end{center}
           \item Ist das Byte-Array größer als 55 Byte wird ein Präfix aus mehreren Bestandteilen verwendet. Zum einen \texttt{0xb7} plus die Anzahl der Bytes die benötigt werden, um die Länge des String darzustellen. Gefolgt von der Länge des Strings im Big-Endian Format und dem Inhalt des Byte-Arrays. So ergibt sich für ein 2048-Byte langes Byte-Array folgender Präfix: \texttt{[0xb9, 0x80, 0x00]}.
                 2048 entsprechen in Hexadezimal \texttt{0x800} somit werden zwei Bytes (\texttt{0x80} und \texttt{0x00}) benötigt, um die Länge des Bytes darzustellen. Insgesamt erhalten wir $\texttt{0xb7} + 2 = \texttt{0xb9}$ als Präfix.
@@ -128,7 +128,7 @@ Das Item darf nicht länger als $2^{64}$ Bytes sein, da sonst die Länge des Pr�
 
 \subsection{Nonce}
 \label{nonce}
-Die Nonce wurde nicht von Ethereum eingeführt, sondern kommt aus dem Bereich der Kryptographie. Eine Nonce ist dort laut Definition \cite{noauthor_ethereum/wiki/rlp_nodate}
+Das Konzept der Nonce wurde nicht von Ethereum eingeführt, sondern kommt aus dem Bereich der Kryptographie. Eine Nonce ist dort laut Definition \cite{noauthor_ethereum/wiki/rlp_nodate}
 eine willkürliche Nummer, die nur einmal in einer kryptographischen Kommunikation verwendet wird. Dabei handelt es sich meistens um eine zufällig oder pseudo-zufällig generierte Zahl, mit der die Einmaligkeit der Kommunikation gesichert wird.
 
 In Ethereum-Transaktionen ist die Nonce eine Zahl, welche bei der Accounterstellung den Wert Null hat und bei jeder erfolgreichen Transaktion\footnote{Eine Transaktion ist erfolgreich, wenn sie in einem Block der Blockchain aufgenommen wurde} um eins inkrementiert wird. Dieser wert wird dabei nicht explizit im Account gespeichert. Stattdessen wird die Anzahl der erfolgreichen Transkationen dynamisch gespeichert \cite[S.101]{antonopoulos_mastering_2019}.
