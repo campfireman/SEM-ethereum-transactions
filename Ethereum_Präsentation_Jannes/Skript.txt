@@ -8,12 +8,15 @@ Dann gehen wir genauer auf die Transaktionsabwicklung ein
 und zum Schluss geben wir einen kleinen Ausblick.
 
 // Einleitung
-Transkation kommt aus dem lateinischen und bedeutet so viel wie durchführen, vollführen oder abmachen.
-Wir führen Transkationen tag taäglich durch. Eine Banküberweisung, das Bezahlen eines Gegenstandes sind alles Transaktionen.
-Transkaktionen sind in Ethereum ein grundlegender Baustein. Daher bezeichnet man es auch als einen transkationsorietierter Automat oder transaction-based state machine.
-Das bedeutet, dass jeder Account einen state besitzt, in dem er sich gerade befindet. Bei jeder erfolgreichen Transaktion wird eine sogenannte Zustandsübergangsfunktion ausfgerufe, die die States der von der Transaktion betroffenden Accounts aktualiesiert.
-Im Laufe des Votrages wollen wir gemeinsam eine Transaktionen Tx formal korrekt definieren und ausführen
-Weltcomputer Transkationen stoßen den Weltcomputer an
+Eine dezentrale Rechnenmaschine, ein "Weltcomputer" ist die Idee hinter Ethereum. Nicht wie bei etwas Bitcoin, wo nur die Schöpfung Speicherung und Austausch eines digitalen
+Zahlungsmittels im Vordergrund steht. 
+Jeder Nodebetreiber kann Programme auf der Blockchain mit Hilfe der EVM ausführen. Als Gegenleistung spendet er seine Rechenleistung dem Netzwerk.
+Damit diese Rechenmaschine jedoch funktionieren kann, gibt es Transaktionen. 
+Transaktionen in Ethereum sind dafür zuständig, dass eine Zustandsänderung ausgelöst wird.
+Daher spricht man auch von einem transaktionsorientierten Automaten bzw. einer transaction-based state machine.
+Jeder Account hat einen Zustand. Damit dieser seinen Zustand ändern kann, wird eine Zustandübergangsfunktion definiert. Diese erhält als Parameter den Zustand sowie die Transaktion.
+In der Transaktaktion enthält die Aktion die durchgeführt werden soll und den Zustand des Accounts verändert.
+Im Laufe dieser Präsentation werden wir die Komponenten und die Bedeutung dieser and der Beispiel Transkation Tx vorstellen.
 
 // Struktur 
 Kommen wir nun zu der Struktur und technischen Umsetzung einer Transaktion.
