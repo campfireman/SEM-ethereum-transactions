@@ -30,6 +30,7 @@
 % tiefe des Inhaltsverzeichnisses
 \setcounter{tocdepth}{2}
 
+
 \begin{document}
 
 \title{Transaktionen}
@@ -214,7 +215,7 @@ $$ g_0 \equiv \sum_{i \in T_i, T_d}
   +
   G_{transaction}
 $$
-Also steigen die Kosten einer Transaktion mit der Größe des Feldes \textit{data} an und $ G_{transaction} $ bestimmt den Basiswert an Gas für eine Transaktion, welcher sich im Jahr 2020 auf 21000 \textit{gas} beläuft. Generell sollte das \textit{gasLimit} tendenziell zu hoch angelegt sein, da Transaktionen mit unzureichendem Gas einfach abgebrochen werden \textit{(out-of-gas Exception)}. In diesem Fall wird keine der begonnenen Veränderungen am Zustand gespeichert. Durch Einsetzen für $ g_0 $ ergeben sich für die Beispieltransaktion $ T_x $ mit $ G_{\text{txdatazero}} = 4 $ und $ G_{\text{txdatanonzero}} = 68 $ intrinsische Kosten von: 3524 \textit{gas}. \cite{neemann_appendix_nodate}
+Also steigen die Kosten einer Transaktion mit der Größe des Feldes \textit{data} an und $ G_{transaction} $ bestimmt den Basiswert an Gas für eine Transaktion, welcher sich im Jahr 2020 auf 21000 \textit{gas} beläuft. Generell sollte das \textit{gasLimit} tendenziell zu hoch angelegt sein, da Transaktionen mit unzureichendem Gas einfach abgebrochen werden \textit{(out-of-gas Exception)}. In diesem Fall wird keine der begonnenen Veränderungen am Zustand gespeichert. Durch Einsetzen für $ g_0 $ ergeben sich für die Beispieltransaktion $ T_x $ mit $ G_{\text{txdatazero}} \times 4 $ und $ G_{\text{txdatanonzero}} \times 68 $ intrinsische Kosten für die Daten: 3524 \textit{gas}. Hierzu sind dann noch die Kosten $ G_{transaction} $ zu addieren. \cite{neemann_appendix_nodate}
 
 \subsubsection{Preis und Latenz}
 Gas kann bewusst nur mit Ether erworben werden, da die Gas-Preise möglichst unabhängig von den Preisschwankungen (von Ether) sein sollen. Der \textit{gasPrice} kann frei gesetzt werden, auch ein Wert von 0 ist gültig. Ein Richtwert für den Wert lässt sich durch Werkzeuge wie \href{https://www.ethgasstation.info/}{ETH Gas Station} ermitteln, welche vergangene Transaktionen im \textit{Ledger} betrachten und daraus Richtwerte ermitteln. Danach empfiehlt sich für $ T_x $ ein \textit{gasPrice} von 9 GWei im \textit{mainnet}. Am 20.04.2020 aktzeptieren ungefähr 84\% der letzten 200 Blöcke diesen Preis, sodass sich für unsere Transaktion $ T_x $ Kosten in Höhe von 3524 $ \times 9 \text{Gwei} = 31716 \text{GWei} $ für die intrinsischen Kosten ergeben.
