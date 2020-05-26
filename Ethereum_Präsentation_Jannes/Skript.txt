@@ -1,0 +1,72 @@
+// Inhaltsverzeichnis
+Unser Vortrag wird über Transaktionen in Ethereum handeln.
+Dabei werden wir folgende Punkte vorstellen.
+Zuerst wird es eine kleine Einführung geben.
+Anschließend werden wir die Struktur und technische Umsetzung einer Transaktion nennen.
+Und uns dann einzelene Komponenten genauer anschauen.
+Dann gehen wir genauer auf die Transaktionsabwicklung ein
+und zum Schluss geben wir einen kleinen Ausblick.
+
+// Einleitung
+Transkation kommt aus dem lateinischen und bedeutet so viel wie durchführen, vollführen oder abmachen.
+Wir führen Transkationen tag taäglich durch. Eine Banküberweisung, das Bezahlen eines Gegenstandes sind alles Transaktionen.
+Transkaktionen sind in Ethereum ein grundlegender Baustein. Daher bezeichnet man es auch als einen transkationsorietierter Automat oder transaction-based state machine.
+Das bedeutet, dass jeder Account einen state besitzt, in dem er sich gerade befindet. Bei jeder erfolgreichen Transaktion wird eine sogenannte Zustandsübergangsfunktion ausfgerufe, die die States der von der Transaktion betroffenden Accounts aktualiesiert.
+Im Laufe des Votrages wollen wir gemeinsam eine Transaktionen Tx formal korrekt definieren und ausführen
+Weltcomputer Transkationen stoßen den Weltcomputer an
+
+// Struktur 
+Kommen wir nun zu der Struktur und technischen Umsetzung einer Transaktion.
+Die Struktur einer Transaktion ist genau defininiert und enthält verschiedene Komponenten.
+Unsere Transaktion Tx enthält folgende Datenfelder:
+Die Nonce ist ein Skalarerwert und ist gleich der Anzahl vom EOA durchgeführten Transaktionen. Auf die Bedeutung dieser werden ich später eingehen.
+gasPrice ist gleich der Betrag an Wei den man pro Gaseinheit bezahlen möchte
+gasLimit ist der maximale Betrag an Gas das während der Transaktion verbraucht werden darf
+To ist die öffentliche Adresse des Empfängers
+value ist der Betrag in Wei den der Empfänger enthält
+v,r,s sind die Komponenten der ECSDA-Signatur
+init: kompilierter Sourcecode des Kontrakts
+data: Funktionsaufruf eines Kontrakts
+
+Mit den Feldern data und init und lassen sich zwei verschiedene Typen von Transaktionen definieren.
+Der erste Typ sind die sogenannten Message-Call Transkationen.
+Dabei kann die to-Adresse ein Kontrakt sein oder ein anderer EOA
+Handelt es sich um einen Kontrakt wird der Betrag an Wei auf das Konto überwiesen. Handelt sich um einen Kontrakt kann das data-Feld einen Funktionsaufruf enthalten. Im value-Feld kann ebenfalls Ether mitgesendet werden.
+
+Der zweite Typ sind die so genannten Contract Creation Transaktionen.
+Dies sind Transaktionen die einen neuen Kontrakt erzeugen. Besonderheit bei dieser Transaktion ist, dass die Empfängeradresse gleich der 0 Adresse ist.
+Im Init-Feld befindet sich der Byte-Code des Kontrakts und im Value-Feld kann eine art Startguthaben mitgesender werden.
+
+15% aller Transaktionen in Tether
+// Serialisierung
+Da sehr viele Nodes über eine Peer-to-Peer Netz verbunden sind müssen Transaktionen effizient, schnell und vor allem konsitent versendet werden. Daher verwendet Ethereum die Recursive Length Prefix(RLP) -Kodierung.
+Dies gewährleistet die vor allem die konsistente Kodierung von Daten.
+Dabei ist es ein Kodierungsverfahren, welches ausschließlich Struktur serialisiert. Der Funktionsparameter wird als Item bezeichnet. Dieses ist entweder ein String (z.B. ein Byte-Array) oder ein Array von Items.
+RLP setzt Präfixe für die jeweilige Länge eines Items. Dabei gelten verschiedene Regeln je nach Item.
+Beispielsweise wollen wir den String Ethereum kodieren.
+Wir erhalten somit 8 Bytes. Die erste Regeln besagt, dass wenn ein Item kleiner als 56 Bytes ist, wird der Präfix 0x80 plus die Länge des Items gesetzt. In unserem Fall sind das nun 88 Bytes. Danach folgen die einzelnen Zeichen in ihrer ASCII-Darstellung.
+
+// Komponenten im Detail
+Wir kennen nun die Komponenten die eine Transaktion ausmachen und wie diese serialisiert werden. Im folgenden schauen wir uns die Bedeutung einiger Felder genauer an.
+
+// Nonce
+Die Nonce ist ein Konzept aus der Krypthographie. Dort ist sie eine wirkürliche Zahl die nur einmal in einer krypthografischen Kommunikation verwendet werden darf.
+
+In Ethereum ist die Nonce ein ikrementierende Zahl und stellt die Einmaligkeit einer Transkation sicher.
+So wird vor so genannten "Replay-Angriffen" geschützt.
+In Blockchain sind ja alle Transaktionen einsehbar. So auch diese Beispiel Transaktion: 
+Bob sendet Alice 4 Ether. Die Transaktion wurde von Bob signiert und abgesendet. Sie wurde ausgeführt und in der Blockchain aufgenommen.
+Nun kann Oskar hingehen und diese signierte Transaktion immer wieder ausführen, bis Bob irgendwann kein Guthaben mehr hat. 
+Fügen wir jedoch die Nonce ein, ist dies nicht mehr möglich, da die Nonce von Bobsaccount nach der Transaktion nun 5 ist und nicht mehr 4. Somit kann Oskar die Transaktion nicht erneut ausführen.
+
+(Desweiteren gibt es verschiedene Namen für verschiedene Kombinationen von value und data.
+Enthält eine Transaktion ein value-Feld ist es eine Zahlung oder payement. Enthält sie ein data Feld ist sie ein Aufruf Invocation. Enthält sie beides ist sie sowohl Aufruf als auch Zahlung)
+
+Wie schon erwähnt enthält das data-Feld einen Funktionsaufruf eines Kontrakts. So soll auch unsere Transaktion Tx eine Funktionsaufrufen und zwar diese:
+
+
+Für den Funktionsaufruf gibt es eine genaue Spezifikation wie dieser im Data-Feld hinterlegt werden muss. Diese heißt Contract Application Binary Interface (ABI). Dabei besteht ein ABI konformer Funktionsaufruf aus zwei Komponenten:
+Dem Funktionsselektor und den Funktionsargumenten
+Der Funktionsselektor enthält dabei die FUnktio die aufgerufen werden soll und besteht konkret aus den ersten vier Bytes des Keccak-256-Hashes des Funktionsprotypen
+Dieser besteht aus dem Namen der Funktion deposit und den Typen der Argumenten (string)
+
