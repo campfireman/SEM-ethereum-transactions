@@ -73,3 +73,33 @@ Dem Funktionsselektor und den Funktionsargumenten
 Der Funktionsselektor enthält dabei die FUnktio die aufgerufen werden soll und besteht konkret aus den ersten vier Bytes des Keccak-256-Hashes des Funktionsprotypen
 Dieser besteht aus dem Namen der Funktion deposit und den Typen der Argumenten (string)
 
+
+
+
+
+
+
+
+In Ethereum the world state is stored explicitly. It means, that every (full or archive) node in the network has a local copy of the state. The state is a (partial) mapping from addresses (i.e. 20 bytes number) to account states (that is a 4-tuple which specifies the nonce, the balance, the storage, and the code).
+
+Let's suppose Alice signs and "spread" a transaction that transfers x Ether from her balance to the one of Bob. Whenever a node of the network receives this transaction it is put in a queue (memory pool). Possibly, this tx is included in a block by the miner and executed (each node in the network re-execute the transaction to verify that the miner is not cheating).
+
+To execute the transaction, the following algorithm is used (it is a simplified version taken from the yellow paper):
+
+    Some validity checks are performed
+    Alice's nonce is incremented by 1 and the gas allocated for the transaction is removed from Alice's balance.
+    Now if the transaction specifies a receiver (in our case Bob) we are dealing with a Message call (case a), otherwise with a contract creation (case b): a. Execute the message call b. Execute the contract creation
+    If the execution of point 3 was successful, the changes to the state are kept, otherwise, we return back to the changes before point 3.
+    The refund balance is returned to the sender and the used gas is given to the beneficiary address (i.e. the miner's one).
+
+Let's analyze the algorithm for point 3a the message call. The algorithm is the following:
+
+I. Transfer the amount of ether (x) from Alice's to Bob's account
+
+II. Check if the receiver has an associated contract code. If it is not the case stop, the message call was successful.
+
+III. If it has associated code the contract code is executed:
+
+IV. If the execution was successful, keep the state, otherwise revert to the state prior to step I.
+
+The algorithm work because everybody has a local copy of the explicit world state.
