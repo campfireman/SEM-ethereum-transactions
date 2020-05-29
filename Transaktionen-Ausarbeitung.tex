@@ -57,9 +57,9 @@
 \section{Einführung}
 Das Wort Transaktion stammt von dem lateinischen Wort \textit{transigere} ab, welches im übertragenden Sinne mit "`durchführen"', "`vollführen"' oder "`abmachen"' (Geschäft) übersetzt werden kann. \cite{noauthor_transigere_nodate} Dieser Wortsinn besteht auch weiterhin im technischen und wirtschaftlichen Bereich, jedoch gibt es noch spezifischere Abgrenzungen. In der Wirtschaft ist es ein Vorgang, bei dem Waren und Forderungen ausgetauscht werden. \cite[S. 18 f.]{ehrlicher_kompendium_1975} In der Informatik ist es im Zusammenhang mit Datenbanken eine unteilbare, \textit{atomare}, Abfolge von Anweisungen, die einen Übergang von einem konsistenten Zustand in einen anderen beschreibt. \cite[S.520]{herold_grundlagen_2017}
 
-Ethereum ist ein "`transaktionsbasierter Automat"' (\textit{transaction-based state machine}). Somit sind Transaktionen ein grundlegender Baustein von Ethereum im Allgemeinen und ihnen kommt eine ähnliche Bedeutung wie den oben genannten (ACID) Transaktionen in Datenbanksystemen bei. Der Automat speichert seinen Zustand $ \sigma_t $ in der Blockchain, eine Transaktion $ T $ ist Argument der Zugstandsübergangsfunktion $ \Upsilon $, die von \textit{externen Akteuren (EA)} angestoßen wird und diesen gespeicherten Zustand $ \sigma_t $ in einen neuen, gültigen Zustand $ \sigma_{t + 1} $ überführen soll: $\sigma_{t+1} = \Upsilon(T, \sigma_t) $. Im Falle eines Konsens des Netzwerkes wird diese Zustandsveränderung durchgeführt beziehungsweise gespeichert.
+Ethereum ist ein "`transaktionsbasierter Automat"' (\textit{transaction-based state machine}). Somit sind Transaktionen ein grundlegender Baustein von Ethereum im Allgemeinen und ihnen kommt eine ähnliche Bedeutung wie den oben genannten (ACID) Transaktionen in Datenbanksystem bei. Der Automat speichert seinen Zuständ $ \sigma_t $ in der Blockchain, eine Transaktion $ T $ ist Argument der Zugstandsübergangsfunktion $ \Upsilon $, die von \textit{externen Akteuren} (also auch Maschinen) angestoßen wird und diesen gespeicherten Zustand $ \sigma_t $ in einen neuen, gültigen Zustand $ \sigma_{t + 1} $ überführen soll: $\sigma_{t+1} = \Upsilon(T, \sigma_t) $. Im Falle eines Konsens des Netzwerkes wird diese Zustandsveränderung durchgeführt beziehungsweise gespeichert.
 
-Im Kontrast zu Kryptowährungen, wie Bitcoin, ist der Umfang des Automaten bzw. des Protokolls bei Ethereum deutlich geweitet, denn Zweck ist nicht nur die Schöpfung, Speicherung und der Austausch eines digitalen Zahlungsmittels \cite{nakamoto_bitcoin_nodate}, sondern eine allgemeine dezentrale Rechenmaschine, ein "`Weltcomputer".  \cite[S. 1-4]{wood_ethereum/yellowpaper_2019} Im Folgenden betrachten wir eine beispielhafte Transaktion $ T_x $ von der Erzeugung, Signatur und Veröffentlichung, woran wir die technischen Spezifikationen von Transaktionen in Ethereum erläutern werden.
+Im Kontrast zu Kryptowährungen, wie Bitcoin, ist der Umfang des Automaten bzw. des Protokolls bei Ethereum deutlich geweitet, denn Zweck ist nicht nur die Schöpfung, Speicherung und der Austausch eines digitalen Zahlungsmittels \cite{nakamoto_bitcoin_nodate}, sondern eine allgemeine dezentrale Rechenmaschine, ein "`Weltcomputer"'.  \cite[S. 1-4]{wood_ethereum/yellowpaper_2019} Im Folgenden betrachten wir eine beispielhafte Transaktion $ T_x $ von der Erzeugung, Signatur und Veröffentlichung, woran wir die technischen Spezifikationen von Transaktionen in Ethereum erläutern werden.
 
 \section{Struktur und technische Umsetzung einer Transaktion}
 Die Struktur einer Transaktion ist vergleichbar mit der eines Briefes. Es gibt jeweils einen Absender, Empfänger und eine Bezahlung der Zustellungskosten. Bei Transaktionen erfolgt dies nicht in Form einer Briefmarke, sondern durch Gas (s. \ref{gas}). Außerdem kann beides eine "`Nutzlast"' \cite[S. 108]{antonopoulos_mastering_2019} enthalten. Dabei handelt es sich meistens um einenen Etherbetrag und/oder zusätzliche Daten. Genauso wie man in einem Brief Geld oder einen Text verschicken kann. Im Folgenden wird die allgemeine Struktur und die technische Umsetzung von Transkation in Ethereum vorgestellt.
@@ -68,7 +68,7 @@ Die Struktur einer Transaktion ist vergleichbar mit der eines Briefes. Es gibt j
 \label{komponenten}
 Transkationen, so auch unsere Transaktion $T_x$, enthalten laut ihrer offiziellen Definition \cite[S. 4]{wood_ethereum/yellowpaper_2019} folgende Datenfelder:
 \begin{description}
-  \item[nonce:] Ein Skalar, welcher gleich der Anzahl der vom EOA versendeten Transaktionen ist. Der Nutzen wird in \ref{nonce} erläutert.
+  \item[nonce:] Ein Skalar, welcher gleich der Anzahl der vom \textit{External Owned Account} (EOA)\footnote{Ein Account im Ethereum-Netzwerk, der einem Menschen gehört} versendeten Transaktionen ist. Der Nutzen wird in \ref{nonce} erläutert.
   \item[gasPrice:] Ein Skalar, der angibt, wie viel Wei man pro Einheit \textit{Gas} bezahlt, die bei der Gesamtheit aller Berechnungen, die während der Ausführung der Transaktion anfallen (s. \ref{gas}).
   \item[gasLimit:] Ein Skalar, der die maximal Anzahl an \textit{Gas} angibt, die während der Ausführung der Transaktion verbraucht werden darf. Dieser Betrag muss im Voraus bezahlt werden.
   \item[to:] Die 160-Bit Adresse des Empfängers.
@@ -108,14 +108,14 @@ Die RLP-Funktion erhält ein sogenanntes "`Item"' als Parameter. Ein Item ist da
                 \begin{center}
                   \texttt{[0x88, 'E', 't', 'h', 'e', 'r', 'e', 'u', 'm']}\\
                   bzw inkl. ASCII-Kodierung\\
-                  \texttt{[0x88, 0x45, 0x74, 0x65, 0x68, 0x72, 0x65, 0x75, 0x6d]}\footnote{Auf Grund besserer Lesbarkeit werten die RLP Repräsentationen in Listen dargestellt. In der Realität ist dies jedoch eine einfache Bytefolge.}
+                  \texttt{[0x88, 0x45, 0x74, 0x65, 0x68, 0x72, 0x65, 0x75, 0x6d]}\footnote{Auf Grund besserer Lesbarkeit werden die RLP-Repräsentationen in Listenform dargestellt. In der Realität ist dies jedoch einfache Bytefolge.}
                 \end{center}
           \item Ist das Byte-Array größer als 55 Byte wird ein Präfix aus mehreren Bestandteilen verwendet. Zum einen \texttt{0xb7} plus die Anzahl der Bytes die benötigt werden, um die Länge des String darzustellen. Gefolgt von der Länge des Strings im Big-Endian Format und dem Inhalt des Byte-Arrays. So ergibt sich für ein 2048-Byte langes Byte-Array folgender Präfix: \texttt{[0xb9, 0x80, 0x00]}.
                 2048 entsprechen in Hexadezimal \texttt{0x800} somit werden zwei Bytes (\texttt{0x80} und \texttt{0x00}) benötigt, um die Länge des Bytes darzustellen. Insgesamt erhalten wir $\texttt{0xb7} + 2 = \texttt{0xb9}$ als Präfix.
         \end{itemize}
   \item Item ist eine (verschachtelte) Liste von Items:
         \begin{itemize}
-          \item Ist die Gesamtlänge aller in der Liste enthaltenen Items mit ihrer jeweiligen RLP Repräsentation 0-55 Bytes lang, so wird der Präfix \texttt{0xc0} plus die Länge der konkatenierten Liste der RLP Repräsentation gesetzt. Anschließend folgt die Liste selbst. So wäre die Kodierung der Liste \texttt{["`Ether"', "`Wei"']}:
+          \item Ist die Gesamtlänge aller in der Liste enthaltenen Items mit ihrer jeweiligen RLP Repräsentation 0-55 Bytes lang, so wird der Präfix \texttt{0xc0} plus die Länge der konkatenierten Liste der RLP Repräsentation gesetzt. Anschließend folgt die Liste selbst. So wäre die Kodierung der Liste \texttt{["'Ether"', "'Wei"']}:
                 \begin{center}
                   \texttt{[0xca, 0x85, 'E', 't', 'h', 'e', 'r', 0x83, 'W', 'e', 'i']}\\
                   bzw. inkl. ASCII-Kodierung\\
@@ -166,7 +166,7 @@ Daraus resultiert folgender Prototyp für unsere Funktion: \verb+deposit(string)
 Dessen vollständiger Keccak256-Hash entspricht:
 
 \begingroup
-\fontsize{8pt}{10pt}\selectfont
+\fontsize{9pt}{10pt}\selectfont
 \begin{center}
   \verb+0xa26e11860cdb80ecca46e4f433c3c9533f6d37cdf0f6eb16343556cfdbcf47ec+
 \end{center}
@@ -176,7 +176,7 @@ Somit entspricht \verb+0xa26e1186+ dem ABI konformen Funktionsselektor.\\
 Unser Funktionsaufruf soll $1000000000000000000$ Wei (entspricht einem Ether) auf das Konto einzahlen. Als Parameter übergeben wir "`Einzahlung"'. Um einen String ABI konform zu kodieren, müssen wir den Offset angeben, ab dem der Inhalt unseres Parameters startet, konkatiniert mit der Länge des Strings und beides nach links auf 32 Byte mit Paddingsbytes aufgefüllt. Danach folgt der String in UTF-8 kodiert, welcher nach rechts auf 32 Bytes aufgefüllt wurde. In unserem Fall müssen wir 32 Zeichen überspringen (\texttt{0x20}). Der String ist 10 (\texttt{0xa}) Zeichen lang. Somit lautet die Kodierung unserer Funktionsargumente wie folgt:
 
 \begingroup
-\fontsize{8pt}{10pt}\selectfont
+\fontsize{9pt}{10pt}\selectfont
 \begin{center}
   \texttt{0x0000000000000000000000000000000000000000000000000000000000000020 \textbackslash} \\
   \texttt{000000000000000000000000000000000000000000000000000000000000000a \textbackslash} \\
@@ -187,7 +187,7 @@ Unser Funktionsaufruf soll $1000000000000000000$ Wei (entspricht einem Ether) au
 Unsere Nutzlast, welche wir im \textit{data}-Feld nun eintragen müssen, erhalten wir aus der Konkatenation beider Kodierungen:
 
 \begingroup
-\fontsize{8pt}{10pt}\selectfont
+\fontsize{9pt}{10pt}\selectfont
 \begin{center}
   \texttt{0xa26e1186 \textbackslash} \\
   \texttt{0000000000000000000000000000000000000000000000000000000000000020 \textbackslash} \\
@@ -318,7 +318,7 @@ Wir haben nun alle notwendigen Konzepte und Inhalte einer Ethereumtransaktion ke
 Um diese , werden alle Werte der Datenfelder (die Feldernamen sind nicht teil der Transkation \cite[S. 100]{antonopoulos_mastering_2019}) mit dem privaten Schlüssels des Accounts signiert und anschließend mit RLP kodiert.
 
 \subsection{Propagation}
-Bevor die Transaktion über das Ethereumnetzwerk verbreitet wird, überprüft der lokale Node, ob die Transaktion wirklich von der eigenen Adresse stammt. Ist dies der Fall, wird die Transkation über das P2P-Netwerk versendet. Ein Node ist mit mindestens 13 weiteren Nodes verbunden \cite[S. 123]{antonopoulos_mastering_2019}. Jeder dieser Nodes erhält die Transkation und validiert diese. Wenn dies erfolgreich ist, sendet der jeweilige Node die Transaktion an seine Nachbarn weiter \cite[S. 123]{antonopoulos_mastering_2019}. So wird erreicht, dass die Transkation sehr schnell bei jedem Node im Ethereumnetzwerk angekommen ist. Die Transaktion erreicht somit auch sogenannte "`Miner Nodes"'. Diese Nodes speichern unsere Transaktion in ihrem \textit{Mempool}. Abhängig von unserer Platzierung in diesem Pool, wird die Transaktion nach einer Zeit in einen Block aufgenommen. Sobald der Block geschürft wurde, also der \textit{Proof of Work} gefunden wurde, findet eine Zustandsänderung des Zustandsautomat statt. Das heißt, die Funktion des Kontrakts wird von der EVM ausgeführt und das Ether von dem Senderaccount abgebucht und dem Konto des Kontrakts gutgeschrieben. Schließlich kann man unsere Transaktion in der Blockchain wiederfinden: \href{https://ropsten.etherscan.io/tx/0x6c5cd70f3464a6b68f95ba1bb7ebb5ece5a2f1ab4d45a5bb068e727e08fa827d}{Unsere Transaktion auf Etherscan}
+Bevor die Transaktion über das Ethereum-Netzwerk verbreitet wird, überprüft der lokale Node, ob die Transaktion wirklich von der eigenen Adresse stammt. Ist dies der Fall, wird die Transkation über das P2P-Netwerk versendet. Ein Node ist mit mindestens 13 weiteren Nodes verbunden \cite[S. 123]{antonopoulos_mastering_2019}. Jeder dieser Nodes erhält die Transkation und validiert diese. Wenn dies erfolgreich ist, sendet der jeweilige Node die Transaktion an seine Nachbarn weiter \cite[S. 123]{antonopoulos_mastering_2019}. So wird erreicht, dass die Transkation sehr schnell bei jedem Node im Ethereum-Netzwerk angekommen ist. Die Transaktion erreicht somit auch sogenannte "`Miner Nodes"'. Diese Nodes speichern unsere Transaktion in ihrem \textit{Mempool}. Abhängig von unserer Platzierung in diesem Pool, wird die Transaktion nach einer Zeit in einen Block aufgenommen. Sobald der Block geschürft wurde, also der \textit{Proof of Work} gefunden wurde, findet eine Zustandsänderung des Zustandsautomat statt. Das heißt, die Funktion des Kontrakts wird von der EVM ausgeführt und das Ether von dem Senderaccount abgebucht und dem Konto des Kontrakts gutgeschrieben. Schließlich kann man unsere Transaktion in der Blockchain wiederfinden: \href{https://ropsten.etherscan.io/tx/0x6c5cd70f3464a6b68f95ba1bb7ebb5ece5a2f1ab4d45a5bb068e727e08fa827d}{Unsere Transaktion auf Etherscan}
 
 \subsection{Speicherung}
 Die Speicherung und Ausführung der Transaktion lässt sich mit Hilfe der Felder \textit{transactionRoot}, \textit{receiptRoot} und \textit{logsBloom} des Blockheaders nachverfolgen. Die beiden \textit{root} Felder sind jeweils die Wurzel eines \textit{Merkle-Patricia} Baumes, welche es ermöglicht den zugrunde liegenden \textit{trie} zu traversieren. \cite{noauthor_ethereum/patricia_nodate} Mit der \textit{transactionRoot} können wir alle  im im Block enthaltenen Transaktionskorpora abrufen. Der \textit{trie} zum \textit{receiptRoot} enthält Informationen zu dem Ergebnis der Transaktionen. Ein \textit{receipt} besteht aus dem Zustand $ R_{\sigma} $ nach der Transaktion, dem kumulierten, verbrauchten Gas nach der Transaktion $ R_u $ und den Logs $ R_l $, die zur Laufzeit der Transaktion entstanden sind. Zusätzlich wird noch ein sogenannter \textit{bloom filter} $ R_b $ von den Logs angelegt, um eine schnellere Suche zu ermöglichen. \cite{noauthor_logs_nodate}
