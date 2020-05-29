@@ -285,3 +285,10 @@ FROM
         FROM
             transactions
     ) AS t;
+
+SELECT
+    *
+FROM
+    blocks
+LIMIT
+    10;

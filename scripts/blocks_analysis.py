@@ -3,7 +3,6 @@ from datetime import datetime
 
 import matplotlib.pyplot as plt
 import numpy as np
-
 from utils import Dataset
 
 PATH = os.path.dirname(os.getcwd()) + '/images'
@@ -22,7 +21,7 @@ def main():
                        ('gas_limit', np.float), ('gas_used', np.float), ('timestamp', np.float), ]
     )
     dataset.data['unused_gas'] = list(map(
-        lambda x, y: x - y,
+        lambda x, y: y / x,
         dataset.data['gas_limit'], dataset.data['gas_used']
     ))
     dates = list(map(
@@ -31,8 +30,21 @@ def main():
     ))
     dataset.standard_analysis()
     dataset.percentiles()
-
     # plot
+    file = 'blocks_unused_gas.png'
+
+    fig, ax = plt.subplots(1, 1)
+    plt.hist(
+        dataset.data['unused_gas'],
+        20,
+        density=True,
+    )
+    plt.grid(True)
+    plt.xlabel('percentage of total used gas')
+    plt.ylabel('density')
+    fig.set_size_inches(WIDTH_IN_INCHES, HEIGHT_IN_INCHES)
+    fig.savefig(os.path.join(PATH, file), dpi=DPI)
+
     file = 'blocks_gas_limit_timeseries.png'
 
     fig, ax = plt.subplots(1, 1)
@@ -59,7 +71,7 @@ def main():
     )
     plt.grid(True)
     plt.xlabel('no. of transactions per block')
-    plt.ylabel('ratio of blocks')
+    plt.ylabel('density')
     fig.set_size_inches(WIDTH_IN_INCHES, HEIGHT_IN_INCHES)
     fig.savefig(os.path.join(PATH, file), dpi=DPI)
 
